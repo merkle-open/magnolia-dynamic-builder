@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.namics.oss.magnolia</groupId>
 	<artifactId>magnolia-appbuilder</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<properties>
 		<magnolia.version>6.2.1</magnolia.version>
