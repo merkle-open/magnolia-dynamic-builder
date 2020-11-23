@@ -2,9 +2,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.namics.oss.magnolia</groupId>
 	<artifactId>magnolia-appbuilder</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId}</name>
+	<description>The AppBuilder module is a builder for Magnolia apps in a Blossom context.</description>
+	<url>https://github.com/namics/magnolia-appbuilder</url>
+	<licenses>
+		<license>
+			<name>GNU General Public License version 3 (GPLv3)</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Namics Magnolia</name>
+			<email>magnolia@namics.com</email>
+			<organization>Namics AG</organization>
+			<organizationUrl>http://www.namics.com</organizationUrl>
+		</developer>
+	</developers>
 
 	<properties>
 		<magnolia.version>6.2.1</magnolia.version>
