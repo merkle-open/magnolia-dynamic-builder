@@ -35,6 +35,7 @@ public abstract class AbstractColumnFormatter extends info.magnolia.ui.workbench
 
 	/**
 	 * Formats an item at a column
+	 *
 	 * @return formatted item. If empty optional is returned, the node name is used.
 	 */
 	protected abstract Optional<String> format(PowerNode item, String columnId);

@@ -50,7 +50,7 @@ public abstract class AbstractNodeDropConstraint extends AlwaysTrueDropConstrain
 
 	@Override
 	public boolean allowedAsChild(final com.vaadin.v7.data.Item sourceItem, final com.vaadin.v7.data.Item targetItem) {
-		if(!isDirectChild(sourceItem, targetItem) && !equals(sourceItem, targetItem)) {
+		if (!isDirectChild(sourceItem, targetItem) && !equals(sourceItem, targetItem)) {
 			if (isNodeType(sourceItem, fileNodeTypes.toArray(String[]::new))) {
 				return isNodeType(targetItem, folderNodeType) || (fileNodesAllowedInRoot && isNodeType(targetItem, ROOT_NODE_TYPE));
 			}
@@ -63,10 +63,10 @@ public abstract class AbstractNodeDropConstraint extends AlwaysTrueDropConstrain
 
 	@Override
 	public boolean allowedBefore(final com.vaadin.v7.data.Item sourceItem, final com.vaadin.v7.data.Item targetItem) {
-		if(isNodeType(sourceItem, fileNodeTypes.toArray(String[]::new))) {
+		if (isNodeType(sourceItem, fileNodeTypes.toArray(String[]::new))) {
 			return isParentNodeType(targetItem, folderNodeType) || (fileNodesAllowedInRoot && isParentNodeType(targetItem, ROOT_NODE_TYPE));
 		}
-		if(isNodeType(sourceItem, folderNodeType)) {
+		if (isNodeType(sourceItem, folderNodeType)) {
 			return isParentNodeType(targetItem, ROOT_NODE_TYPE) || (nestingAllowed && isParentNodeType(targetItem, folderNodeType));
 		}
 		return false;
