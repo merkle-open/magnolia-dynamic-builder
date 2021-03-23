@@ -1,7 +1,6 @@
 package com.namics.oss.magnolia.appbuilder.launcher;
 
 
-import com.namics.oss.magnolia.powernode.PowerNodeService;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.namics.oss.magnolia.appbuilder.annotations.AppLauncherGroup;
 import com.namics.oss.magnolia.appbuilder.annotations.GroupDefinition;
@@ -9,6 +8,7 @@ import com.namics.oss.magnolia.appbuilder.exception.AppBuilderException;
 import com.namics.oss.magnolia.appbuilder.launcher.group.LauncherGroup;
 import com.namics.oss.magnolia.appbuilder.launcher.group.SimpleGroupDefinition;
 import com.namics.oss.magnolia.powernode.PowerNode;
+import com.namics.oss.magnolia.powernode.PowerNodeService;
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.Node2BeanTransformer;
