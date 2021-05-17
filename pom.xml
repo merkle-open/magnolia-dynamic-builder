@@ -29,7 +29,7 @@
 	</developers>
 
 	<properties>
-		<magnolia.version>6.2.1</magnolia.version>
+		<magnolia.version>6.2.8</magnolia.version>
 		<magnolia.blossom.version>3.4.1</magnolia.blossom.version>
 		<namics.powernode.version>1.0.0</namics.powernode.version>
 		<java.poet.version>1.12.1</java.poet.version>
