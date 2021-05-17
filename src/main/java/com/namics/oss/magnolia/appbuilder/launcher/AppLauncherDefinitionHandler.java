@@ -7,14 +7,7 @@ import com.namics.oss.magnolia.appbuilder.annotations.GroupDefinition;
 import com.namics.oss.magnolia.appbuilder.exception.AppBuilderException;
 import com.namics.oss.magnolia.appbuilder.launcher.group.LauncherGroup;
 import com.namics.oss.magnolia.appbuilder.launcher.group.SimpleGroupDefinition;
-import com.namics.oss.magnolia.powernode.PowerNode;
-import com.namics.oss.magnolia.powernode.PowerNodeService;
-import info.magnolia.jcr.node2bean.Node2BeanException;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.Node2BeanTransformer;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.admincentral.AdmincentralModule;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntryDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherGroupDefinition;
@@ -27,128 +20,103 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class AppLauncherDefinitionHandler {
-
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	private static final String APP_LAUNCHER_LAYOUT_CONFIG = "/modules/ui-admincentral/config/appLauncherLayout";
-
-	private ConfiguredAppLauncherLayoutDefinition appLauncherLayoutDefinition;
-
+	private final ConfiguredAppLauncherLayoutDefinition appLauncherLayoutDefinition;
 	private final AppLauncherLayoutManager appLauncherLayoutManager;
-
-	private final Map<String, SimpleGroupDefinition> groupDefinitionRegistry = new HashMap<>();
+	private final Map<String, SimpleGroupDefinition> groupDefinitionRegistry;
 
 	@Inject
-	public AppLauncherDefinitionHandler(PowerNodeService powerNodeService, ApplicationContext applicationContext) {
-		this.appLauncherLayoutManager = Components.getComponent(AppLauncherLayoutManager.class);
-
-		// register all existing launcher groups
-		groupDefinitionRegistry.putAll(LauncherGroup.getAllExistingGroups());
-
-		// add user defined launcher groups to registry
-		Map<String, Object> appLauncherGroups = applicationContext.getBeansWithAnnotation(AppLauncherGroup.class);
-		appLauncherGroups.forEach((s, o) -> {
-			SimpleGroupDefinition simpleDefinition = findSimpleDefinition(o);
-			groupDefinitionRegistry.putIfAbsent(simpleDefinition.getName(), simpleDefinition);
-		});
-
-		initAppLauncherDefinitionFromJcr(powerNodeService);
+	public AppLauncherDefinitionHandler(
+			final ApplicationContext applicationContext,
+			final AppLauncherLayoutManager appLauncherLayoutManager,
+			final AdmincentralModule admincentralModule) {
+		this.appLauncherLayoutManager = appLauncherLayoutManager;
+		this.appLauncherLayoutDefinition = (ConfiguredAppLauncherLayoutDefinition) admincentralModule.getAppLauncherLayout();
+		this.groupDefinitionRegistry = streamGroupDefinitions(applicationContext)
+				.collect(Collectors.toMap(SimpleGroupDefinition::getName, Function.identity()));
 	}
 
 	public void addApp(Object factoryObject, String appName) {
-		AppFactory annotation = AopUtils.getTargetClass(factoryObject)
-				.getAnnotation(AppFactory.class);
+		final AppFactory annotation = AopUtils.getTargetClass(factoryObject).getAnnotation(AppFactory.class);
 
 		// don't add to launcher if no group is specified
-		String groupName = annotation.launcherGroup();
+		final String groupName = annotation.launcherGroup();
 		if (StringUtils.isBlank(groupName)) {
 			return;
 		}
 
-		int order = annotation.order();
-		OrderableAppLauncherGroupEntryDefinition app = new OrderableAppLauncherGroupEntryDefinition();
+		final int order = annotation.order();
+		final OrderableAppLauncherGroupEntryDefinition app = new OrderableAppLauncherGroupEntryDefinition();
 		app.setName(appName);
 		app.setEnabled(true);
 		app.setOrder(order);
 
-		if (isGroupExisting(groupName)) {
-			ConfiguredAppLauncherGroupDefinition existingGroup = getExistingGroup(groupName);
-			List<AppLauncherGroupEntryDefinition> apps = existingGroup.getApps();
-			apps.add(app);
-			apps.sort(((o1, o2) -> {
-				Integer order1 = getOrder(o1);
-				Integer order2 = getOrder(o2);
-				return order1.compareTo(order2);
-			}));
-			existingGroup.setApps(apps);
-		} else {
-			SimpleGroupDefinition simpleGroup = groupDefinitionRegistry.getOrDefault(groupName, new SimpleGroupDefinition(groupName));
-			ConfiguredAppLauncherGroupDefinition group = simpleGroup.getConfiguredDefinition();
-			group.addApp(app);
-			appLauncherLayoutDefinition.addGroup(group);
-		}
+		final ConfiguredAppLauncherGroupDefinition group = getOrCreateGroup(groupName);
+		final List<AppLauncherGroupEntryDefinition> apps = Stream
+				.concat(
+						group.getApps().stream(),
+						Stream.of(app)
+				)
+				.sorted(Comparator.comparing(this::getOrder))
+				.collect(Collectors.toList());
+		group.setApps(apps);
 		appLauncherLayoutManager.setLayout(appLauncherLayoutDefinition);
 	}
 
-	private Integer getOrder(AppLauncherGroupEntryDefinition app) {
-		if (app instanceof OrderableAppLauncherGroupEntryDefinition) {
-			return ((OrderableAppLauncherGroupEntryDefinition) app).getOrder();
-		} else {
-			return -1;
-		}
+	private ConfiguredAppLauncherGroupDefinition getOrCreateGroup(final String groupName) {
+		return getExistingGroup(groupName).orElseGet(() ->
+				createGroup(groupName)
+		);
 	}
 
-	private ConfiguredAppLauncherGroupDefinition getExistingGroup(String groupName) {
-		return (ConfiguredAppLauncherGroupDefinition) appLauncherLayoutDefinition.getGroups().stream()
+	private Optional<ConfiguredAppLauncherGroupDefinition> getExistingGroup(final String groupName) {
+		return appLauncherLayoutDefinition.getGroups().stream()
 				.filter(groupDefinition -> groupDefinition.getName().equals(groupName))
 				.findFirst()
-				.orElseThrow(() -> new AppBuilderException("Optional Item Not Found"));
+				.map(ConfiguredAppLauncherGroupDefinition.class::cast);
 	}
 
-	private boolean isGroupExisting(String groupName) {
-		return appLauncherLayoutDefinition.getGroups().stream()
-				.anyMatch(groupDefinition -> groupDefinition.getName().equals(groupName));
+	private ConfiguredAppLauncherGroupDefinition createGroup(final String groupName) {
+		final SimpleGroupDefinition simpleGroup = groupDefinitionRegistry.getOrDefault(groupName, new SimpleGroupDefinition(groupName));
+		final ConfiguredAppLauncherGroupDefinition group = simpleGroup.getConfiguredDefinition();
+		appLauncherLayoutDefinition.addGroup(group);
+		return group;
 	}
 
-	private void initAppLauncherDefinitionFromJcr(PowerNodeService powerNodeService) {
-		Session session = powerNodeService.getSystemSession(RepositoryConstants.CONFIG).orElse(null);
-		Optional<PowerNode> appLauncherLayoutNode = powerNodeService.getNodeByPath(APP_LAUNCHER_LAYOUT_CONFIG, session);
-		this.appLauncherLayoutDefinition = appLauncherLayoutNode
-				.map(this::getAppLayoutDefinitionFromNode)
-				.orElseGet(ConfiguredAppLauncherLayoutDefinition::new);
-		appLauncherLayoutNode.ifPresent(PowerNode::sessionLogout);
-	}
-
-	private ConfiguredAppLauncherLayoutDefinition getAppLayoutDefinitionFromNode(PowerNode node) {
-		try {
-			Node2BeanProcessor node2BeanProcessor = Components.getComponent(Node2BeanProcessor.class);
-			ConfiguredAppLauncherLayoutDefinition bean = new ConfiguredAppLauncherLayoutDefinition();
-			Node2BeanTransformer transformer = Components.getComponent(Node2BeanTransformer.class);
-			ComponentProvider componentProvider = Components.getComponentProvider();
-			return (ConfiguredAppLauncherLayoutDefinition) node2BeanProcessor.setProperties(bean, node, true, transformer, componentProvider);
-		} catch (Node2BeanException | RepositoryException e) {
-			LOG.error("Could not load AppLauncherLayoutDefinition from JCR, Launcher will be empty: {}", e.getMessage());
-			LOG.debug("Could not load AppLauncherLayoutDefinition from JCR, Launcher will be empty", e);
-			return new ConfiguredAppLauncherLayoutDefinition();
+	private int getOrder(final AppLauncherGroupEntryDefinition app) {
+		if (app instanceof OrderableAppLauncherGroupEntryDefinition) {
+			return ((OrderableAppLauncherGroupEntryDefinition) app).getOrder();
 		}
+		return -1;
 	}
 
-	private SimpleGroupDefinition findSimpleDefinition(Object factoryObject) {
-		Class<?> factoryClass = AopUtils.getTargetClass(factoryObject);
-		Class<GroupDefinition> annotationClass = GroupDefinition.class;
-		AppLauncherGroup annotation = AopUtils.getTargetClass(factoryObject)
-				.getAnnotation(AppLauncherGroup.class);
-		String groupName = annotation.name();
+	private Stream<SimpleGroupDefinition> streamGroupDefinitions(final ApplicationContext applicationContext) {
+		return Stream.concat(
+				LauncherGroup.getAllExistingGroups().values().stream(),
+				applicationContext.getBeansWithAnnotation(AppLauncherGroup.class)
+						.values()
+						.stream()
+						.map(this::findSimpleDefinition)
+		);
+	}
+
+	private SimpleGroupDefinition findSimpleDefinition(final Object factoryObject) {
+		final Class<?> factoryClass = AopUtils.getTargetClass(factoryObject);
+		final Class<GroupDefinition> annotationClass = GroupDefinition.class;
+		final AppLauncherGroup annotation = AopUtils.getTargetClass(factoryObject).getAnnotation(AppLauncherGroup.class);
+		final String groupName = annotation.name();
 
 		return Arrays.stream(factoryClass.getDeclaredMethods())
 				.filter(method -> method.isAnnotationPresent(annotationClass))
@@ -163,7 +131,8 @@ public class AppLauncherDefinitionHandler {
 				.filter(method -> !Modifier.isStatic(method.getModifiers()))
 				.filter(method -> SimpleGroupDefinition.class.isAssignableFrom(method.getReturnType()))
 				.map(method -> buildSimpleGroupDefinition(factoryObject, method))
-				.findFirst().orElseGet(() -> new SimpleGroupDefinition(groupName));
+				.findFirst()
+				.orElseGet(() -> new SimpleGroupDefinition(groupName));
 	}
 
 	private SimpleGroupDefinition buildSimpleGroupDefinition(Object factoryObject, Method method) {
