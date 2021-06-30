@@ -3,7 +3,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.generated.action.deprecated.DeleteConfirmationActionBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 public class ConfirmDeleteAppActionDefinition implements AppActionDefinition {
 	private final String icon;
@@ -26,7 +29,10 @@ public class ConfirmDeleteAppActionDefinition implements AppActionDefinition {
 				.proceedLabel("actions.confirmDeletion.proceedLabel")
 				.cancelLabel("actions.confirmDeletion.cancelLabel")
 				.icon(icon)
-				.successActionName("delete");
+				.successActionName("delete")
+				.availability(new AvailabilityBuilder()
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+				);
 	}
 
 	@Override

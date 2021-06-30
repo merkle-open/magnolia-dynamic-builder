@@ -7,6 +7,7 @@ import com.namics.oss.magnolia.appbuilder.builder.generated.availability.Availab
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.framework.availability.AcceptsClipboardContent;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 public class PasteAppActionDefinition implements AppActionDefinition {
 	private final String icon;
@@ -28,7 +29,10 @@ public class PasteAppActionDefinition implements AppActionDefinition {
 				.label(label)
 				.icon(icon)
 				.availability(new AvailabilityBuilder()
-						.rules(new AvailabilityRuleBuilder().implementationClass(AcceptsClipboardContent.class))
+						.rules(
+								new AvailabilityRuleBuilder().implementationClass(AcceptsClipboardContent.class),
+								new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class)
+						)
 				);
 	}
 }

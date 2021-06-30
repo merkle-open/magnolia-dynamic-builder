@@ -6,20 +6,20 @@ import com.namics.oss.magnolia.appbuilder.builder.generated.action.ActivationAct
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.framework.availability.IsDeletedRule;
 
-public class ActivateAppActionDefinition implements AppActionDefinition {
+public class ActivateDeletionAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
 		return new ActivationActionBuilder()
-				.name("activate")
-				.label("actions.activate")
+				.name("activateDeletion")
+				.label("actions.activateDeleted")
 				.icon(MgnlIcon.PUBLISH)
 				.command("activate")
 				.availability(new AvailabilityBuilder()
 						.writePermissionRequired(true)
-						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsDeletedRule.class))
 				);
 	}
 
