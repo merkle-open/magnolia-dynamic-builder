@@ -175,7 +175,7 @@ public class BrowserAppBuilder {
 				.dropConstraintClass(dropConstraint)
 				.editable(true)
 				.contentViews(
-						new TreePresenterBuilder().columns(columnDefinitions),
+						new TreePresenterBuilder().sortable(true).columns(columnDefinitions),
 						new ListPresenterBuilder().columns(columnDefinitions),
 						new SearchPresenterBuilder().columns(columnDefinitions)
 				);
