@@ -3,8 +3,11 @@ package com.namics.oss.magnolia.appbuilder.action.add;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.generated.action.OpenCreateDialogActionBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 import javax.annotation.Nullable;
 
@@ -51,6 +54,9 @@ public class AddAppActionDefinition implements AppActionDefinition {
 				.label(label)
 				.dialogName(dialogName)
 				.icon(icon)
-				.nodeType(nodeType);
+				.nodeType(nodeType)
+				.availability(new AvailabilityBuilder()
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+				);
 	}
 }

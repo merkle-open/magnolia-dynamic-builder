@@ -5,6 +5,8 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
 import com.namics.oss.magnolia.appbuilder.builder.generated.actionbar.ActionbarBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.column.MetaDataColumnBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.column.PropertyColumnBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.column.StatusColumnBuilder;
@@ -24,6 +26,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
@@ -152,7 +155,10 @@ public class BrowserAppBuilder {
 
 		final ActionDefinition defaultAction = new NodeTypeToActionDelegatingActionBuilder()
 				.name("defaultAction")
-				.nodeTypeActionMapping(doubleClickNodeTypeActions);
+				.nodeTypeActionMapping(doubleClickNodeTypeActions)
+				.availability(new AvailabilityBuilder()
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+				);
 
 		return Stream
 				.concat(

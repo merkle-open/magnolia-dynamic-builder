@@ -1,14 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.action;
 
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.activation.ActivateDeletionAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateRecursiveAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.DeactivateAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.ConfirmDeleteAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.DeleteAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.MoveAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.*;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ExportAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ImportAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.version.RestorePreviousVersionAppActionDefinition;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,12 +24,18 @@ public class AppActionDefinitions {
 	public static final List<AppActionDefinition> ACTIVATION = List.of(
 			new ActivateAppActionDefinition(),
 			new ActivateRecursiveAppActionDefinition(),
+			new ActivateDeletionAppActionDefinition(),
 			new DeactivateAppActionDefinition()
 	);
 
 	public static final List<AppActionDefinition> ACTIVATION_NON_RECURSIVE = List.of(
 			new ActivateAppActionDefinition(),
+			new ActivateDeletionAppActionDefinition(),
 			new DeactivateAppActionDefinition()
+	);
+
+	public static final List<AppActionDefinition> RESTORE_PREVIOUS_ACTIONS = List.of(
+			new RestorePreviousVersionAppActionDefinition()
 	);
 
 	private static final List<AppActionDefinition> EDIT_ACTIONS = List.of(
@@ -39,9 +44,22 @@ public class AppActionDefinitions {
 			new DeleteAppActionDefinition()
 	);
 
+	private static final List<AppActionDefinition> EDIT_ACTIONS_MARK_AS_DELETE = List.of(
+			new MoveAppActionDefinition(),
+			new ConfirmDeleteAppActionDefinition(),
+			new MarkAsDeletedAppActionDefinition()
+	);
+
 	public static final List<AppActionDefinition> editActions(final EditAppActionDefinition editAppActionDefinition) {
 		return add(
 				EDIT_ACTIONS,
+				editAppActionDefinition
+		);
+	}
+
+	public static final List<AppActionDefinition> editActionsWithMarkAsDeleted(final EditAppActionDefinition editAppActionDefinition) {
+		return add(
+				EDIT_ACTIONS_MARK_AS_DELETE,
 				editAppActionDefinition
 		);
 	}
