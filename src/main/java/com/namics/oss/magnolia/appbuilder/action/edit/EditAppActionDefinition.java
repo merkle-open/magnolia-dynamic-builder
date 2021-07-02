@@ -3,7 +3,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.generated.action.OpenEditDialogActionBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +40,9 @@ public class EditAppActionDefinition implements AppActionDefinition {
 				.name(name)
 				.label(label)
 				.icon(icon)
-				.dialogName(dialogName);
+				.dialogName(dialogName)
+				.availability(new AvailabilityBuilder()
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+				);
 	}
 }

@@ -5,9 +5,7 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
 import com.namics.oss.magnolia.appbuilder.builder.generated.actionbar.ActionbarSectionBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,8 +28,7 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 						new AvailabilityBuilder()
 								.root(false)
 								.nodes(true)
-								.nodeTypes(nodeType)
-								.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class)),
+								.nodeTypes(nodeType),
 				actionGroups
 		);
 		this.nodeType = nodeType;

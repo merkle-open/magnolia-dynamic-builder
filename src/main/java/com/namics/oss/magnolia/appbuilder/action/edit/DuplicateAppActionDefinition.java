@@ -3,7 +3,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.generated.action.deprecated.DuplicateNodeActionBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 
 public class DuplicateAppActionDefinition implements AppActionDefinition {
 	private final String icon;
@@ -23,6 +26,9 @@ public class DuplicateAppActionDefinition implements AppActionDefinition {
 		return new DuplicateNodeActionBuilder()
 				.name("duplicate")
 				.label(label)
-				.icon(icon);
+				.icon(icon)
+				.availability(new AvailabilityBuilder()
+						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+				);
 	}
 }

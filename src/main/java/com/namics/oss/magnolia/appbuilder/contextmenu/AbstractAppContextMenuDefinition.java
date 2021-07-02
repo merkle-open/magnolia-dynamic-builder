@@ -62,20 +62,17 @@ public abstract class AbstractAppContextMenuDefinition implements AppContextMenu
 		final ConfiguredActionDefinition action = browserAction.action();
 		if (!browserAction.isCallback()) {
 			action.setName(getUniqueName(action));
-			action.setAvailability(merge(action.getAvailability(), browserAction.multiple()));
+			action.setAvailability(merge(action.getAvailability(), browserAction));
 		}
 		return action;
 	}
 
-	private AvailabilityDefinition merge(final AvailabilityDefinition availability, final boolean isMultiple) {
+	private AvailabilityDefinition merge(final AvailabilityDefinition availability, final AppActionDefinition browserAction) {
 		return availabilityBuilderProvider.get()
 				.access(availability.getAccess())
-				.multiple(isMultiple)
+				.multiple(browserAction.multiple())
 				.writePermissionRequired(availability.isWritePermissionRequired())
-				.rules(Stream.concat(
-						availability.getRules().stream(),
-						availabilityBuilderProvider.get().getRules().stream()
-				).collect(Collectors.toList()));
+				.rules(availability.getRules());
 	}
 
 	protected String getUniqueName(final ActionDefinition action) {
