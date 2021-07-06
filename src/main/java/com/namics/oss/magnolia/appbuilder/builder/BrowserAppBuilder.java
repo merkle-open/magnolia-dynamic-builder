@@ -175,10 +175,14 @@ public class BrowserAppBuilder {
 				.dropConstraintClass(dropConstraint)
 				.editable(true)
 				.contentViews(
-						new TreePresenterBuilder().sortable(true).columns(columnDefinitions),
+						new TreePresenterBuilder().sortable(isAnySortable(columnDefinitions)).columns(columnDefinitions),
 						new ListPresenterBuilder().columns(columnDefinitions),
 						new SearchPresenterBuilder().columns(columnDefinitions)
 				);
+	}
+
+	private boolean isAnySortable(final ColumnDefinition[] columnDefinitions) {
+		return Arrays.stream(columnDefinitions).anyMatch(ColumnDefinition::isSortable);
 	}
 
 	private JcrContentConnectorBuilder getJcrContentConnector(
