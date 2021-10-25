@@ -38,13 +38,13 @@ public class AppActionDefinitions {
 			new RestorePreviousVersionAppActionDefinition()
 	);
 
-	private static final List<AppActionDefinition> EDIT_ACTIONS = List.of(
+	public static final List<AppActionDefinition> EDIT_ACTIONS = List.of(
 			new MoveAppActionDefinition(),
 			new ConfirmDeleteAppActionDefinition(),
 			new DeleteAppActionDefinition()
 	);
 
-	private static final List<AppActionDefinition> EDIT_ACTIONS_MARK_AS_DELETE = List.of(
+	public static final List<AppActionDefinition> EDIT_ACTIONS_MARK_AS_DELETE = List.of(
 			new MoveAppActionDefinition(),
 			new ConfirmDeleteAppActionDefinition(),
 			new MarkAsDeletedAppActionDefinition()
