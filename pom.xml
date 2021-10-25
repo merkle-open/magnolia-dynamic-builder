@@ -31,6 +31,7 @@
 	<properties>
 		<magnolia.version>6.2.12</magnolia.version>
 		<magnolia.blossom.version>3.4.6</magnolia.blossom.version>
+		<magnolia.workflow.version>6.0.4</magnolia.workflow.version>
 		<namics.powernode.version>1.0.1</namics.powernode.version>
 		<java.poet.version>1.12.1</java.poet.version>
 		<!--Test dependency versions-->
@@ -97,6 +98,12 @@
 		<dependency>
 			<groupId>info.magnolia.ui</groupId>
 			<artifactId>magnolia-ui-contentapp</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>info.magnolia.workflow</groupId>
+			<artifactId>magnolia-workflow-compatibility</artifactId>
+			<version>${magnolia.workflow.version}</version>
 			<scope>compile</scope>
 		</dependency>
 

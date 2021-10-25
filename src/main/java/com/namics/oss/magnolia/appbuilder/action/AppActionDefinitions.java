@@ -4,6 +4,10 @@ import com.namics.oss.magnolia.appbuilder.action.activation.ActivateAppActionDef
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateDeletionAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateRecursiveAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.DeactivateAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateDeletionAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateRecursiveAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowDeactivateAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.edit.*;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ExportAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ImportAppActionDefinition;
@@ -19,6 +23,19 @@ public class AppActionDefinitions {
 	public static final List<AppActionDefinition> IMPORT_EXPORT = List.of(
 			new ImportAppActionDefinition(),
 			new ExportAppActionDefinition()
+	);
+
+	public static final List<AppActionDefinition> WORKFLOW_ACTIVATION = List.of(
+			new WorkflowActivateAppActionDefinition(),
+			new WorkflowActivateRecursiveAppActionDefinition(),
+			new WorkflowActivateDeletionAppActionDefinition(),
+			new WorkflowDeactivateAppActionDefinition()
+	);
+
+	public static final List<AppActionDefinition> WORKFLOW_ACTIVATION_NON_RECURSIVE = List.of(
+			new WorkflowActivateAppActionDefinition(),
+			new WorkflowActivateDeletionAppActionDefinition(),
+			new WorkflowDeactivateAppActionDefinition()
 	);
 
 	public static final List<AppActionDefinition> ACTIVATION = List.of(
