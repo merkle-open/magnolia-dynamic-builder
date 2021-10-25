@@ -29,9 +29,9 @@
 	</developers>
 
 	<properties>
-		<magnolia.version>6.2.8</magnolia.version>
-		<magnolia.blossom.version>3.4.1</magnolia.blossom.version>
-		<namics.powernode.version>1.0.0</namics.powernode.version>
+		<magnolia.version>6.2.12</magnolia.version>
+		<magnolia.blossom.version>3.4.6</magnolia.blossom.version>
+		<namics.powernode.version>1.0.1</namics.powernode.version>
 		<java.poet.version>1.12.1</java.poet.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
