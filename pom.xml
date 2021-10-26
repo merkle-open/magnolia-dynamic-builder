@@ -196,6 +196,13 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>magnolia.enterprise.group</id>
+			<url>https://nexus.magnolia-cms.com/content/groups/enterprise</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 
 		<!-- Vaadin -->
 		<repository>
