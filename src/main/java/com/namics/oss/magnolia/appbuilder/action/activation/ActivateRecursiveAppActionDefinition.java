@@ -5,8 +5,10 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.generated.action.ActivationActionBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
 import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
+import com.namics.oss.magnolia.appbuilder.builder.generated.permission.AccessBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.framework.availability.IsPublishableRule;
 
 public class ActivateRecursiveAppActionDefinition implements AppActionDefinition {
 
@@ -20,8 +22,12 @@ public class ActivateRecursiveAppActionDefinition implements AppActionDefinition
 				.recursive(true)
 				.asynchronous(true)
 				.availability(new AvailabilityBuilder()
+						.access(new AccessBuilder().roles("editor", "publisher"))
 						.writePermissionRequired(true)
-						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
+						.rules(
+								new AvailabilityRuleBuilder().implementationClass(IsPublishableRule.class),
+								new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class)
+						)
 				);
 	}
 

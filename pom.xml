@@ -29,9 +29,10 @@
 	</developers>
 
 	<properties>
-		<magnolia.version>6.2.8</magnolia.version>
-		<magnolia.blossom.version>3.4.1</magnolia.blossom.version>
-		<namics.powernode.version>1.0.0</namics.powernode.version>
+		<magnolia.version>6.2.12</magnolia.version>
+		<magnolia.blossom.version>3.4.6</magnolia.blossom.version>
+		<magnolia.workflow.version>6.0.4</magnolia.workflow.version>
+		<namics.powernode.version>1.0.1</namics.powernode.version>
 		<java.poet.version>1.12.1</java.poet.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
@@ -97,6 +98,12 @@
 		<dependency>
 			<groupId>info.magnolia.ui</groupId>
 			<artifactId>magnolia-ui-contentapp</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>info.magnolia.workflow</groupId>
+			<artifactId>magnolia-workflow-compatibility</artifactId>
+			<version>${magnolia.workflow.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -194,6 +201,13 @@
 			<url>https://nexus.magnolia-cms.com/content/groups/public</url>
 			<snapshots>
 				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>magnolia.enterprise.group</id>
+			<url>https://nexus.magnolia-cms.com/content/groups/enterprise</url>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 
