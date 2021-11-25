@@ -86,21 +86,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-form</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-dialog</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-contentapp</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>info.magnolia.workflow</groupId>
 			<artifactId>magnolia-workflow-compatibility</artifactId>
 			<version>${magnolia.workflow.version}</version>
