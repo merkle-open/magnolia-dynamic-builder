@@ -27,17 +27,20 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 import info.magnolia.ui.workbench.tree.drop.JcrDropConstraint;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,6 +48,7 @@ public class BrowserAppBuilder {
 	private final List<ContentAppContextMenuDefinition> contentContextMenuDefinitions = new ArrayList<>();
 	private List<AppActionGroupDefinition> rootActions = Collections.emptyList();
 	private String icon = MgnlIcon.PACKAGER_APP;
+	private boolean dragAndDrop = true;
 	private Class<? extends DropConstraint> dropConstraint = JcrDropConstraint.class;
 	private ColumnDefinition[] columnDefinitions = new ColumnDefinition[]{
 			new PropertyColumnBuilder()
@@ -66,6 +70,22 @@ public class BrowserAppBuilder {
 					.sortable(true)
 					.width(160)
 	};
+	private Function<ColumnDefinition[], ContentPresenterDefinition[]> contentViewFactory = columnDefinitions ->
+			new ContentPresenterDefinition[]{
+					new TreePresenterBuilder().sortable(isAnySortable(columnDefinitions)).columns(columnDefinitions),
+					new ListPresenterBuilder().columns(columnDefinitions),
+					new SearchPresenterBuilder().columns(columnDefinitions)
+			};
+
+	public BrowserAppBuilder contentViews(Function<ColumnDefinition[], ContentPresenterDefinition[]> contentViewFactory) {
+		this.contentViewFactory = contentViewFactory;
+		return this;
+	}
+
+	public BrowserAppBuilder dragAndDrop(boolean dragAndDrop) {
+		this.dragAndDrop = dragAndDrop;
+		return this;
+	}
 
 	public BrowserAppBuilder icon(final String icon) {
 		this.icon = icon;
@@ -119,19 +139,23 @@ public class BrowserAppBuilder {
 	}
 
 	public BrowserSubAppDescriptor build(final String workspace, final NodeTypeDefinition... nodeTypeDefinitions) {
+		final JcrContentConnectorBuilder connector = getJcrContentConnector(workspace, nodeTypeDefinitions);
+		return build(connector);
+	}
+
+	public BrowserSubAppDescriptor build(final ContentConnectorDefinition connector) {
 		final List<AppContextMenuDefinition> contextMenuDefinitions = Stream.concat(
 				Stream.of(new RootAppContextMenuDefinition(rootActions)),
 				contentContextMenuDefinitions.stream()
 		).collect(Collectors.toList());
 
-		final JcrContentConnectorBuilder connector = getJcrContentConnector(workspace, nodeTypeDefinitions);
 		return new BrowserSubAppBuilder()
 				.subAppClass(BrowserSubApp.class)
 				.name("browser")
 				.icon(icon)
 				.actions(actions(contextMenuDefinitions))
 				.actionbar(actionbar(contextMenuDefinitions))
-				.workbench(workbench(columnDefinitions, dropConstraint))
+				.workbench(workbench(columnDefinitions, dragAndDrop, dropConstraint))
 				.contentConnector(connector);
 	}
 
@@ -170,15 +194,13 @@ public class BrowserAppBuilder {
 
 	private WorkbenchDefinition workbench(
 			final ColumnDefinition[] columnDefinitions,
+			final boolean dragAndDrop,
 			final Class<? extends DropConstraint> dropConstraint) {
 		return new WorkbenchBuilder()
+				.dragAndDrop(dragAndDrop)
 				.dropConstraintClass(dropConstraint)
 				.editable(true)
-				.contentViews(
-						new TreePresenterBuilder().sortable(isAnySortable(columnDefinitions)).columns(columnDefinitions),
-						new ListPresenterBuilder().columns(columnDefinitions),
-						new SearchPresenterBuilder().columns(columnDefinitions)
-				);
+				.contentViews(contentViewFactory.apply(columnDefinitions));
 	}
 
 	private boolean isAnySortable(final ColumnDefinition[] columnDefinitions) {
