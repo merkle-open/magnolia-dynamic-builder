@@ -58,7 +58,9 @@ public class AppActionDefinitions {
 	public static final List<AppActionDefinition> EDIT_ACTIONS = List.of(
 			new MoveAppActionDefinition(),
 			new ConfirmDeleteAppActionDefinition(),
-			new DeleteAppActionDefinition()
+			new DeleteAppActionDefinition(),
+			new CopyAppActionDefinition(),
+			new PasteAppActionDefinition()
 	);
 
 	public static final List<AppActionDefinition> EDIT_ACTIONS_MARK_AS_DELETE = List.of(
