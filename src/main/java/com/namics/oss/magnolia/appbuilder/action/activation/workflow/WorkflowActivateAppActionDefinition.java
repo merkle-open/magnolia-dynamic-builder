@@ -10,7 +10,18 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.framework.availability.IsNotDeletedRule;
 import info.magnolia.ui.framework.availability.IsPublishableRule;
 
+import java.util.Map;
+
 public class WorkflowActivateAppActionDefinition implements AppActionDefinition {
+    private final Map<String, Class<?>> formTypes;
+
+    public WorkflowActivateAppActionDefinition() {
+        this(FormTypeProvider.DEFAULT_FORM_TYPES);
+    }
+
+    public WorkflowActivateAppActionDefinition(final Map<String, Class<?>> formTypes) {
+        this.formTypes = formTypes;
+    }
 
     @Override
     public ConfiguredActionDefinition action() {
@@ -21,6 +32,7 @@ public class WorkflowActivateAppActionDefinition implements AppActionDefinition 
         action.setLabel("actions.activate");
         action.setDialogName("workflow:publish");
         action.setIcon(MgnlIcon.PUBLISH);
+        action.setFormTypes(FormTypeProvider.getFormTypes(formTypes));
         action.setAvailability(new AvailabilityBuilder()
                 .access(new AccessBuilder().roles("editor", "publisher"))
                 .writePermissionRequired(true)

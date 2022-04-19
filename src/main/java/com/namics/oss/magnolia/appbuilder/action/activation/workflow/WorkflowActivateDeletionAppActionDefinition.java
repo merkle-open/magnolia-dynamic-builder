@@ -9,7 +9,18 @@ import info.magnolia.module.workflow.action.OpenPublicationDialogActionDefinitio
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.framework.availability.IsDeletedRule;
 
+import java.util.Map;
+
 public class WorkflowActivateDeletionAppActionDefinition implements AppActionDefinition {
+    private final Map<String, Class<?>> formTypes;
+
+    public WorkflowActivateDeletionAppActionDefinition() {
+        this(FormTypeProvider.DEFAULT_FORM_TYPES);
+    }
+
+    public WorkflowActivateDeletionAppActionDefinition(final Map<String, Class<?>> formTypes) {
+        this.formTypes = formTypes;
+    }
 
     @Override
     public ConfiguredActionDefinition action() {
@@ -20,6 +31,7 @@ public class WorkflowActivateDeletionAppActionDefinition implements AppActionDef
         action.setLabel("actions.activateDeleted");
         action.setDialogName("workflow:publishDeletion");
         action.setIcon(MgnlIcon.PUBLISH);
+        action.setFormTypes(FormTypeProvider.getFormTypes(formTypes));
         action.setAvailability(new AvailabilityBuilder()
                 .access(new AccessBuilder().roles("editor", "publisher"))
                 .writePermissionRequired(true)
