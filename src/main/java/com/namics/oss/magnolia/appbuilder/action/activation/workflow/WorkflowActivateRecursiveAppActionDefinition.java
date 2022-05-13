@@ -31,6 +31,7 @@ public class WorkflowActivateRecursiveAppActionDefinition implements AppActionDe
         action.setName("activateRecursive");
         action.setLabel("actions.activateRecursive");
         action.setDialogName("workflow:publishRecursive");
+        action.setRecursive(true);
         action.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
         action.setFormTypes(FormTypeProvider.getFormTypes(formTypes));
         action.setAvailability(new AvailabilityBuilder()
