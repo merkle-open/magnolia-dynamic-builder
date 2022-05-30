@@ -46,6 +46,8 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 		configuredContentAppDescriptor.setTheme(appFactoryDescription.getFactoryMetaData().getTheme());
 		configuredContentAppDescriptor.setLabel(appFactoryDescription.getFactoryMetaData().getLabel());
 		configuredContentAppDescriptor.setI18nBasename(appFactoryDescription.getFactoryMetaData().getI18nBasename());
+		configuredContentAppDescriptor.setChooseDialog(appFactoryDescription.getChooseDialog());
+		configuredContentAppDescriptor.setPermissions(appFactoryDescription.getPermissions());
 		return configuredContentAppDescriptor;
 	}
 
