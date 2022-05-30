@@ -23,7 +23,7 @@ jobs:
           java-version: 11
       # Install xmllint
       - name: Install dependencies
-        run: sudo apt-get install libxml2-utils
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
       # Set git user name and email
       - name: Set up Git
         run: |
