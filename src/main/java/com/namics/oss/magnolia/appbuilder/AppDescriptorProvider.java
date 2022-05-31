@@ -9,9 +9,11 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
+import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
 
@@ -46,7 +48,7 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 		configuredContentAppDescriptor.setTheme(appFactoryDescription.getFactoryMetaData().getTheme());
 		configuredContentAppDescriptor.setLabel(appFactoryDescription.getFactoryMetaData().getLabel());
 		configuredContentAppDescriptor.setI18nBasename(appFactoryDescription.getFactoryMetaData().getI18nBasename());
-		configuredContentAppDescriptor.setChooseDialog(appFactoryDescription.getChooseDialog());
+		configuredContentAppDescriptor.setChooseDialog(Optional.ofNullable(appFactoryDescription.getChooseDialog()).orElseGet(ConfiguredChooseDialogDefinition::new));
 		configuredContentAppDescriptor.setPermissions(appFactoryDescription.getPermissions());
 		return configuredContentAppDescriptor;
 	}
