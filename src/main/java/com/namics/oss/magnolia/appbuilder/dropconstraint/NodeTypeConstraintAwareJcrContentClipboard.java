@@ -1,13 +1,14 @@
 package com.namics.oss.magnolia.appbuilder.dropconstraint;
 
+import info.magnolia.jcr.util.NodeNameHelper;
 import info.magnolia.ui.api.ioc.SubAppScoped;
-import info.magnolia.ui.contentapp.browser.JcrContentClipboard;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.contentapp.action.clipboard.JcrClipboard;
+import info.magnolia.ui.contentapp.browser.ItemInteractionAvailability;
+import info.magnolia.ui.datasource.jcr.JcrDatasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -18,24 +19,34 @@ import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 
 @SubAppScoped
-public class NodeTypeConstraintAwareJcrContentClipboard extends JcrContentClipboard {
+public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+	@Inject
+	public NodeTypeConstraintAwareJcrContentClipboard(
+			final ItemInteractionAvailability<Item> itemInteractionAvailability,
+			final NodeNameHelper nodeNameHelper,
+			final JcrDatasource jcrDatasource) {
+		super(itemInteractionAvailability, nodeNameHelper, jcrDatasource);
+	}
+
 	@Override
-	protected boolean canPasteInto(final JcrItemId source, final JcrItemId destination) {
+	protected boolean canPasteInto(final Item source, final Item destination) {
 		try {
-			@Nullable final Item src = JcrItemUtil.getJcrItem(source);
-			@Nullable final Item dst = JcrItemUtil.getJcrItem(destination);
-			if (src != null && dst != null && dst.isNode() && Objects.equals(source.getWorkspace(), destination.getWorkspace())) {
-				if (src.isNode()) {
-					return canPasteInto((Node) src, (Node) dst);
+			if (destination.isNode() && Objects.equals(getWorkspacename(source), getWorkspacename(destination))) {
+				if (source.isNode()) {
+					return canPasteInto((Node) source, (Node) destination);
 				}
-				return canPasteInto((Property) src, (Node) dst);
+				return canPasteInto((Property) source, (Node) destination);
 			}
 		} catch (RepositoryException e) {
-			LOG.error("Failed to check whether the item with UUID [{}] from workspace [{}] can be copied into the item with UUID [{}] from workspace [{}] due to: {}", source.getUuid(), source.getWorkspace(), destination.getUuid(), destination.getWorkspace(), e.getMessage(), e);
+			LOG.error("Failed to check whether the item [" + source + "] can be copied into item [" + destination + "]", e);
 		}
 		return false;
+	}
+
+	private String getWorkspacename(Item source) throws RepositoryException {
+		return source.getSession().getWorkspace().getName();
 	}
 
 	private boolean canPasteInto(final Property source, final Node destination) throws RepositoryException {

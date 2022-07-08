@@ -2,33 +2,28 @@ package com.namics.oss.magnolia.appbuilder.action.activation;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.action.ActivationActionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.permission.AccessBuilder;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
-import info.magnolia.ui.framework.availability.IsPublishableRule;
+import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
+import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 
 public class ActivateRecursiveAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		return new ActivationActionBuilder()
-				.name("activateRecursive")
-				.label("actions.activateRecursive")
-				.icon(MgnlIcon.PUBLISH_INCL_SUB)
-				.command("activate")
-				.recursive(true)
-				.asynchronous(true)
-				.availability(new AvailabilityBuilder()
-						.access(new AccessBuilder().roles("editor", "publisher"))
-						.writePermissionRequired(true)
-						.rules(
-								new AvailabilityRuleBuilder().implementationClass(IsPublishableRule.class),
-								new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class)
-						)
-				);
+		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
+		definition.setName("activateRecursive");
+		definition.setLabel("actions.activateRecursive");
+		definition.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
+		definition.setCommand("activateRecursive");
+		definition.setAsynchronous(true);
+		definition.setAvailability(new AvailabilityDefinitionBuilder()
+				.access("editor", "publisher")
+				.rule(new JcrIsNotDeletedRuleDefinition())
+				.rule(new JcrPublishableRuleDefinition())
+				.build());
+		return definition;
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 package com.namics.oss.magnolia.appbuilder.contextmenu;
 
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.actionbar.ActionbarSectionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,20 +14,22 @@ public class RootAppContextMenuDefinition extends AbstractAppContextMenuDefiniti
 	public RootAppContextMenuDefinition(final List<AppActionGroupDefinition> actionGroups) {
 		super(
 				() -> "root",
-				() -> new AvailabilityBuilder()
-						.root(true)
-						.nodes(false),
+				() -> {
+					final ConfiguredAvailabilityDefinition definition = new ConfiguredAvailabilityDefinition();
+					definition.setRoot(true);
+					definition.setNodes(false);
+					return definition;
+				},
 				actionGroups
 		);
 	}
 
 	@Override
 	public Stream<ActionbarSectionDefinition> sections() {
-		return Stream.of(
-				new ActionbarSectionBuilder()
-						.name(uniqueNameProvider.get())
-						.groups(actionbarGroupDefinitions(false).collect(Collectors.toList()))
-						.availability(availabilityBuilderProvider.get())
-		);
+		final ConfiguredActionbarSectionDefinition sectionDefinition = new ConfiguredActionbarSectionDefinition();
+		sectionDefinition.setName(uniqueNameProvider.get());
+		sectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		sectionDefinition.setAvailability(availabilityDefinitionProvider.get());
+		return Stream.of(sectionDefinition);
 	}
 }

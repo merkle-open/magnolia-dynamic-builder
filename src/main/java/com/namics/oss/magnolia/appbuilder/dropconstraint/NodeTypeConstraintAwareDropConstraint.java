@@ -1,8 +1,8 @@
 package com.namics.oss.magnolia.appbuilder.dropconstraint;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+import com.vaadin.shared.ui.grid.DropLocation;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraint;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +15,22 @@ import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.Optional;
 
-public class NodeTypeConstraintAwareDropConstraint extends AlwaysTrueDropConstraint implements DropConstraint {
+public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Item> {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	@Override
-	public boolean allowedAsChild(final com.vaadin.v7.data.Item sourceItem, final com.vaadin.v7.data.Item targetItem) {
+	public boolean isAllowedAt(final Item source, final Item target, final DropLocation location) {
+		switch (location) {
+			case ON_TOP:
+				return allowedAsChild(source, target);
+			case BELOW:
+			case ABOVE:
+				return allowedAsSibling(source, target);
+		}
+		return false;
+	}
+
+	private boolean allowedAsChild(final Item sourceItem, final Item targetItem) {
 		return convert(sourceItem).filter(Item::isNode).flatMap(src ->
 				convert(targetItem).filter(Item::isNode).map(dst ->
 						allowedAsChild(src, dst)
@@ -27,23 +38,12 @@ public class NodeTypeConstraintAwareDropConstraint extends AlwaysTrueDropConstra
 		).orElse(false);
 	}
 
-	@Override
-	public boolean allowedBefore(final com.vaadin.v7.data.Item sourceItem, final com.vaadin.v7.data.Item targetItem) {
+	private boolean allowedAsSibling(final Item sourceItem, final Item targetItem) {
 		return convert(sourceItem).filter(Item::isNode).flatMap(src ->
 				convert(targetItem).flatMap(this::getParent).filter(Item::isNode).map(dst ->
 						allowedAsChild(src, dst)
 				)
 		).orElse(false);
-	}
-
-	@Override
-	public boolean allowedAfter(final com.vaadin.v7.data.Item sourceItem, final com.vaadin.v7.data.Item targetItem) {
-		return allowedBefore(sourceItem, targetItem);
-	}
-
-	@Override
-	public boolean allowedToMove(final com.vaadin.v7.data.Item sourceItem) {
-		return true;
 	}
 
 	private boolean allowedAsChild(final Node src, final Node dst) {
@@ -71,10 +71,17 @@ public class NodeTypeConstraintAwareDropConstraint extends AlwaysTrueDropConstra
 		}
 	}
 
-	private Optional<Node> convert(com.vaadin.v7.data.Item item) {
-		if (item instanceof JcrItemAdapter && ((JcrItemAdapter) item).isNode()) {
-			return Optional.ofNullable((Node) ((JcrItemAdapter) item).getJcrItem());
+	private Optional<Node> convert(final Item item) {
+		if (item.isNode()) {
+			return Optional.ofNullable((Node) item);
 		}
 		return Optional.empty();
 	}
+
+	public static class Definition extends DropConstraintDefinition {
+		public Definition() {
+			setImplementationClass(NodeTypeConstraintAwareDropConstraint.class);
+		}
+	}
 }
+

@@ -2,11 +2,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.action.CopyContentActionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.contentapp.action.clipboard.CopyContentActionDefinition;
 
 public class CopyAppActionDefinition implements AppActionDefinition {
 	private final String icon;
@@ -23,12 +22,11 @@ public class CopyAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		return new CopyContentActionBuilder()
-				.name("copy")
-				.label(label)
-				.icon(icon)
-				.availability(new AvailabilityBuilder()
-						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
-				);
+		final CopyContentActionDefinition definition = new CopyContentActionDefinition();
+		definition.setName("copy");
+		definition.setLabel(label);
+		definition.setIcon(icon);
+		definition.setAvailability(new AvailabilityDefinitionBuilder().rule(new JcrIsNotDeletedRuleDefinition()).build());
+		return definition;
 	}
 }

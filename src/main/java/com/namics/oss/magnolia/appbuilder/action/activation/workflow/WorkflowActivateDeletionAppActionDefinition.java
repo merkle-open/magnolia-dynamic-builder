@@ -2,44 +2,28 @@ package com.namics.oss.magnolia.appbuilder.action.activation.workflow;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.permission.AccessBuilder;
-import info.magnolia.module.workflow.action.OpenPublicationDialogActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsDeletedRule;
-
-import java.util.Map;
+import info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition;
+import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
+import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
 public class WorkflowActivateDeletionAppActionDefinition implements AppActionDefinition {
-    private final Map<String, Class<?>> formTypes;
-
-    public WorkflowActivateDeletionAppActionDefinition() {
-        this(FormTypeProvider.DEFAULT_FORM_TYPES);
-    }
-
-    public WorkflowActivateDeletionAppActionDefinition(final Map<String, Class<?>> formTypes) {
-        this.formTypes = formTypes;
-    }
 
     @Override
     public ConfiguredActionDefinition action() {
-        final OpenPublicationDialogActionDefinition action = new OpenPublicationDialogActionDefinition();
-        action.setCommand("activate");
-        action.setCatalog("workflow");
-        action.setName("activateDeletion");
-        action.setLabel("actions.activateDeleted");
-        action.setDialogName("workflow:publishDeletion");
-        action.setIcon(MgnlIcon.PUBLISH);
-        action.setFormTypes(FormTypeProvider.getFormTypes(formTypes));
-        action.setAvailability(new AvailabilityBuilder()
-                .access(new AccessBuilder().roles("editor", "publisher"))
+        final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
+        definition.setName("activate");
+        definition.setDialogId("workflow-pages:publishDeletion");
+        definition.setIcon(MgnlIcon.PUBLISH);
+        definition.setLabel("actions.activateDeleted");
+        definition.setAvailability(new AvailabilityDefinitionBuilder()
+                .access("editor", "publisher")
                 .writePermissionRequired(true)
-                .rules(
-                        new AvailabilityRuleBuilder().implementationClass(IsDeletedRule.class)
-                )
-        );
-        return action;
+                .rule(new JcrIsDeletedRuleDefinition())
+                .rule(new JcrPublishableRuleDefinition())
+                .build());
+        return definition;
     }
 
     @Override

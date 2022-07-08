@@ -3,9 +3,9 @@ package com.namics.oss.magnolia.appbuilder.contextmenu;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
-import com.namics.oss.magnolia.appbuilder.builder.generated.actionbar.ActionbarSectionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,11 +24,13 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 			final List<AppActionGroupDefinition> actionGroups) {
 		super(
 				() -> nodeType.replaceFirst("mgnl:", ""),
-				() ->
-						new AvailabilityBuilder()
-								.root(false)
-								.nodes(true)
-								.nodeTypes(nodeType),
+				() -> {
+					final ConfiguredAvailabilityDefinition definition = new ConfiguredAvailabilityDefinition();
+					definition.setRoot(false);
+					definition.setNodes(true);
+					definition.addNodeType(nodeType);
+					return definition;
+				},
 				actionGroups
 		);
 		this.nodeType = nodeType;
@@ -37,16 +39,17 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 
 	@Override
 	public Stream<ActionbarSectionDefinition> sections() {
-		return Stream.of(
-				new ActionbarSectionBuilder()
-						.name(uniqueNameProvider.get())
-						.groups(actionbarGroupDefinitions(false).collect(Collectors.toList()))
-						.availability(availabilityBuilderProvider.get()),
-				new ActionbarSectionBuilder()
-						.name(uniqueNameProvider.get() + "Multiple")
-						.groups(actionbarGroupDefinitions(true).collect(Collectors.toList()))
-						.availability(availabilityBuilderProvider.get().multiple(true))
-		);
+		final ConfiguredActionbarSectionDefinition singleSectionDefinition = new ConfiguredActionbarSectionDefinition();
+		singleSectionDefinition.setName(uniqueNameProvider.get());
+		singleSectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		singleSectionDefinition.setAvailability(availabilityDefinitionProvider.get());
+
+		final ConfiguredActionbarSectionDefinition multipleSectionDefinition = new ConfiguredActionbarSectionDefinition();
+		multipleSectionDefinition.setName(uniqueNameProvider.get());
+		multipleSectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		multipleSectionDefinition.setAvailability(availabilityDefinitionProvider.get());
+
+		return Stream.of(singleSectionDefinition, multipleSectionDefinition);
 	}
 
 	public Optional<DoubleClickAction> doubleClickAction() {

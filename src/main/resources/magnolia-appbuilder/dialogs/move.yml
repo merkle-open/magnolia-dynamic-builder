@@ -1,0 +1,23 @@
+!inherit:ui-framework-jcr:move
+actions:
+  choose:
+    availability:
+      rules:
+        CanMoveRuleDefinition:
+          dropConstraint:
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+  above:
+    availability:
+      rules:
+        CanMoveRuleDefinition:
+          dropConstraint:
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+          dropLocation: ABOVE
+
+  below:
+    availability:
+      rules:
+        CanMoveRuleDefinition:
+          dropConstraint:
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+          dropLocation: BELOW

@@ -2,11 +2,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.action.OpenEditDialogActionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
 import javax.annotation.Nullable;
 
@@ -18,31 +17,33 @@ public class EditAppActionDefinition implements AppActionDefinition {
 			"actions.editFolder"
 	);
 	private final String name;
-	private final String dialogName;
+	private final String dialogId;
 	private final String icon;
 	@Nullable
 	private final String label;
 
-	public EditAppActionDefinition(final String name, final String dialogName) {
-		this(name, dialogName, MgnlIcon.EDIT, null);
+	public EditAppActionDefinition(final String name, final String dialogId) {
+		this(name, dialogId, MgnlIcon.EDIT, null);
 	}
 
-	public EditAppActionDefinition(final String name, final String dialogName, final String icon, @Nullable final String label) {
+	public EditAppActionDefinition(final String name, final String dialogId, final String icon, @Nullable final String label) {
 		this.name = name;
-		this.dialogName = dialogName;
+		this.dialogId = dialogId;
 		this.icon = icon;
 		this.label = label;
 	}
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		return new OpenEditDialogActionBuilder()
-				.name(name)
-				.label(label)
-				.icon(icon)
-				.dialogName(dialogName)
-				.availability(new AvailabilityBuilder()
-						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
-				);
+		final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
+		definition.setName(name);
+		definition.setDialogId(dialogId);
+		definition.setLabel(label);
+		definition.setIcon(icon);
+		definition.setAvailability(new AvailabilityDefinitionBuilder()
+				.rule(new JcrIsNotDeletedRuleDefinition())
+				.build()
+		);
+		return definition;
 	}
 }

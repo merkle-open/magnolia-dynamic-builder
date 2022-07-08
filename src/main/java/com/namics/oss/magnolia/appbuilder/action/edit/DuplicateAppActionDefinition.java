@@ -2,11 +2,10 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.action.deprecated.DuplicateNodeActionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
+import info.magnolia.ui.contentapp.action.DuplicateNodeActionDefinition;
 
 public class DuplicateAppActionDefinition implements AppActionDefinition {
 	private final String icon;
@@ -23,12 +22,15 @@ public class DuplicateAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		return new DuplicateNodeActionBuilder()
-				.name("duplicate")
-				.label(label)
-				.icon(icon)
-				.availability(new AvailabilityBuilder()
-						.rules(new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class))
-				);
+		final DuplicateNodeActionDefinition definition = new DuplicateNodeActionDefinition();
+		definition.setName("duplicate");
+		definition.setLabel(label);
+		definition.setIcon(icon);
+		definition.setAvailability(new AvailabilityDefinitionBuilder()
+				.writePermissionRequired(true)
+				.rule(new JcrIsNotDeletedRuleDefinition())
+				.build()
+		);
+		return definition;
 	}
 }

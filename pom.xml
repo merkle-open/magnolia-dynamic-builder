@@ -31,9 +31,7 @@
 	<properties>
 		<magnolia.version>6.2.22</magnolia.version>
 		<magnolia.blossom.version>3.4.6</magnolia.blossom.version>
-		<magnolia.workflow.version>6.0.4</magnolia.workflow.version>
-		<namics.powernode.version>1.0.1</namics.powernode.version>
-		<java.poet.version>1.12.1</java.poet.version>
+		<namics.powernode.version>1.0.2</namics.powernode.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
 		<mockito.version>3.7.7</mockito.version>
@@ -85,12 +83,6 @@
 			<artifactId>magnolia-ui-framework-compatibility</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>info.magnolia.workflow</groupId>
-			<artifactId>magnolia-workflow-compatibility</artifactId>
-			<version>${magnolia.workflow.version}</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<!-- Magnolia provided -->
 		<dependency>
@@ -112,13 +104,6 @@
 			<groupId>com.namics.oss.magnolia</groupId>
 			<artifactId>magnolia-powernode</artifactId>
 			<version>${namics.powernode.version}</version>
-		</dependency>
-
-		<!-- Java Poet used to generate extended definitions for the app builder -->
-		<dependency>
-			<groupId>com.squareup</groupId>
-			<artifactId>javapoet</artifactId>
-			<version>${java.poet.version}</version>
 		</dependency>
 
 		<!-- TESTING DEPENDENCIES -->

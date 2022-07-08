@@ -2,31 +2,28 @@ package com.namics.oss.magnolia.appbuilder.action.activation;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.generated.action.ActivationActionBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.availability.AvailabilityRuleBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.generated.permission.AccessBuilder;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.framework.availability.IsNotDeletedRule;
-import info.magnolia.ui.framework.availability.IsPublishableRule;
+import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
+import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 
 public class ActivateAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		return new ActivationActionBuilder()
-				.name("activate")
-				.label("actions.activate")
-				.icon(MgnlIcon.PUBLISH)
-				.command("activate")
-				.availability(new AvailabilityBuilder()
-						.access(new AccessBuilder().roles("editor", "publisher"))
-						.writePermissionRequired(true)
-						.rules(
-								new AvailabilityRuleBuilder().implementationClass(IsNotDeletedRule.class),
-								new AvailabilityRuleBuilder().implementationClass(IsPublishableRule.class)
-						)
-				);
+		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
+		definition.setName("activate");
+		definition.setLabel("actions.activate");
+		definition.setIcon(MgnlIcon.PUBLISH);
+		definition.setCommand("activate");
+		definition.setAvailability(new AvailabilityDefinitionBuilder()
+				.access("editor", "publisher")
+				.writePermissionRequired(true)
+				.rule(new JcrIsNotDeletedRuleDefinition())
+				.rule(new JcrPublishableRuleDefinition())
+				.build());
+		return definition;
 	}
 
 	@Override
