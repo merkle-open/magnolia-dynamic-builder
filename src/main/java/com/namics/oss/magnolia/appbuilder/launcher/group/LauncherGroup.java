@@ -1,14 +1,11 @@
 package com.namics.oss.magnolia.appbuilder.launcher.group;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 
 /**
  * Helper to reference already existing app launcher groups.
  */
 public class LauncherGroup {
-
 	public static final String EDIT = "edit";
 	public static final String TARGET = "target";
 	public static final String SETUP = "manage";
@@ -19,15 +16,15 @@ public class LauncherGroup {
 	private LauncherGroup() {
 	}
 
-	public static Map<String, SimpleGroupDefinition> getAllExistingGroups() {
-		return ImmutableMap.<String, SimpleGroupDefinition>builder()
-				.put(EDIT, new SimpleGroupDefinition("edit"))
-				.put(TARGET, new SimpleGroupDefinition("target"))
-				.put(SETUP, new SimpleGroupDefinition("manage"))
-				.put(TOOLS, new SimpleGroupDefinition("tools"))
-				.put(DEV, new SimpleGroupDefinition("dev"))
-				.put(WEB_DEV, new SimpleGroupDefinition("stk"))
-				.build();
+	public static Map<String, SimpleGroupDefinition> getMagnoliaDefaultGroups() {
+		return Map.of(
+				EDIT, new SimpleGroupDefinition("edit"),
+				TARGET, new SimpleGroupDefinition("target"),
+				SETUP, new SimpleGroupDefinition("manage"),
+				TOOLS, new SimpleGroupDefinition("tools"),
+				DEV, new SimpleGroupDefinition("dev"),
+				WEB_DEV, new SimpleGroupDefinition("stk")
+		);
 	}
 
 }

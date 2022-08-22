@@ -4,14 +4,17 @@ package com.namics.oss.magnolia.appbuilder.launcher;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.namics.oss.magnolia.appbuilder.annotations.AppLauncherGroup;
 import com.namics.oss.magnolia.appbuilder.annotations.GroupDefinition;
-import com.namics.oss.magnolia.appbuilder.exception.AppBuilderException;
 import com.namics.oss.magnolia.appbuilder.launcher.group.LauncherGroup;
 import com.namics.oss.magnolia.appbuilder.launcher.group.SimpleGroupDefinition;
 import info.magnolia.admincentral.AdmincentralModule;
+import info.magnolia.admincentral.layout.DefaultGroupDefinition;
+import info.magnolia.admincentral.layout.DefaultRowDefinition;
+import info.magnolia.config.registry.Registry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntryDefinition;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherGroupDefinition;
 import info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherLayoutDefinition;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.RowDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +25,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class AppLauncherDefinitionHandler {
 	private final ConfiguredAppLauncherLayoutDefinition appLauncherLayoutDefinition;
 	private final AppLauncherLayoutManager appLauncherLayoutManager;
 	private final Map<String, SimpleGroupDefinition> groupDefinitionRegistry;
+	private final AdmincentralModule admincentralModule;
 
 	@Inject
 	public AppLauncherDefinitionHandler(
@@ -44,35 +46,41 @@ public class AppLauncherDefinitionHandler {
 			final AdmincentralModule admincentralModule) {
 		this.appLauncherLayoutManager = appLauncherLayoutManager;
 		this.appLauncherLayoutDefinition = (ConfiguredAppLauncherLayoutDefinition) admincentralModule.getAppLauncherLayout();
-		this.groupDefinitionRegistry = streamGroupDefinitions(applicationContext)
+		this.groupDefinitionRegistry = streamSimpleGroupDefinitions(applicationContext)
 				.collect(Collectors.toMap(SimpleGroupDefinition::getName, Function.identity()));
+		this.admincentralModule = admincentralModule;
 	}
 
-	public void addApp(Object factoryObject, String appName) {
-		final AppFactory annotation = AopUtils.getTargetClass(factoryObject).getAnnotation(AppFactory.class);
+	public void addApp(final Object appFactory) {
+		final AppFactory appFactoryAnnotation = AopUtils.getTargetClass(appFactory).getAnnotation(AppFactory.class);
 
-		// don't add to launcher if no group is specified
-		final String groupName = annotation.launcherGroup();
-		if (StringUtils.isBlank(groupName)) {
-			return;
+		final String groupName = appFactoryAnnotation.launcherGroup();
+		if (!StringUtils.isBlank(groupName)) {
+			final int order = appFactoryAnnotation.order();
+			final OrderableAppLauncherGroupEntryDefinition app = new OrderableAppLauncherGroupEntryDefinition();
+			app.setName(appFactoryAnnotation.name());
+			app.setEnabled(true);
+			app.setOrder(order);
+
+			final ConfiguredAppLauncherGroupDefinition group = getOrCreateGroup(groupName);
+			final List<AppLauncherGroupEntryDefinition> apps = Stream
+					.concat(
+							group.getApps().stream(),
+							Stream.of(app)
+					)
+					.sorted(Comparator.comparing(this::getOrder))
+					.collect(Collectors.toList());
+			group.setApps(apps);
+			admincentralModule.getLayout().getRows().stream()
+					.map(DefaultRowDefinition::getGroups)
+					.flatMap(Collection::stream)
+					.filter(layoutGroup -> Objects.equals(layoutGroup.getName(), group.getName()))
+					.forEach(layoutGroup ->
+						layoutGroup.setApps(apps.stream().map(AppLauncherGroupEntryDefinition::getName).collect(Collectors.toList()))
+					);
+
+			appLauncherLayoutManager.setLayout(appLauncherLayoutDefinition);
 		}
-
-		final int order = annotation.order();
-		final OrderableAppLauncherGroupEntryDefinition app = new OrderableAppLauncherGroupEntryDefinition();
-		app.setName(appName);
-		app.setEnabled(true);
-		app.setOrder(order);
-
-		final ConfiguredAppLauncherGroupDefinition group = getOrCreateGroup(groupName);
-		final List<AppLauncherGroupEntryDefinition> apps = Stream
-				.concat(
-						group.getApps().stream(),
-						Stream.of(app)
-				)
-				.sorted(Comparator.comparing(this::getOrder))
-				.collect(Collectors.toList());
-		group.setApps(apps);
-		appLauncherLayoutManager.setLayout(appLauncherLayoutDefinition);
 	}
 
 	private ConfiguredAppLauncherGroupDefinition getOrCreateGroup(final String groupName) {
@@ -89,10 +97,35 @@ public class AppLauncherDefinitionHandler {
 	}
 
 	private ConfiguredAppLauncherGroupDefinition createGroup(final String groupName) {
-		final SimpleGroupDefinition simpleGroup = groupDefinitionRegistry.getOrDefault(groupName, new SimpleGroupDefinition(groupName));
-		final ConfiguredAppLauncherGroupDefinition group = simpleGroup.getConfiguredDefinition();
+		final SimpleGroupDefinition group = groupDefinitionRegistry.getOrDefault(groupName, new SimpleGroupDefinition(groupName));
 		appLauncherLayoutDefinition.addGroup(group);
+		admincentralModule.getLayout().setRows(Stream.concat(
+				admincentralModule.getLayout().getRows().stream(),
+				Stream.of(getLayoutRow(group))
+		).collect(Collectors.toList()));
+
+		admincentralModule.getCompatibilityLayout().setRows(Stream.concat(
+				admincentralModule.getCompatibilityLayout().getRows().stream(),
+				Stream.of(getCompatibilityLayoutRow(group))
+		).collect(Collectors.toList()));
+
 		return group;
+}
+
+	private DefaultRowDefinition getLayoutRow(final SimpleGroupDefinition group) {
+		final DefaultGroupDefinition groupDefinition = new DefaultGroupDefinition();
+		groupDefinition.setName(group.getName());
+		final DefaultRowDefinition row = new DefaultRowDefinition();
+		row.setGroups(List.of(groupDefinition));
+		row.setCssClass("editor");
+		return row;
+	}
+
+	private RowDefinition getCompatibilityLayoutRow(final SimpleGroupDefinition group) {
+		final RowDefinition row = new RowDefinition();
+		row.setGroups(List.of(group.getName()));
+		row.setCssClass("editor");
+		return row;
 	}
 
 	private int getOrder(final AppLauncherGroupEntryDefinition app) {
@@ -102,47 +135,29 @@ public class AppLauncherDefinitionHandler {
 		return -1;
 	}
 
-	private Stream<SimpleGroupDefinition> streamGroupDefinitions(final ApplicationContext applicationContext) {
+	private Stream<SimpleGroupDefinition> streamSimpleGroupDefinitions(final ApplicationContext applicationContext) {
 		return Stream.concat(
-				LauncherGroup.getAllExistingGroups().values().stream(),
+				LauncherGroup.getMagnoliaDefaultGroups().values().stream(),
 				applicationContext.getBeansWithAnnotation(AppLauncherGroup.class)
 						.values()
 						.stream()
-						.map(this::findSimpleDefinition)
+						.map(this::getSimpleGroupDefinition)
 		);
 	}
 
-	private SimpleGroupDefinition findSimpleDefinition(final Object factoryObject) {
-		final Class<?> factoryClass = AopUtils.getTargetClass(factoryObject);
-		final Class<GroupDefinition> annotationClass = GroupDefinition.class;
-		final AppLauncherGroup annotation = AopUtils.getTargetClass(factoryObject).getAnnotation(AppLauncherGroup.class);
-		final String groupName = annotation.name();
-
-		return Arrays.stream(factoryClass.getDeclaredMethods())
-				.filter(method -> method.isAnnotationPresent(annotationClass))
-				.peek(method -> {
-					if (Modifier.isStatic(method.getModifiers())) {
-						LOG.error("'{}' annotation is not supported on static methods, skipping.", annotationClass.getSimpleName());
-					}
-					if (!SimpleGroupDefinition.class.isAssignableFrom(method.getReturnType())) {
-						LOG.error("{} annotated classes must return a '{}', skipping.", annotationClass.getSimpleName(), SimpleGroupDefinition.class.getName());
+	private SimpleGroupDefinition getSimpleGroupDefinition(final Object appLauncher) {
+		final AppLauncherGroup appLauncherGroupAnnotation = AopUtils.getTargetClass(appLauncher).getAnnotation(AppLauncherGroup.class);
+		return Arrays.stream(AopUtils.getTargetClass(appLauncher).getDeclaredMethods())
+				.filter(method -> method.isAnnotationPresent(GroupDefinition.class))
+				.map(method -> {
+					try {
+						return (SimpleGroupDefinition) method.invoke(appLauncher);
+					} catch (IllegalAccessException | InvocationTargetException e) {
+						LOG.error("Could not build SimpleGroupDefinition, for appLauncher " + appLauncherGroupAnnotation.name(), e);
+						throw new Registry.InvalidDefinitionException(appLauncherGroupAnnotation.name());
 					}
 				})
-				.filter(method -> !Modifier.isStatic(method.getModifiers()))
-				.filter(method -> SimpleGroupDefinition.class.isAssignableFrom(method.getReturnType()))
-				.map(method -> buildSimpleGroupDefinition(factoryObject, method))
 				.findFirst()
-				.orElseGet(() -> new SimpleGroupDefinition(groupName));
+				.orElseGet(() -> new SimpleGroupDefinition(appLauncherGroupAnnotation.name()));
 	}
-
-	private SimpleGroupDefinition buildSimpleGroupDefinition(Object factoryObject, Method method) {
-		try {
-			return (SimpleGroupDefinition) method.invoke(factoryObject);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			LOG.error("Could not build SimpleGroupDefinition, skipping. '{}'", e.getMessage());
-			LOG.debug("Could not build SimpleGroupDefinition, skipping", e);
-			throw AppBuilderException.wrap(e);
-		}
-	}
-
 }

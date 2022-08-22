@@ -3,11 +3,10 @@ package com.namics.oss.magnolia.appbuilder;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.namics.oss.magnolia.appbuilder.launcher.AppLauncherDefinitionHandler;
 import info.magnolia.module.blossom.support.AbstractBeanDetector;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import javax.inject.Inject;
@@ -17,48 +16,36 @@ import java.lang.invoke.MethodHandles;
  * Scans for app classes annotated with {@link AppFactory},
  * builds the app descriptions and registers the app.
  */
-public class AppExporter extends AbstractBeanDetector implements InitializingBean {
-
+@Component
+public class AppExporter extends AbstractBeanDetector {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-	private AppFactoryDescriptionBuilder appFactoryDescriptionBuilder;
+
+	private final AppDescriptorRegistry appDescriptorRegistry;
+	private final AppLauncherDefinitionHandler appLauncherDefinitionHandler;
 
 	@Inject
-	private AppLauncherDefinitionHandler appLauncherDefinitionHandler;
-
-	@Override
-	protected boolean include(Class<?> beanType, String beanName) {
-		beanType = ClassUtils.isCglibProxyClass(beanType) ? beanType.getSuperclass() : beanType;
-		return beanType.isAnnotationPresent(AppFactory.class);
+	public AppExporter(
+			final AppDescriptorRegistry appDescriptorRegistry,
+			final AppLauncherDefinitionHandler appLauncherDefinitionHandler) {
+		this.appDescriptorRegistry = appDescriptorRegistry;
+		this.appLauncherDefinitionHandler = appLauncherDefinitionHandler;
 	}
 
 	@Override
-	protected void onBeanDetection(Object bean, String beanName) {
+	protected boolean include(final Class<?> beanType, final String beanName) {
+		return (ClassUtils.isCglibProxyClass(beanType) ? beanType.getSuperclass() : beanType).isAnnotationPresent(AppFactory.class);
+	}
+
+	@Override
+	protected void onBeanDetection(final Object appFactory, final String beanName) {
 		LOG.info("Detected app bean with name '{}'", beanName);
 		// build app descriptor from detected factory bean
-		AppFactoryDescription appFactoryDescription = appFactoryDescriptionBuilder.buildDescription(bean);
-
+		final AppDescriptorProvider appDescriptorProvider = new AppDescriptorProvider(appFactory);
 		// register app descriptor
-		AppDescriptorRegistry appDescriptorRegistry = Components.getComponent(AppDescriptorRegistry.class);
-		appDescriptorRegistry.register(new AppDescriptorProvider(appFactoryDescription));
+		appDescriptorRegistry.register(appDescriptorProvider);
 
 		// add app to launcher (if accordingly configured)
-		appLauncherDefinitionHandler.addApp(bean, appFactoryDescription.getName());
-		LOG.info("Registered app '{}'", appFactoryDescription.getName());
+		appLauncherDefinitionHandler.addApp(appFactory);
+		LOG.info("Registered app '{}'", appDescriptorProvider.getMetadata().getName());
 	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		if (appFactoryDescriptionBuilder == null) {
-			setAppFactoryDescriptionBuilder(new AppFactoryDescriptionBuilder());
-		}
-	}
-
-	public AppFactoryDescriptionBuilder getAppFactoryDescriptionBuilder() {
-		return appFactoryDescriptionBuilder;
-	}
-
-	public void setAppFactoryDescriptionBuilder(AppFactoryDescriptionBuilder appFactoryDescriptionBuilder) {
-		this.appFactoryDescriptionBuilder = appFactoryDescriptionBuilder;
-	}
-
 }
