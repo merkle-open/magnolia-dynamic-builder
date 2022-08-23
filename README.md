@@ -19,7 +19,7 @@ error prone than using YAML, especially for big apps.
 <dependency>
     <groupId>com.namics.oss.magnolia</groupId>
     <artifactId>magnolia-appbuilder</artifactId>
-    <version>1.0.15</version>
+    <version>1.0.16</version>
 </dependency>
 ```
 
