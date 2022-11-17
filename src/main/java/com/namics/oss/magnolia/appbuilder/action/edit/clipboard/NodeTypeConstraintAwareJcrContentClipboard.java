@@ -1,4 +1,4 @@
-package com.namics.oss.magnolia.appbuilder.dropconstraint;
+package com.namics.oss.magnolia.appbuilder.action.edit.clipboard;
 
 import info.magnolia.jcr.util.NodeNameHelper;
 import info.magnolia.ui.api.ioc.SubAppScoped;
@@ -19,7 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 
 @SubAppScoped
-public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard {
+public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard implements JcrContentClipboard {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	@Inject

@@ -11,8 +11,8 @@
     <components>
         <id>admincentral</id>
         <component>
-            <type>info.magnolia.ui.framework.ContentClipboard</type>
-            <implementation>com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareJcrContentClipboard</implementation>
+            <type>com.namics.oss.magnolia.appbuilder.action.edit.clipboard.JcrContentClipboard</type>
+            <implementation>com.namics.oss.magnolia.appbuilder.action.edit.clipboard.NodeTypeConstraintAwareJcrContentClipboard</implementation>
         </component>
     </components>
 
