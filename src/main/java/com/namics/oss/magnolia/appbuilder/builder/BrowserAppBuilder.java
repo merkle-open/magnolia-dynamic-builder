@@ -6,7 +6,7 @@ import com.namics.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegat
 import com.namics.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
-import com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint;
+import com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
@@ -125,7 +125,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		definition.setWorkbench(workbench(
 				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(dropConstraint),
 				getColumnDefinitions(),
-				dropConstraint != null ? dropConstraint : new NodeTypeConstraintAwareDropConstraint.Definition()
+				dropConstraint != null ? dropConstraint : new NodeTypeConstraintAwareDropConstraintDefinition()
 		));
 		definition.setDatasource(datasourceDefinition);
 		return definition;

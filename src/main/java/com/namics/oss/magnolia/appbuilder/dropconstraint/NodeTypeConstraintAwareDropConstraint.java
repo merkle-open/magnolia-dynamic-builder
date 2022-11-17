@@ -2,7 +2,6 @@ package com.namics.oss.magnolia.appbuilder.dropconstraint;
 
 import com.vaadin.shared.ui.grid.DropLocation;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraint;
-import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,12 +75,6 @@ public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Ite
 			return Optional.ofNullable((Node) item);
 		}
 		return Optional.empty();
-	}
-
-	public static class Definition extends DropConstraintDefinition {
-		public Definition() {
-			setImplementationClass(NodeTypeConstraintAwareDropConstraint.class);
-		}
 	}
 }
 

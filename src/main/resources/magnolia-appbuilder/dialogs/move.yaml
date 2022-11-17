@@ -5,13 +5,13 @@ actions:
       rules:
         CanMoveRuleDefinition:
           dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
   above:
     availability:
       rules:
         CanMoveRuleDefinition:
           dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
           dropLocation: ABOVE
 
   below:
@@ -19,5 +19,5 @@ actions:
       rules:
         CanMoveRuleDefinition:
           dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraint
+            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
           dropLocation: BELOW
