@@ -37,18 +37,20 @@ public class CreateNodeAction extends CommitAction<Node> {
 
 	@Override
 	public void execute() {
-		Exceptions.wrap().run(() -> {
-			final Node parent = getValueContext().getSingle().orElseGet(jcrDatasource::getRoot);
-			final String nodeName = nodeNameHelper.getUniqueName(
-					parent,
-					getForm().getPropertyValue(definition.getNodeNameProperty()).map(String::valueOf).orElseThrow(() ->
-							new ActionExecutionException("Failed to get node name property "+definition.getNodeNameProperty()+"from form")
-					)
-			);
-			final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
-			getValueContext().set(node);
-			super.execute();
-		});
+		if (validateForm()) {
+			Exceptions.wrap().run(() -> {
+				final Node parent = getValueContext().getSingle().orElseGet(jcrDatasource::getRoot);
+				final String nodeName = nodeNameHelper.getUniqueName(
+						parent,
+						getForm().getPropertyValue(definition.getNodeNameProperty()).map(String::valueOf).orElseThrow(() ->
+								new ActionExecutionException("Failed to get node name property " + definition.getNodeNameProperty() + "from form")
+						)
+				);
+				final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
+				getValueContext().set(node);
+				super.execute();
+			});
+		}
 	}
 
 	@Override
