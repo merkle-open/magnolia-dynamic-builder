@@ -13,7 +13,7 @@ public class ImportAppActionDefinition implements AppActionDefinition {
 	public ConfiguredActionDefinition action() {
 		final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
 		definition.setName("import");
-		definition.setDialogId("ui-admincentral:import");
+		definition.setDialogId("ui-framework-jcr:import");
 		definition.setIcon(MgnlIcon.EXPORT);
 		definition.setLabel("actions.import");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
@@ -22,10 +22,5 @@ public class ImportAppActionDefinition implements AppActionDefinition {
 				.build()
 		);
 		return definition;
-	}
-
-	@Override
-	public boolean multiple() {
-		return true;
 	}
 }

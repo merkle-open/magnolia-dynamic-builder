@@ -5,15 +5,14 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
+import info.magnolia.ui.contentapp.action.JcrExportActionDefinition;
 
 public class ExportAppActionDefinition implements AppActionDefinition {
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
+		final JcrExportActionDefinition definition = new JcrExportActionDefinition();
 		definition.setName("export");
-		definition.setDialogId("ui-admincentral:export");
 		definition.setIcon(MgnlIcon.EXPORT);
 		definition.setLabel("actions.export");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
@@ -21,10 +20,5 @@ public class ExportAppActionDefinition implements AppActionDefinition {
 				.build()
 		);
 		return definition;
-	}
-
-	@Override
-	public boolean multiple() {
-		return true;
 	}
 }
