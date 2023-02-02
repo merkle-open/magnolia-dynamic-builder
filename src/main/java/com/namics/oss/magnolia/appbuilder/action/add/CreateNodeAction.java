@@ -49,7 +49,7 @@ public class CreateNodeAction extends CommitAction<Node> {
 								new ActionExecutionException("Failed to get node name property " + definition.getNodeNameProperty() + "from form")
 						)
 				);
-				getNodeNameField().ifPresent(field -> field.setValue(nodeName));
+				getNodeNameField().ifPresent(field -> setNodeNameFieldValue(nodeName, field));
 
 				final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
 				getValueContext().set(node);
@@ -58,13 +58,17 @@ public class CreateNodeAction extends CommitAction<Node> {
 		}
 	}
 
-	private Optional<HasValue<String>> getNodeNameField() {
+	protected void setNodeNameFieldValue(final String nodeName, final HasValue<?> field) {
+		((HasValue<String>)field).setValue(nodeName);
+	}
+
+	private Optional<HasValue<?>> getNodeNameField() {
 		return getForm().validate().stream()
 				.map(BinderValidationStatus::getBinder)
 				.map(binder -> binder.getBinding(definition.getNodeNameProperty()))
 				.flatMap(Optional::stream)
-				.map(binding -> (HasValue<String>) binding.getField())
-				.findFirst();
+				.findFirst()
+				.map(binding -> (HasValue<?>) binding.getField());
 	}
 
 	@Override
