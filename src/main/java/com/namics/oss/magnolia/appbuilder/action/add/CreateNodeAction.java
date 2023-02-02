@@ -24,7 +24,7 @@ public class CreateNodeAction extends CommitAction<Node> {
 	private final NodeNameHelper nodeNameHelper;
 
 	@Inject
-	CreateNodeAction(
+	public CreateNodeAction(
 			final CreateNodeActionDefinition definition,
 			final FormView<Node> form,
 			final ValueContext<Node> valueContext,
