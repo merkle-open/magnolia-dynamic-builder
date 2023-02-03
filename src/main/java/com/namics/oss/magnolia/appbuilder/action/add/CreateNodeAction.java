@@ -1,8 +1,6 @@
 package com.namics.oss.magnolia.appbuilder.action.add;
 
 import com.machinezoo.noexception.Exceptions;
-import com.vaadin.data.BinderValidationStatus;
-import com.vaadin.data.HasValue;
 import info.magnolia.jcr.util.NodeNameHelper;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.CloseHandler;
@@ -16,7 +14,6 @@ import info.magnolia.ui.observation.DatasourceObservation;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
-import java.util.Optional;
 
 public class CreateNodeAction extends CommitAction<Node> {
 	private final CreateNodeActionDefinition definition;
@@ -49,26 +46,12 @@ public class CreateNodeAction extends CommitAction<Node> {
 								new ActionExecutionException("Failed to get node name property " + definition.getNodeNameProperty() + "from form")
 						)
 				);
-				getNodeNameField().ifPresent(field -> setNodeNameFieldValue(nodeName, field));
 
 				final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
 				getValueContext().set(node);
 				super.execute();
 			});
 		}
-	}
-
-	protected void setNodeNameFieldValue(final String nodeName, final HasValue<?> field) {
-		((HasValue<String>)field).setValue(nodeName);
-	}
-
-	private Optional<HasValue<?>> getNodeNameField() {
-		return getForm().validate().stream()
-				.map(BinderValidationStatus::getBinder)
-				.map(binder -> binder.getBinding(definition.getNodeNameProperty()))
-				.flatMap(Optional::stream)
-				.findFirst()
-				.map(binding -> (HasValue<?>) binding.getField());
 	}
 
 	@Override
