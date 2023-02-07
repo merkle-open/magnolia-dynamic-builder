@@ -4,6 +4,7 @@ import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 import javax.annotation.Nullable;
@@ -11,7 +12,8 @@ import javax.annotation.Nullable;
 public class AddAppActionDefinition implements AppActionDefinition {
 	public static final AddAppActionDefinition FOLDER = new AddAppActionDefinition(
 			"addFolder",
-			"ui-framework:folder",
+			NodeTypes.Folder.NAME,
+			"ui-framework-jcr:rename",
 			MgnlIcon.ADD_FOLDER,
 			"actions.addFolder"
 	);

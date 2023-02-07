@@ -10,9 +10,9 @@ import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 import javax.annotation.Nullable;
 
 public class EditAppActionDefinition implements AppActionDefinition {
-	public static EditAppActionDefinition FOLDER = new EditAppActionDefinition(
+	public static final EditAppActionDefinition FOLDER = new EditAppActionDefinition(
 			"editFolder",
-			"ui-framework:folder",
+			"ui-framework-jcr:rename",
 			MgnlIcon.EDIT,
 			"actions.editFolder"
 	);
