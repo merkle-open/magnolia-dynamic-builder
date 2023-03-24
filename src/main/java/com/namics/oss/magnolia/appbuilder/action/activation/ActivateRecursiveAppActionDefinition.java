@@ -8,6 +8,8 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 
+import java.util.Map;
+
 public class ActivateRecursiveAppActionDefinition implements AppActionDefinition {
 
 	@Override
@@ -16,7 +18,8 @@ public class ActivateRecursiveAppActionDefinition implements AppActionDefinition
 		definition.setName("activateRecursive");
 		definition.setLabel("actions.activateRecursive");
 		definition.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
-		definition.setCommand("activateRecursive");
+		definition.setCommand("activate");
+		definition.setParams(Map.of("recursive", true));
 		definition.setAsynchronous(true);
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.access("editor", "publisher")
