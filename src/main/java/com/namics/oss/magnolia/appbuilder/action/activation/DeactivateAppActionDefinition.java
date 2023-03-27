@@ -16,7 +16,7 @@ public class DeactivateAppActionDefinition implements AppActionDefinition {
 		definition.setName("deactivate");
 		definition.setLabel("actions.deactivate");
 		definition.setIcon(MgnlIcon.UNPUBLISH);
-		definition.setCommand("deactivate");
+		definition.setCommand("unpublish");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.access("editor", "publisher")
 				.writePermissionRequired(true)

@@ -16,7 +16,7 @@ public class ActivateAppActionDefinition implements AppActionDefinition {
 		definition.setName("activate");
 		definition.setLabel("actions.activate");
 		definition.setIcon(MgnlIcon.PUBLISH);
-		definition.setCommand("activate");
+		definition.setCommand("publish");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.access("editor", "publisher")
 				.writePermissionRequired(true)

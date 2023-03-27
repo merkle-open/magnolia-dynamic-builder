@@ -18,7 +18,7 @@ public class ActivateRecursiveAppActionDefinition implements AppActionDefinition
 		definition.setName("activateRecursive");
 		definition.setLabel("actions.activateRecursive");
 		definition.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
-		definition.setCommand("activate");
+		definition.setCommand("publish");
 		definition.setParams(Map.of("recursive", true));
 		definition.setAsynchronous(true);
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
