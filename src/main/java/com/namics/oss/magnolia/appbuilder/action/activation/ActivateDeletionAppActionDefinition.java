@@ -16,7 +16,7 @@ public class ActivateDeletionAppActionDefinition implements AppActionDefinition 
 		definition.setName("activateDeletion");
 		definition.setLabel("actions.activateDeleted");
 		definition.setIcon(MgnlIcon.PUBLISH);
-		definition.setCommand("activate");
+		definition.setCommand("publish");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.access("editor", "publisher")
 				.writePermissionRequired(true)
