@@ -13,8 +13,6 @@ import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.ContentBrowserSubApp;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
-import info.magnolia.ui.contentapp.column.jcr.JcrStatusColumnDefinition;
-import info.magnolia.ui.contentapp.column.jcr.JcrTitleColumnDefinition;
 import info.magnolia.ui.contentapp.configuration.BrowserDescriptor;
 import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
 import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
@@ -135,12 +133,10 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		if (columnDefinitions != null) {
 			return columnDefinitions;
 		}
-		final JcrTitleColumnDefinition title = new JcrTitleColumnDefinition();
-		title.setNodeTypeToIcon(nodeTypeIcons != null ? nodeTypeIcons : Collections.emptyMap());
 		return List.of(
-				title,
-				(ColumnDefinition<T>)new JcrStatusColumnDefinition(),
-				(ColumnDefinition<T>)new ModificationDateColumnDefinition()
+				ColumnDefinitionBuilder.title(nodeTypeIcons != null ? nodeTypeIcons : Collections.emptyMap()),
+				ColumnDefinitionBuilder.status(),
+				ColumnDefinitionBuilder.modification()
 		);
 	}
 
