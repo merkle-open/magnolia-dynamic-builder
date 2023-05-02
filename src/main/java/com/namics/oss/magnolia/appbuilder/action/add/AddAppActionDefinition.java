@@ -13,7 +13,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	public static final AddAppActionDefinition FOLDER = new AddAppActionDefinition(
 			"addFolder",
 			NodeTypes.Folder.NAME,
-			"ui-framework-jcr:rename",
+			"magnolia-appbuilder:createFolder",
 			MgnlIcon.ADD_FOLDER,
 			"actions.addFolder"
 	);

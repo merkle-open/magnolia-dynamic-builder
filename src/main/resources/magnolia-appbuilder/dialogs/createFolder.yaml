@@ -1,0 +1,8 @@
+form:
+  properties:
+    jcrName:
+      $type: textField
+      required: true
+      validators:
+        - $type: nodeNameValidator
+          mode: ADD
