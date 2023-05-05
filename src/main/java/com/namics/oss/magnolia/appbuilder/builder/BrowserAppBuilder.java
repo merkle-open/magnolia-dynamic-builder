@@ -120,10 +120,13 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		definition.setIcon(icon);
 		definition.setActions(actions(contextMenuDefinitions));
 		definition.setActionbar(actionbar(contextMenuDefinitions));
+		if (dropConstraint == null) {
+			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
+		}
 		definition.setWorkbench(workbench(
 				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(dropConstraint),
 				getColumnDefinitions(),
-				dropConstraint != null ? dropConstraint : new NodeTypeConstraintAwareDropConstraintDefinition()
+				dropConstraint
 		));
 		definition.setDatasource(datasourceDefinition);
 		return definition;
