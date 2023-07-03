@@ -31,7 +31,6 @@
 	<properties>
 		<magnolia.version>6.2.35</magnolia.version>
 		<magnolia.blossom.version>3.6.2</magnolia.blossom.version>
-		<namics.powernode.version>1.0.8</namics.powernode.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
 		<mockito.version>3.7.7</mockito.version>
@@ -52,6 +51,13 @@
 				<groupId>info.magnolia.bundle</groupId>
 				<artifactId>magnolia-bundle-parent</artifactId>
 				<version>${magnolia.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.magnolia.blossom</groupId>
+				<artifactId>magnolia-module-blossom</artifactId>
+				<version>${magnolia.blossom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -88,8 +94,6 @@
 		<dependency>
 			<groupId>info.magnolia.blossom</groupId>
 			<artifactId>magnolia-module-blossom</artifactId>
-			<version>${magnolia.blossom.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Vaadin Compatibility -->
@@ -99,11 +103,10 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Namics -->
 		<dependency>
-			<groupId>com.namics.oss.magnolia</groupId>
-			<artifactId>magnolia-powernode</artifactId>
-			<version>${namics.powernode.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- TESTING DEPENDENCIES -->

@@ -214,28 +214,29 @@ public class SampleNodeDropConstraint extends AbstractNodeDropConstraint {
 }
 ```
 ColumnFormatter sample:
-```java
-import com.namics.oss.magnolia.appbuilder.formatter.AbstractColumnFormatter;
-import com.namics.oss.magnolia.powernode.PowerNode;
-import com.namics.oss.magnolia.powernode.PowerNodeService;
-import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 
+```java
+import com.namics.oss.magnolia.appbuilder.formatter.AbstractValueProvider;
+import com.namics.oss.magnolia.powernode.PowerNodeService;
+
+import javax.jcr.Node;
 import javax.inject.Inject;
 import java.util.Optional;
 
-public class SampleColumnFormatter extends AbstractColumnFormatter {
+public class SampleColumnFormatter extends AbstractValueProvider {
 
 	@Inject
 	public SampleColumnFormatter(
-			final PowerNodeService powerNodeService,
-			final PropertyColumnDefinition definition) {
+			final PowerNodeService powerNodeService
+    ) {
 		super(powerNodeService, definition);
 	}
 
 	@Override
-	protected Optional<String> format(final PowerNode item, final String columnId) {
-		if (item.isNodeType("<SOME_NODE_TYPE>")) {
-			return item.getPropertyValue("<SOME_FIELD>", String.class);
+	protected Optional<String> getValue(final Node item) {
+		final PowerNode powerNode = powerNodeService.convertToPowerNode(item);
+		if (powerNode.isNodeType("<SOME_NODE_TYPE>")) {
+			return powerNode.getPropertyValue("<SOME_FIELD>", String.class);
 		}
 		return Optional.empty();
 	}
