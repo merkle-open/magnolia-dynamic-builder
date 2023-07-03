@@ -1,7 +1,6 @@
 package com.namics.oss.magnolia.appbuilder;
 
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
-import com.namics.oss.magnolia.appbuilder.launcher.AppLauncherDefinitionHandler;
 import info.magnolia.module.blossom.support.AbstractBeanDetector;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import org.slf4j.Logger;
@@ -21,14 +20,10 @@ public class AppExporter extends AbstractBeanDetector {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	private final AppDescriptorRegistry appDescriptorRegistry;
-	private final AppLauncherDefinitionHandler appLauncherDefinitionHandler;
 
 	@Inject
-	public AppExporter(
-			final AppDescriptorRegistry appDescriptorRegistry,
-			final AppLauncherDefinitionHandler appLauncherDefinitionHandler) {
+	public AppExporter(final AppDescriptorRegistry appDescriptorRegistry) {
 		this.appDescriptorRegistry = appDescriptorRegistry;
-		this.appLauncherDefinitionHandler = appLauncherDefinitionHandler;
 	}
 
 	@Override
@@ -43,9 +38,6 @@ public class AppExporter extends AbstractBeanDetector {
 		final AppDescriptorProvider appDescriptorProvider = new AppDescriptorProvider(appFactory);
 		// register app descriptor
 		appDescriptorRegistry.register(appDescriptorProvider);
-
-		// add app to launcher (if accordingly configured)
-		appLauncherDefinitionHandler.addApp(appFactory);
 		LOG.info("Registered app '{}'", appDescriptorProvider.getMetadata().getName());
 	}
 }

@@ -35,8 +35,7 @@ public class BlossomServletConfiguration {
 
 * Extend the component scan of the Spring configuration:
 ```java
-@ComponentScan.Filter(AppFactory.class),
-@ComponentScan.Filter(AppLauncherGroup.class)
+@ComponentScan.Filter(AppFactory.class)
 ```
 
 ## How to use
@@ -67,11 +66,6 @@ A method marked with `@ChooseDialog` must return a `info.magnolia.ui.dialog.defi
 
 #### AppPermissions, optional (Target: Method)
 A method marked with `@AppPermissions` must return a `info.magnolia.cms.security.operations.AccessDefinition`.
-
-### Creating an App Launcher Group
-Annotate a class with `@AppLauncherGroup`, and add the name as annotation property.
-Optionally the class can be added a method with a `@GroupDefinition` annotation,
-returning a `SimpleGroupDefinition`
 
 ### Multiple 'defaultActions' (double click actions)
 The `NodeTypeToActionDelegatingAction` action wrapper allows to define 
@@ -128,8 +122,7 @@ import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 		id = SampleApp.ID,
 		name = SampleApp.NAME,
 		label = SampleApp.NAME,
-		icon = MgnlIcon.TAG_2_APP,
-		launcherGroup = LauncherGroup.EDIT
+		icon = MgnlIcon.TAG_2_APP
 )
 public class SampleApp {
 	public static final String NAME = "SampleApp";
@@ -156,6 +149,7 @@ public class SampleApp {
 					.width(160)
 	};
 
+	// optional - if not specified the chooser dialog will contain the same columns as the app (columnDefinitions)
 	@ChooseDialog
 	public ChooseDialogDefinition getChooseDialog() {
 		return new ChooseDialogBuilder().contentConnector(
@@ -172,7 +166,7 @@ public class SampleApp {
 
 	@SubApp
 	public SubAppDescriptor getBrowser() {
-		return new BrowserAppBuilder()
+		return new BrowserAppBuilder<>()
 				.icon(MgnlIcon.TAG_2_APP)
 				.columns(columnDefinitions)
 				.dropConstraint(SampleNodeDropConstraint.class)
@@ -245,27 +239,5 @@ public class SampleColumnFormatter extends AbstractColumnFormatter {
 		}
 		return Optional.empty();
 	}
-}
-```
-The following class creates an 'App Launcher Group':
-```java
-import com.namics.oss.magnolia.appbuilder.annotations.AppLauncherGroup;
-import com.namics.oss.magnolia.appbuilder.annotations.GroupDefinition;
-import com.namics.oss.magnolia.appbuilder.launcher.group.SimpleGroupDefinition;
-
-
-@AppLauncherGroup(
-		name = SampleGroup.NAME
-)
-public class SampleGroup {
-
-	public static final String NAME = "sample";
-
-	@GroupDefinition
-	public SimpleGroupDefinition getDefinition() {
-		return new SimpleGroupDefinition(NAME)
-				.color("#e05343");
-	}
-
 }
 ```
