@@ -29,17 +29,17 @@
 	</developers>
 
 	<properties>
-		<magnolia.version>6.2.22</magnolia.version>
-		<magnolia.blossom.version>3.4.6</magnolia.blossom.version>
-		<namics.powernode.version>1.0.2</namics.powernode.version>
+		<magnolia.version>6.2.35</magnolia.version>
+		<magnolia.blossom.version>3.6.2</magnolia.blossom.version>
+		<namics.powernode.version>1.0.8</namics.powernode.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
 		<mockito.version>3.7.7</mockito.version>
 
 		<!-- Maven Plugins -->
-		<mvn.compiler.plugin.version>3.8.1</mvn.compiler.plugin.version>
-		<mvn.source.plugin.version>3.1.0</mvn.source.plugin.version>
-		<mvn.surefire.plugin.version>3.0.0-M5</mvn.surefire.plugin.version>
+		<mvn.compiler.plugin.version>3.10.1</mvn.compiler.plugin.version>
+		<mvn.source.plugin.version>3.2.1</mvn.source.plugin.version>
+		<mvn.surefire.plugin.version>3.0.0-M7</mvn.surefire.plugin.version>
 
 		<javaVersion>11</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
