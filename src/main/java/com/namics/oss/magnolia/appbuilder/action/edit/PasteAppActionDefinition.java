@@ -6,6 +6,8 @@ import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.edit.clipboard.CanPasteContentRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.edit.clipboard.PasteContentActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
+import info.magnolia.cms.security.Permission;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 public class PasteAppActionDefinition implements AppActionDefinition {
@@ -28,9 +30,9 @@ public class PasteAppActionDefinition implements AppActionDefinition {
 		definition.setLabel(label);
 		definition.setIcon(icon);
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
-				.writePermissionRequired(true)
 				.rule(new JcrIsNotDeletedRuleDefinition())
 				.rule(new CanPasteContentRuleDefinition())
+				.rule(new PermissionRequiredRuleDefinition(Permission.ADD))
 				.build()
 		);
 		return definition;
