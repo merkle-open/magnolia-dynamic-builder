@@ -1,4 +1,4 @@
-package com.namics.oss.magnolia.appbuilder.action;
+package com.namics.oss.magnolia.appbuilder.action.rule;
 
 import info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition;
 

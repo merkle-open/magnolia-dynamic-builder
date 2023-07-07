@@ -3,8 +3,8 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.edit.clipboard.CopyContentActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 public class CopyAppActionDefinition implements AppActionDefinition {

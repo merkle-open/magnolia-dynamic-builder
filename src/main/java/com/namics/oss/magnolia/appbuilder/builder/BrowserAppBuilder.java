@@ -1,7 +1,11 @@
 package com.namics.oss.magnolia.appbuilder.builder;
 
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.*;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegatingActionDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
