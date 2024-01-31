@@ -23,13 +23,5 @@ public @interface AppFactory {
 
 	boolean isEnabled() default true;
 
-	/**
-	 * Leave empty to use admincentral/config.yaml
-	 */
-	String launcherGroup() default "";
-
-	/**
-	 * Leave empty to use admincentral/config.yaml
-	 */
-	int order() default Integer.MAX_VALUE;
+	boolean generateLegacyChooserApp() default false;
 }
