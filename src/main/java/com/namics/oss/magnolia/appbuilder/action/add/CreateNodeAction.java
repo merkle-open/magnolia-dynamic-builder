@@ -43,7 +43,7 @@ public class CreateNodeAction extends CommitAction<Node> {
 				final String nodeName = nodeNameHelper.getUniqueName(
 						parent,
 						getForm().getPropertyValue(definition.getNodeNameProperty()).map(String::valueOf).orElseThrow(() ->
-								new ActionExecutionException("Failed to get node name property " + definition.getNodeNameProperty() + "from form")
+								new ActionExecutionException("Failed to get node name property " + definition.getNodeNameProperty() + " from form")
 						)
 				);
 

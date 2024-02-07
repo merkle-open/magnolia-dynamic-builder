@@ -36,7 +36,12 @@ public class AppExporter extends AbstractBeanDetector {
 		LOG.info("Detected app bean with name '{}'", beanName);
 		// build app descriptor from detected factory bean
 		final AppDescriptorProvider appDescriptorProvider = new AppDescriptorProvider(appFactory);
+		final LegacyAppDescriptorProvider legacyAppDescriptorProvider = new LegacyAppDescriptorProvider(appFactory);
 		// register app descriptor
+		if(legacyAppDescriptorProvider.shouldRegister()) {
+			LOG.info("Registered legacy chooser app '{}'", legacyAppDescriptorProvider.getMetadata().getName());
+			appDescriptorRegistry.register(legacyAppDescriptorProvider);
+		}
 		appDescriptorRegistry.register(appDescriptorProvider);
 		LOG.info("Registered app '{}'", appDescriptorProvider.getMetadata().getName());
 	}

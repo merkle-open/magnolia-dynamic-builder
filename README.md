@@ -61,9 +61,6 @@ The position of the app in the group can be configured with the 'order' annotati
 The AppFactory requires at least one method marked with the `@SubApp` annotation
 this method must return a `info.magnolia.ui.api.app.SubAppDescriptor`.
 
-#### ChooseDialog, optional (Target: Method)
-A method marked with `@ChooseDialog` must return a `info.magnolia.ui.dialog.definition.ChooseDialogDefinition`.
-
 #### AppPermissions, optional (Target: Method)
 A method marked with `@AppPermissions` must return a `info.magnolia.cms.security.operations.AccessDefinition`.
 
@@ -122,7 +119,8 @@ import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 		id = SampleApp.ID,
 		name = SampleApp.NAME,
 		label = SampleApp.NAME,
-		icon = MgnlIcon.TAG_2_APP
+		icon = MgnlIcon.TAG_2_APP,
+		generateLegacyChooserApp = true
 )
 public class SampleApp {
 	public static final String NAME = "SampleApp";
@@ -148,21 +146,6 @@ public class SampleApp {
 					.sortable(true)
 					.width(160)
 	};
-
-	// optional - if not specified the chooser dialog will contain the same columns as the app (columnDefinitions)
-	@ChooseDialog
-	public ChooseDialogDefinition getChooseDialog() {
-		return new ChooseDialogBuilder().contentConnector(
-				new JcrContentConnectorBuilder()
-						.workspace("<WORKSPACE>")
-						.defaultOrder("jcrName")
-						.rootPath("/")
-						.nodeTypes(
-								new NodeTypeBuilder()
-										.name("<NODE_TYPE>")
-										.icon(MgnlIcon.OPEN_NEW_WINDOW)
-						));
-	}
 
 	@SubApp
 	public SubAppDescriptor getBrowser() {
