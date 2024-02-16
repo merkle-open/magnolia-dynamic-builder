@@ -16,7 +16,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @SubAppScoped
 public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard implements JcrContentClipboard {
@@ -57,7 +59,7 @@ public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard imp
 	}
 
 	protected boolean canPasteInto(final Node source, final Node destination) throws RepositoryException {
-		for (NodeDefinition allowedChildNodeDefinition : destination.getPrimaryNodeType().getChildNodeDefinitions()) {
+		for (NodeDefinition allowedChildNodeDefinition : getChildNodeDefinitions(destination)) {
 			for (NodeType allowedChildRequiredPrimaryType : allowedChildNodeDefinition.getRequiredPrimaryTypes()) {
 				if (Objects.equals(source.getPrimaryNodeType(), allowedChildRequiredPrimaryType)) {
 					return true;
@@ -65,5 +67,12 @@ public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard imp
 			}
 		}
 		return false;
+	}
+
+	private NodeDefinition[] getChildNodeDefinitions(final Node node) throws RepositoryException {
+		return Stream.concat(
+				Stream.of(node.getPrimaryNodeType()),
+				Arrays.stream(node.getMixinNodeTypes())
+		).map(NodeType::getChildNodeDefinitions).flatMap(Arrays::stream).toArray(NodeDefinition[]::new);
 	}
 }

@@ -11,8 +11,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Item> {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -48,7 +50,7 @@ public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Ite
 	protected boolean allowedAsChild(final Node src, final Node dst) {
 		try {
 			if(Objects.equals(src.getSession().getWorkspace().getName(), dst.getSession().getWorkspace().getName())) {
-				for (NodeDefinition allowedChildNodeDefinition : dst.getPrimaryNodeType().getChildNodeDefinitions()) {
+				for (NodeDefinition allowedChildNodeDefinition : getChildNodeDefinitions(dst)) {
 					for (NodeType allowedChildRequiredPrimaryType : allowedChildNodeDefinition.getRequiredPrimaryTypes()) {
 						if (Objects.equals(src.getPrimaryNodeType(), allowedChildRequiredPrimaryType)) {
 							return true;
@@ -60,6 +62,13 @@ public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Ite
 			LOG.error("Failed to check whether [{}] is allowed as child of [{}] due to: {}", src, dst, e);
 		}
 		return false;
+	}
+
+	private NodeDefinition[] getChildNodeDefinitions(final Node node) throws RepositoryException {
+		return Stream.concat(
+				Stream.of(node.getPrimaryNodeType()),
+				Arrays.stream(node.getMixinNodeTypes())
+		).map(NodeType::getChildNodeDefinitions).flatMap(Arrays::stream).toArray(NodeDefinition[]::new);
 	}
 
 	private Optional<Node> getParent(final Node node) {
