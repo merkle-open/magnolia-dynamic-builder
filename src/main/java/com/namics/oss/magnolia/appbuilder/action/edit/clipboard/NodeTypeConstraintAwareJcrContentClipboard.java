@@ -49,14 +49,14 @@ public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard imp
 		return source.getSession().getWorkspace().getName();
 	}
 
-	private boolean canPasteInto(final Property source, final Node destination) throws RepositoryException {
+	protected boolean canPasteInto(final Property source, final Node destination) throws RepositoryException {
 		if (source.isMultiple()) {
 			return destination.getPrimaryNodeType().canSetProperty(source.getName(), source.getValues());
 		}
 		return destination.getPrimaryNodeType().canSetProperty(source.getName(), source.getValue());
 	}
 
-	private boolean canPasteInto(final Node source, final Node destination) throws RepositoryException {
+	protected boolean canPasteInto(final Node source, final Node destination) throws RepositoryException {
 		for (NodeDefinition allowedChildNodeDefinition : destination.getPrimaryNodeType().getChildNodeDefinitions()) {
 			for (NodeType allowedChildRequiredPrimaryType : allowedChildNodeDefinition.getRequiredPrimaryTypes()) {
 				if (Objects.equals(source.getPrimaryNodeType(), allowedChildRequiredPrimaryType)) {

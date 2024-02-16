@@ -45,7 +45,7 @@ public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Ite
 		).orElse(false);
 	}
 
-	private boolean allowedAsChild(final Node src, final Node dst) {
+	protected boolean allowedAsChild(final Node src, final Node dst) {
 		try {
 			if(Objects.equals(src.getSession().getWorkspace().getName(), dst.getSession().getWorkspace().getName())) {
 				for (NodeDefinition allowedChildNodeDefinition : dst.getPrimaryNodeType().getChildNodeDefinitions()) {
