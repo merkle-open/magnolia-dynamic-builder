@@ -11,6 +11,7 @@ import com.namics.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
 import com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
+import com.vaadin.shared.data.sort.SortDirection;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
@@ -37,6 +38,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	private DropConstraintDefinition dropConstraint;
 	private List<ColumnDefinition<T>> columnDefinitions;
 	private Map<String, String> nodeTypeIcons;
+	private Map<String, SortDirection> sortBy;
 	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory;
 
 	public BrowserAppBuilder<T, DS> contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory) {
@@ -99,6 +101,18 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 
 	public BrowserAppBuilder<T, DS> nodeTypeIcons(final Map<String, String> nodeTypeIcons) {
 		this.nodeTypeIcons = nodeTypeIcons;
+		return this;
+	}
+
+	public BrowserAppBuilder<T, DS> sortBy(final String propertyName, final SortDirection direction) {
+		return sortBy(Stream.concat(
+				Stream.ofNullable(sortBy).map(Map::entrySet).flatMap(Collection::stream),
+				Stream.of(Map.entry(propertyName, direction))
+		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+	}
+
+	public BrowserAppBuilder<T, DS> sortBy(final Map<String, SortDirection> sortBy) {
+		this.sortBy = sortBy;
 		return this;
 	}
 
@@ -195,6 +209,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		jcrDatasourceDefinition.setWorkspace(workspace);
 		jcrDatasourceDefinition.setRootPath("/");
 		jcrDatasourceDefinition.setAllowedNodeTypes(allowedNodeTypes);
+		jcrDatasourceDefinition.setSortBy(sortBy);
 		return jcrDatasourceDefinition;
 	}
 
