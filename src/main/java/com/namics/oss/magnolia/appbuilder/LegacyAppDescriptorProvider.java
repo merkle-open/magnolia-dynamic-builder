@@ -2,35 +2,44 @@ package com.namics.oss.magnolia.appbuilder;
 
 import com.google.common.collect.ImmutableList;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.namics.oss.magnolia.appbuilder.builder.ModificationDateColumnDefinition;
+import com.vaadin.data.ValueProvider;
+import com.vaadin.v7.ui.Table;
 import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.Registry;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.column.jcr.JcrTitleColumnDefinition;
-import info.magnolia.ui.contentapp.configuration.BrowserDescriptor;
-import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
-import info.magnolia.ui.contentapp.configuration.TreeViewDefinition;
-import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
+import info.magnolia.ui.contentapp.column.jcr.JcrStatusColumnDefinition;
+import info.magnolia.ui.contentapp.configuration.*;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import info.magnolia.ui.datasource.jcr.JcrDatasourceDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
+import info.magnolia.ui.workbench.column.AbstractColumnFormatter;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import org.apache.jackrabbit.JcrConstants;
 import org.springframework.aop.support.AopUtils;
 
-import java.util.*;
+import javax.inject.Inject;
+import javax.jcr.Item;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Provides legacy/UI5 appDescriptor to be able to open a legacy/UI5 chooser dialog to content from an UI6 app.
@@ -74,118 +83,143 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 	private Map<String, SubAppDescriptor> getBrowserSubApps(final AppDescriptor appDescriptor) {
 		return appDescriptor.getSubApps().values().stream()
 				.filter(BrowserDescriptor.class::isInstance)
-				.map(BrowserDescriptor.class::cast)
+				.map(browserDescriptor -> (BrowserDescriptor<?,?>) browserDescriptor)
 				.map(browserDescriptor -> convert(appDescriptor, browserDescriptor))
 				.collect(Collectors.toMap(SubAppDescriptor::getName, Function.identity()));
 	}
 
-	private BrowserSubAppDescriptor convert(final AppDescriptor appDescriptor, final BrowserDescriptor browserDescriptor) {
+	private <T> BrowserSubAppDescriptor convert(final AppDescriptor appDescriptor, final BrowserDescriptor<T, ?> browserDescriptor) {
 		final ConfiguredBrowserSubAppDescriptor legacyBrowserDescriptor = new ConfiguredBrowserSubAppDescriptor();
 		legacyBrowserDescriptor.setName(browserDescriptor.getName());
 		legacyBrowserDescriptor.setIcon(browserDescriptor.getIcon());
 		legacyBrowserDescriptor.setLabel(browserDescriptor.getLabel());
-		legacyBrowserDescriptor.setContentConnector(convert(
-				(JcrDatasourceDefinition) browserDescriptor.getDatasource(),
-				getIcons(browserDescriptor.getWorkbench())
-		));
+		legacyBrowserDescriptor.setContentConnector(convert((JcrDatasourceDefinition) browserDescriptor.getDatasource()));
 		legacyBrowserDescriptor.setWorkbench(convert(appDescriptor, browserDescriptor, browserDescriptor.getWorkbench()));
 		return legacyBrowserDescriptor;
 	}
 
-	private JcrContentConnectorDefinition convert(final JcrDatasourceDefinition jcrDatasourceDefinition, final Map<String, String> icons) {
+	private JcrContentConnectorDefinition convert(final JcrDatasourceDefinition jcrDatasourceDefinition) {
 		final ConfiguredJcrContentConnectorDefinition legacyJcrContentConnectorDefinition = new ConfiguredJcrContentConnectorDefinition();
 		legacyJcrContentConnectorDefinition.setWorkspace(jcrDatasourceDefinition.getWorkspace());
+		legacyJcrContentConnectorDefinition.setDefaultOrder(jcrDatasourceDefinition.getSortByProperties().stream().findFirst().orElse(JcrConstants.JCR_NAME));
 		legacyJcrContentConnectorDefinition.setNodeTypes(
 				jcrDatasourceDefinition.getAllowedNodeTypes().stream().map(nodeType -> {
 					final ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
 					nodeTypeDefinition.setName(nodeType);
-					nodeTypeDefinition.setIcon(icons.get(nodeType));
 					return nodeTypeDefinition;
 				}).collect(Collectors.toList())
 		);
 		return legacyJcrContentConnectorDefinition;
 	}
 
-	private Map<String, String> getIcons(final WorkbenchDefinition workbench) {
-		return streamTreeViewColumns(workbench)
-				.filter(JcrTitleColumnDefinition.class::isInstance)
-				.map(JcrTitleColumnDefinition.class::cast)
-				.map(JcrTitleColumnDefinition::getNodeTypeToIcon)
-				.findFirst()
-				.orElseGet(Collections::emptyMap);
-	}
-
-	private Stream<ColumnDefinition> streamTreeViewColumns(final WorkbenchDefinition workbench) {
-		return ((List<ContentViewDefinition>) workbench.getContentViews())
-				.stream()
-				.filter(TreeViewDefinition.class::isInstance)
-				.map(TreeViewDefinition.class::cast)
-				.map(view -> (List<ColumnDefinition>) view.getColumns())
-				.flatMap(Collection::stream);
-	}
-
-	private info.magnolia.ui.workbench.definition.WorkbenchDefinition convert(
+	private <T> info.magnolia.ui.workbench.definition.WorkbenchDefinition convert(
 			final AppDescriptor appDescriptor,
-			final BrowserDescriptor browserDescriptor,
-			final WorkbenchDefinition workbench
+			final BrowserDescriptor<T, ?> browserDescriptor,
+			final WorkbenchDefinition<T> workbench
 	) {
 		final ConfiguredWorkbenchDefinition legacyWorkbench = new ConfiguredWorkbenchDefinition();
 		legacyWorkbench.setName(workbench.getName());
 		legacyWorkbench.setDialogWorkbench(true);
-		legacyWorkbench.setContentViews(List.of(getContentView(appDescriptor, browserDescriptor, workbench)));
+		legacyWorkbench.setContentViews(getContentViews(appDescriptor, browserDescriptor, workbench));
 		return legacyWorkbench;
 	}
 
-	protected TreePresenterDefinition getContentView(
+	protected <T> List<ContentPresenterDefinition> getContentViews(
 			final AppDescriptor appDescriptor,
-			final BrowserDescriptor browserDescriptor,
-			final WorkbenchDefinition workbench
+			final BrowserDescriptor<T, ?> browserDescriptor,
+			final WorkbenchDefinition<T> workbench
 	) {
-		final PropertyColumnDefinition nameColumn = new PropertyColumnDefinition();
-		nameColumn.setName("name");
-		nameColumn.setPropertyName(ModelConstants.JCR_NAME);
+		final ImmutableList.Builder<ContentPresenterDefinition> presenters = ImmutableList.builder();
+		workbench.getContentViews().stream()
+				.filter(TreeViewDefinition.class::isInstance)
+				.map(v -> (TreeViewDefinition<T>)v)
+				.findFirst()
+				.map(treeView -> getColumns(appDescriptor, browserDescriptor, treeView))
+				.ifPresent(columns -> {
+					final TreePresenterDefinition treePresenter = new TreePresenterDefinition();
+					treePresenter.setColumns(columns);
+					presenters.add(treePresenter);
+				});
+		workbench.getContentViews().stream()
+				.filter(ListViewDefinition.class::isInstance)
+				.map(v -> (ListViewDefinition<T>)v)
+				.findFirst()
+				.map(treeView -> getColumns(appDescriptor, browserDescriptor, treeView))
+				.ifPresent(columns -> {
+					final ListPresenterDefinition listPresenter = new ListPresenterDefinition();
+					listPresenter.setColumns(columns);
+					presenters.add(listPresenter);
 
-		final TreePresenterDefinition treePresenter = new TreePresenterDefinition();
-		final List<info.magnolia.ui.workbench.column.definition.ColumnDefinition> simpleColumns = getSimpleColumns(appDescriptor, browserDescriptor, workbench);
-		final ImmutableList.Builder<info.magnolia.ui.workbench.column.definition.ColumnDefinition> columns = ImmutableList.builder();
-		if(simpleColumns.stream().noneMatch(column -> Objects.equals(column.getName(), nameColumn.getName()))) {
-			//add name column on first place if missing
-			columns.add(nameColumn);
-		}
-		columns.addAll(simpleColumns);
-		treePresenter.setColumns(columns.build());
-		return treePresenter;
+					final SearchPresenterDefinition searchPresenter = new SearchPresenterDefinition();
+					searchPresenter.setColumns(columns);
+					presenters.add(searchPresenter);
+				});
+		return presenters.build();
 	}
 
-	private List<info.magnolia.ui.workbench.column.definition.ColumnDefinition> getSimpleColumns(
+	private <T> List<info.magnolia.ui.workbench.column.definition.ColumnDefinition> getColumns(
 			final AppDescriptor appDescriptor,
-			final BrowserDescriptor browserDescriptor,
-			final WorkbenchDefinition workbench
+			final BrowserDescriptor<T, ?> browserDescriptor,
+			final GridViewDefinition<T> gridViewDefinition
 	) {
-		return streamTreeViewColumns(workbench)
-				.filter(column -> column.getValueProvider() == null)
+		return gridViewDefinition.getColumns()
+				.stream()
+				.filter(Predicate.not(ModificationDateColumnDefinition.class::isInstance).and(Predicate.not(JcrStatusColumnDefinition.class::isInstance)))
 				.map(column ->
 						convert(appDescriptor, browserDescriptor, column)
 				)
 				.collect(Collectors.toList());
 	}
 
-	private PropertyColumnDefinition convert(
+	private <T> LegacyPropertyColumnDefinition<T> convert(
 			final AppDescriptor appDescriptor,
-			final BrowserDescriptor browserDescriptor,
-			final ColumnDefinition column
+			final BrowserDescriptor<T, ?> browserDescriptor,
+			final ColumnDefinition<T> column
 	) {
-		final PropertyColumnDefinition legacyColumn = new PropertyColumnDefinition();
+		final LegacyPropertyColumnDefinition<T> legacyColumn = new LegacyPropertyColumnDefinition<>();
 		legacyColumn.setName(column.getName());
 		legacyColumn.setWidth((int) column.getWidth());
 		legacyColumn.setExpandRatio(column.getExpandRatio());
 		legacyColumn.setLabel(appDescriptor.getName() + "." + browserDescriptor.getName() + ".views." + column.getName() + ".label");
 		legacyColumn.setSortable(column.isSortable());
 		legacyColumn.setPropertyName(column.getName());
+		legacyColumn.setColumn(column);
+		Optional.ofNullable(column.getValueProvider()).ifPresent(valueProvider ->
+			legacyColumn.setFormatterClass(ValueProviderWrappingColumnFormatter.class)
+		);
 		return legacyColumn;
 	}
 
-	private static final class LegacyAppDefinitionMetaDataBuilder extends AppDefinitionMetaDataBuilder {
+	public static class ValueProviderWrappingColumnFormatter<T> extends AbstractColumnFormatter<LegacyPropertyColumnDefinition<T>> {
+		private final ValueProvider<Item, ?> valueProvider;
+
+		@Inject
+		public ValueProviderWrappingColumnFormatter(
+				final ComponentProvider componentProvider,
+				final LegacyPropertyColumnDefinition<T> definition
+		) {
+			super(definition);
+			this.valueProvider = (ValueProvider<Item, ?>)componentProvider.newInstance(definition.getColumn().getValueProvider(), definition.getColumn());
+		}
+
+		@Override
+		public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+			return valueProvider.apply(getJcrItem(source, itemId));
+		}
+	}
+
+	public static class LegacyPropertyColumnDefinition<T> extends PropertyColumnDefinition {
+		private ColumnDefinition<T> column;
+
+		public ColumnDefinition<T> getColumn() {
+			return column;
+		}
+		public void setColumn(final ColumnDefinition<T> column) {
+			this.column = column;
+		}
+	}
+
+	private static class LegacyAppDefinitionMetaDataBuilder extends AppDefinitionMetaDataBuilder {
 		public LegacyAppDefinitionMetaDataBuilder(final Object appFactory) {
 			super(appFactory);
 		}
@@ -194,7 +228,6 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 		protected String generateName(final AppFactory appFactoryAnnotation) {
 			return CONVERT_APP_NAME.apply(super.generateName(appFactoryAnnotation));
 		}
-
 		@Override
 		protected String generateLocation(final Object appFactory) {
 			return CONVERT_APP_NAME.apply(super.generateLocation(appFactory));
