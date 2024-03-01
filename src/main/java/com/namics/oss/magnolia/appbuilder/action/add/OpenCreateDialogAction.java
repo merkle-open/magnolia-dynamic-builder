@@ -1,5 +1,6 @@
 package com.namics.oss.magnolia.appbuilder.action.add;
 
+import com.namics.oss.magnolia.appbuilder.action.JcrNameValidatingOpenDialogAction;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.UIComponent;
 import info.magnolia.ui.ValueContext;
@@ -8,12 +9,11 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.datasource.jcr.JcrDatasource;
 import info.magnolia.ui.dialog.DialogDefinition;
 import info.magnolia.ui.dialog.DialogDefinitionRegistry;
-import info.magnolia.ui.dialog.actions.OpenDialogAction;
 import info.magnolia.ui.editor.LocaleContext;
 
 import javax.jcr.Node;
 
-public class OpenCreateDialogAction extends OpenDialogAction<Node> {
+public class OpenCreateDialogAction extends JcrNameValidatingOpenDialogAction {
 	private final OpenCreateDialogActionDefinition definition;
 	private final JcrDatasource jcrDatasource;
 	private final ValueContext<Node> valueContext;
@@ -37,6 +37,7 @@ public class OpenCreateDialogAction extends OpenDialogAction<Node> {
 	@Override
 	protected DialogDefinition getDialogDefinition(final DialogDefinitionRegistry dialogDefinitionRegistry, final I18nizer i18nizer) {
 		final DialogDefinition dialogDefinition = dialogDefinitionRegistry.getProvider(getDefinition().getDialogId()).get();
+		super.addNodeNameValidatorToJcrNameField(dialogDefinition);
 		dialogDefinition.getActions().put("commit", definition.getCommitAction()); //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
 		return i18nizer.decorate(dialogDefinition);
 	}
