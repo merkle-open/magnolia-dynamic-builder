@@ -13,7 +13,7 @@ public class WorkflowActivateRecursiveAppActionDefinition implements AppActionDe
     @Override
     public ConfiguredActionDefinition action() {
         final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
-        definition.setName("activate");
+        definition.setName("activateRecursive");
         definition.setDialogId("workflow-pages:publishRecursive");
         definition.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
         definition.setLabel("actions.activateRecursive");

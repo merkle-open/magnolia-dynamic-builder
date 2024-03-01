@@ -13,7 +13,7 @@ public class WorkflowActivateDeletionAppActionDefinition implements AppActionDef
     @Override
     public ConfiguredActionDefinition action() {
         final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
-        definition.setName("activate");
+        definition.setName("activateDeletion");
         definition.setDialogId("workflow-pages:publishDeletion");
         definition.setIcon(MgnlIcon.PUBLISH);
         definition.setLabel("actions.activateDeleted");
