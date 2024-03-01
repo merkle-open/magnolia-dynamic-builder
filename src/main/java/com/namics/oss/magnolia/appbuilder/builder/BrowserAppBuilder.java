@@ -209,7 +209,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		jcrDatasourceDefinition.setWorkspace(workspace);
 		jcrDatasourceDefinition.setRootPath("/");
 		jcrDatasourceDefinition.setAllowedNodeTypes(allowedNodeTypes);
-		jcrDatasourceDefinition.setSortBy(sortBy);
+		Optional.ofNullable(sortBy).ifPresent(jcrDatasourceDefinition::setSortBy);
 		return jcrDatasourceDefinition;
 	}
 
