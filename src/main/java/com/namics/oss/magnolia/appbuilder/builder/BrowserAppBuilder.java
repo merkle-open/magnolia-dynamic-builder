@@ -209,6 +209,9 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		jcrDatasourceDefinition.setWorkspace(workspace);
 		jcrDatasourceDefinition.setRootPath("/");
 		jcrDatasourceDefinition.setAllowedNodeTypes(allowedNodeTypes);
+		Optional.ofNullable(sortBy).map(m -> m.get("jcrName")).ifPresent(nodeNameSort -> // workaround for https://jira.magnolia-cms.com/browse/MGNLUI-8725
+			sortBy("jcrPath", nodeNameSort)
+		);
 		Optional.ofNullable(sortBy).ifPresent(jcrDatasourceDefinition::setSortBy);
 		return jcrDatasourceDefinition;
 	}
