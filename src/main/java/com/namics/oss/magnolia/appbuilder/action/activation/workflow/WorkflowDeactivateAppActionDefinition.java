@@ -5,7 +5,7 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
+import info.magnolia.ui.availability.rule.JcrPublishedRuleDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
 public class WorkflowDeactivateAppActionDefinition implements AppActionDefinition {
@@ -21,7 +21,7 @@ public class WorkflowDeactivateAppActionDefinition implements AppActionDefinitio
                 .access("editor", "publisher")
                 .writePermissionRequired(true)
                 .rule(new JcrIsNotDeletedRuleDefinition())
-                .rule(new JcrPublishableRuleDefinition())
+                .rule(new JcrPublishedRuleDefinition())
                 .build());
         return definition;
     }
