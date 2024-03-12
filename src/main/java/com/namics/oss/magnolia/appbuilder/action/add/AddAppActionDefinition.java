@@ -25,8 +25,6 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	private final String icon;
 	@Nullable
 	private final String label;
-	@Nullable
-	private final String nodeNameProperty;
 
 	public AddAppActionDefinition(
 			final String name,
@@ -41,28 +39,18 @@ public class AddAppActionDefinition implements AppActionDefinition {
 			final String nodeType,
 			final String dialogId,
 			final String icon,
-			@Nullable final String label) {
-		this(name, nodeType, dialogId, icon, label, "jcrName");
-	}
-
-	public AddAppActionDefinition(
-			final String name,
-			final String nodeType,
-			final String dialogId,
-			final String icon,
-			@Nullable final String label,
-			@Nullable final String nodeNameProperty) {
+			@Nullable final String label
+	) {
 		this.name = name;
 		this.nodeType = nodeType;
 		this.dialogId = dialogId;
 		this.icon = icon;
 		this.label = label;
-		this.nodeNameProperty = nodeNameProperty;
 	}
 
 	@Override
 	public ConfiguredActionDefinition action() {
-		final CreateNodeActionDefinition commitAction = new CreateNodeActionDefinition(nodeType, nodeNameProperty);
+		final CreateNodeActionDefinition commitAction = new CreateNodeActionDefinition(nodeType);
 		final OpenCreateDialogActionDefinition definition = new OpenCreateDialogActionDefinition(commitAction);
 		definition.setName(name);
 		definition.setDialogId(dialogId);
