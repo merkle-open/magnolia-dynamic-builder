@@ -1,12 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.action.activation.workflow;
 
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
+import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
+
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
-import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
 public class WorkflowActivateRecursiveAppActionDefinition implements AppActionDefinition {
 
@@ -19,6 +20,7 @@ public class WorkflowActivateRecursiveAppActionDefinition implements AppActionDe
         definition.setLabel("actions.activateRecursive");
         definition.setAvailability(new AvailabilityDefinitionBuilder()
                 .access("editor", "publisher")
+                .writePermissionRequired(true)
                 .rule(new JcrIsNotDeletedRuleDefinition())
                 .rule(new JcrPublishableRuleDefinition())
                 .build());
