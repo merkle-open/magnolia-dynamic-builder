@@ -3,9 +3,11 @@ package com.namics.oss.magnolia.appbuilder.action;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.UIComponent;
 import info.magnolia.ui.ValueContext;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.action.CloseActionDefinition;
 import info.magnolia.ui.contentapp.action.CommitActionDefinition;
+import info.magnolia.ui.datasource.jcr.JcrDatasource;
 import info.magnolia.ui.dialog.DialogDefinition;
 import info.magnolia.ui.dialog.DialogDefinitionRegistry;
 import info.magnolia.ui.dialog.FormDialogDefinition;
@@ -28,12 +30,15 @@ import javax.jcr.Node;
 public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialogAction<Node> {
 	private final NodeNameValidatorDefinition nodeNameValidatorDefinition;
 	private final Definition definition;
+	private final ValueContext<Node> valueContext;
+	private final JcrDatasource jcrDatasource;
 
 	@Inject
 	public OpenDialogAction(
 			final Definition definition,
 			final LocaleContext localeContext,
 			final ValueContext<Node> valueContext,
+			final JcrDatasource jcrDatasource,
 			final UIComponent parentView,
 			final I18NAuthoringSupport<Node> i18NAuthoringSupport,
 			final DialogDefinitionRegistry dialogDefinitionRegistry,
@@ -41,8 +46,22 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 	) {
 		super(definition, localeContext, valueContext, parentView, i18NAuthoringSupport, dialogDefinitionRegistry, i18nizer);
 		this.definition = definition;
+		this.valueContext = valueContext;
+		this.jcrDatasource = jcrDatasource;
 		this.nodeNameValidatorDefinition = new NodeNameValidatorDefinition();
 		this.nodeNameValidatorDefinition.setMode(definition.getMode());
+	}
+
+	@Override
+	public void execute() throws ActionExecutionException {
+		try {
+			if (valueContext.getSingle().isEmpty()) {
+				valueContext.set(jcrDatasource.getRoot());
+			}
+			super.execute();
+		} catch (Exception e) {
+			throw new ActionExecutionException(e);
+		}
 	}
 
 	@Override
