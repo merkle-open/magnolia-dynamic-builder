@@ -1,15 +1,17 @@
 package com.namics.oss.magnolia.appbuilder.action.add;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
+
+import javax.annotation.Nullable;
+
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.OpenDialogAction;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
-import info.magnolia.cms.security.Permission;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-
-import javax.annotation.Nullable;
 
 public class AddAppActionDefinition implements AppActionDefinition {
 	public static final AddAppActionDefinition FOLDER = new AddAppActionDefinition(
@@ -49,9 +51,9 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	}
 
 	@Override
-	public ConfiguredActionDefinition action() {
-		final CreateNodeActionDefinition commitAction = new CreateNodeActionDefinition(nodeType);
-		final OpenCreateDialogActionDefinition definition = new OpenCreateDialogActionDefinition(commitAction);
+	public OpenDialogAction.Definition action() {
+		final OpenDialogAction.Definition definition = new OpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.ADD);
+		definition.setCustomCommitAction(new CreateNodeActionDefinition(nodeType));
 		definition.setName(name);
 		definition.setDialogId(dialogId);
 		definition.setLabel(label);

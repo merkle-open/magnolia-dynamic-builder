@@ -1,17 +1,16 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.JcrNameValidatingOpenDialogAction;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import info.magnolia.cms.security.Permission;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import javax.annotation.Nullable;
+
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.OpenDialogAction;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 
 public class EditAppActionDefinition implements AppActionDefinition {
 	public static final EditAppActionDefinition FOLDER = new EditAppActionDefinition(
@@ -38,8 +37,8 @@ public class EditAppActionDefinition implements AppActionDefinition {
 	}
 
 	@Override
-	public ConfiguredActionDefinition action() {
-		final OpenDialogActionDefinition definition = new JcrNameValidatingOpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.EDIT);
+	public OpenDialogAction.Definition action() {
+		final OpenDialogAction.Definition definition = new OpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.EDIT);
 		definition.setName(name);
 		definition.setDialogId(dialogId);
 		definition.setLabel(label);
