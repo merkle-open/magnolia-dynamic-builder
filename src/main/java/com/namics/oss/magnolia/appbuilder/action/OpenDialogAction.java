@@ -67,7 +67,7 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 	@Override
 	protected DialogDefinition getDialogDefinition(final DialogDefinitionRegistry dialogDefinitionRegistry, final I18nizer i18nizer) {
 		final DialogDefinition dialogDefinition = dialogDefinitionRegistry.getProvider(getDefinition().getDialogId()).get();
-		if (dialogDefinition instanceof FormDialogDefinition) {
+		if (!(dialogDefinition instanceof FormDialogDefinition)) {
 			throw new IllegalArgumentException("Provided dialog id is not a form dialog!");
 		}
 		addNodeNameValidatorToJcrNameField(dialogDefinition);
