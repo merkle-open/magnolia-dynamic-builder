@@ -14,7 +14,7 @@ import info.magnolia.ui.dialog.FormDialogDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 import info.magnolia.ui.editor.LocaleContext;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
-import info.magnolia.ui.field.ConfiguredFieldDefinition;
+import info.magnolia.ui.field.TextFieldDefinition;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,11 +84,11 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 		Optional
 				.of(dialogDefinition)
 				.filter(FormDialogDefinition.class::isInstance)
-				.map(definition -> (FormDialogDefinition<Node>) definition)
+				.map(definition -> (FormDialogDefinition<?>) definition)
 				.map(FormDialogDefinition::getForm)
 				.flatMap(formDialog -> formDialog.getFieldDefinition("jcrName"))
-				.filter(ConfiguredFieldDefinition.class::isInstance)
-				.map(definition -> (ConfiguredFieldDefinition<Node>) definition)
+				.filter(TextFieldDefinition.class::isInstance)
+				.map(definition -> (TextFieldDefinition) definition) // NodeNameValidator only validates string fields
 				.filter(field -> field.getValidators().stream().map(Object::getClass).noneMatch(NodeNameValidatorDefinition.class::equals))
 				.ifPresent(field ->
 						field.setValidators(Stream.concat(
