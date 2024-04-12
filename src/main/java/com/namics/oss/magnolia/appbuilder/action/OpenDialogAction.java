@@ -107,6 +107,7 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 
 		public Definition(final NodeNameValidatorDefinition.Mode mode) {
 			this.mode = mode;
+			setPopulate(mode == NodeNameValidatorDefinition.Mode.EDIT);
             setImplementationClass(OpenDialogAction.class);
 		}
 
