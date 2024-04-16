@@ -53,18 +53,6 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 	}
 
 	@Override
-	public void execute() throws ActionExecutionException {
-		try {
-			if (valueContext.getSingle().isEmpty()) {
-				valueContext.set(jcrDatasource.getRoot());
-			}
-			super.execute();
-		} catch (Exception e) {
-			throw new ActionExecutionException(e);
-		}
-	}
-
-	@Override
 	protected DialogDefinition getDialogDefinition(final DialogDefinitionRegistry dialogDefinitionRegistry, final I18nizer i18nizer) {
 		final DialogDefinition dialogDefinition = dialogDefinitionRegistry.getProvider(getDefinition().getDialogId()).get();
 		if (!(dialogDefinition instanceof FormDialogDefinition)) {
