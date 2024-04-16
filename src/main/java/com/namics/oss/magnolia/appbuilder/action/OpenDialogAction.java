@@ -30,8 +30,12 @@ import javax.jcr.Node;
 public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialogAction<Node> {
 	private final NodeNameValidatorDefinition nodeNameValidatorDefinition;
 	private final Definition definition;
+	private final LocaleContext localeContext;
 	private final ValueContext<Node> valueContext;
 	private final JcrDatasource jcrDatasource;
+	private final I18NAuthoringSupport<Node> i18NAuthoringSupport;
+	private final DialogDefinitionRegistry dialogDefinitionRegistry;
+	private final I18nizer i18nizer;
 
 	@Inject
 	public OpenDialogAction(
@@ -46,10 +50,27 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 	) {
 		super(definition, localeContext, valueContext, parentView, i18NAuthoringSupport, dialogDefinitionRegistry, i18nizer);
 		this.definition = definition;
+		this.localeContext = localeContext;
 		this.valueContext = valueContext;
 		this.jcrDatasource = jcrDatasource;
+		this.i18NAuthoringSupport = i18NAuthoringSupport;
+		this.dialogDefinitionRegistry = dialogDefinitionRegistry;
+		this.i18nizer = i18nizer;
 		this.nodeNameValidatorDefinition = new NodeNameValidatorDefinition();
 		this.nodeNameValidatorDefinition.setMode(definition.getMode());
+	}
+
+	@Override
+	public void execute() throws ActionExecutionException {
+		try {
+			FormDialogDefinition formDialogDefinition = (FormDialogDefinition)getDialogDefinition(dialogDefinitionRegistry, i18nizer);
+			if (valueContext.getSingle().isEmpty() && formDialogDefinition.getForm().hasI18NProperties()) {
+				localeContext.populateFromI18NAuthoringSupport(jcrDatasource.getRoot(), i18NAuthoringSupport);
+			}
+			super.execute();
+		} catch (Exception e) {
+			throw new ActionExecutionException(e);
+		}
 	}
 
 	@Override
