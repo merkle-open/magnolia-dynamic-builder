@@ -1,9 +1,9 @@
 package com.namics.oss.magnolia.appbuilder.action;
 
+import info.magnolia.config.registry.Registry;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.UIComponent;
 import info.magnolia.ui.ValueContext;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.action.CloseActionDefinition;
 import info.magnolia.ui.contentapp.action.CommitActionDefinition;
@@ -30,8 +30,10 @@ import javax.jcr.Node;
 public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialogAction<Node> {
 	private final NodeNameValidatorDefinition nodeNameValidatorDefinition;
 	private final Definition definition;
+	private final LocaleContext localeContext;
 	private final ValueContext<Node> valueContext;
 	private final JcrDatasource jcrDatasource;
+	private final I18NAuthoringSupport<Node> i18NAuthoringSupport;
 
 	@Inject
 	public OpenDialogAction(
@@ -46,47 +48,38 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 	) {
 		super(definition, localeContext, valueContext, parentView, i18NAuthoringSupport, dialogDefinitionRegistry, i18nizer);
 		this.definition = definition;
+		this.localeContext = localeContext;
 		this.valueContext = valueContext;
 		this.jcrDatasource = jcrDatasource;
+		this.i18NAuthoringSupport = i18NAuthoringSupport;
 		this.nodeNameValidatorDefinition = new NodeNameValidatorDefinition();
 		this.nodeNameValidatorDefinition.setMode(definition.getMode());
 	}
 
 	@Override
-	public void execute() throws ActionExecutionException {
-		try {
-			if (valueContext.getSingle().isEmpty()) {
-				valueContext.set(jcrDatasource.getRoot());
-			}
-			super.execute();
-		} catch (Exception e) {
-			throw new ActionExecutionException(e);
-		}
-	}
-
-	@Override
-	protected DialogDefinition getDialogDefinition(final DialogDefinitionRegistry dialogDefinitionRegistry, final I18nizer i18nizer) {
+	protected FormDialogDefinition<Node> getDialogDefinition(final DialogDefinitionRegistry dialogDefinitionRegistry, final I18nizer i18nizer) {
 		final DialogDefinition dialogDefinition = dialogDefinitionRegistry.getProvider(getDefinition().getDialogId()).get();
 		if (!(dialogDefinition instanceof FormDialogDefinition)) {
-			throw new IllegalArgumentException("Provided dialog id is not a form dialog!");
+			throw new Registry.InvalidDefinitionException("Provided dialog id is not a form dialog!");
 		}
-		addNodeNameValidatorToJcrNameField(dialogDefinition);
+		final FormDialogDefinition<Node> formDialogDefinition = (FormDialogDefinition<Node>) dialogDefinition;
+		addNodeNameValidatorToJcrNameField(formDialogDefinition);
 		Optional.ofNullable(definition.getCustomCommitAction()).ifPresent(commit ->
-				dialogDefinition.getActions().put(CommitActionDefinition.COMMIT_ACTION_NAME, commit) //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
+				formDialogDefinition.getActions().put(CommitActionDefinition.COMMIT_ACTION_NAME, commit) //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
 		);
 		Optional.ofNullable(definition.getCustomCloseAction()).ifPresent(close ->
-				dialogDefinition.getActions().put(CloseActionDefinition.CLOSE_ACTION_NAME, close) //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
+				formDialogDefinition.getActions().put(CloseActionDefinition.CLOSE_ACTION_NAME, close) //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
 		);
-		return i18nizer.decorate(dialogDefinition);
+
+		if (valueContext.getSingle().isEmpty() && (!localeContext.isPopulated() || formDialogDefinition.getForm().hasI18NProperties())) {
+			localeContext.populateFromI18NAuthoringSupport(jcrDatasource.getRoot(), i18NAuthoringSupport);
+		}
+		return i18nizer.decorate(formDialogDefinition);
 	}
 
-	protected void addNodeNameValidatorToJcrNameField(final DialogDefinition dialogDefinition) {
-		Optional
-				.of(dialogDefinition)
-				.filter(FormDialogDefinition.class::isInstance)
-				.map(definition -> (FormDialogDefinition<?>) definition)
-				.map(FormDialogDefinition::getForm)
-				.flatMap(formDialog -> formDialog.getFieldDefinition("jcrName"))
+	protected void addNodeNameValidatorToJcrNameField(final FormDialogDefinition<Node> dialogDefinition) {
+		dialogDefinition.getForm()
+				.getFieldDefinition("jcrName")
 				.filter(TextFieldDefinition.class::isInstance)
 				.map(definition -> (TextFieldDefinition) definition) // NodeNameValidator only validates string fields
 				.filter(field -> field.getValidators().stream().map(Object::getClass).noneMatch(NodeNameValidatorDefinition.class::equals))
