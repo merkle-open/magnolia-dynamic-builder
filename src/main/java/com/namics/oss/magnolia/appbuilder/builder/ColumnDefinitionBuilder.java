@@ -1,17 +1,20 @@
 package com.namics.oss.magnolia.appbuilder.builder;
 
-import com.vaadin.data.ValueProvider;
-import com.vaadin.ui.DescriptionGenerator;
-import com.vaadin.ui.renderers.AbstractRenderer;
 import info.magnolia.ui.contentapp.column.jcr.JcrStatusColumnDefinition;
 import info.magnolia.ui.contentapp.column.jcr.JcrTitleColumnDefinition;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import info.magnolia.ui.contentapp.configuration.column.ConfiguredColumnDefinition;
 import info.magnolia.ui.field.FieldDefinition;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
+import com.vaadin.data.ValueProvider;
+import com.vaadin.ui.DescriptionGenerator;
+import com.vaadin.ui.renderers.AbstractRenderer;
 
 public class ColumnDefinitionBuilder<T> {
 	@Nullable
@@ -113,7 +116,11 @@ public class ColumnDefinitionBuilder<T> {
 	}
 
 	public static <T> ColumnDefinition<T> title(final Map<String, String> nodeTypeToIcon) {
+		return title(nodeTypeToIcon, operator -> {});
+	}
+	public static <T> ColumnDefinition<T> title(final Map<String, String> nodeTypeToIcon, final Consumer<JcrTitleColumnDefinition> operator) {
 		final JcrTitleColumnDefinition title = new JcrTitleColumnDefinition();
+		operator.accept(title);
 		title.setNodeTypeToIcon(nodeTypeToIcon);
 		return (ColumnDefinition<T>)title;
 	}
