@@ -1,6 +1,5 @@
 package com.namics.oss.magnolia.appbuilder.contextmenu;
 
-import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
@@ -8,6 +7,8 @@ import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 
 public class RootAppContextMenuDefinition extends AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 
@@ -18,6 +19,7 @@ public class RootAppContextMenuDefinition extends AbstractAppContextMenuDefiniti
 					final ConfiguredAvailabilityDefinition definition = new ConfiguredAvailabilityDefinition();
 					definition.setRoot(true);
 					definition.setNodes(false);
+					definition.setMultiple(true);
 					return definition;
 				},
 				actionGroups

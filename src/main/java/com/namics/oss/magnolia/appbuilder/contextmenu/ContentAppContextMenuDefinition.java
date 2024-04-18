@@ -1,17 +1,19 @@
 package com.namics.oss.magnolia.appbuilder.contextmenu;
 
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
+import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
 
 public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 	private final String nodeType;
@@ -28,6 +30,7 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 					final ConfiguredAvailabilityDefinition definition = new ConfiguredAvailabilityDefinition();
 					definition.setRoot(false);
 					definition.setNodes(true);
+					definition.setMultiple(true);
 					definition.addNodeType(nodeType);
 					return definition;
 				},

@@ -1,17 +1,5 @@
 package com.namics.oss.magnolia.appbuilder.builder;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegatingActionDefinition;
-import com.namics.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
-import com.namics.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
-import com.namics.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
-import com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
-import com.vaadin.shared.data.sort.SortDirection;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
@@ -25,11 +13,31 @@ import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import info.magnolia.ui.datasource.DatasourceDefinition;
 import info.magnolia.ui.datasource.jcr.JcrDatasourceDefinition;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
+import com.namics.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegatingActionDefinition;
+import com.namics.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
+import com.namics.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
+import com.namics.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
+import com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
+import com.vaadin.shared.data.sort.SortDirection;
 
 public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	private final List<ContentAppContextMenuDefinition> contentContextMenuDefinitions = new ArrayList<>();
@@ -142,7 +150,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
 		}
 		definition.setWorkbench(workbench(
-				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(dropConstraint),
+				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(false),
 				getColumnDefinitions(),
 				dropConstraint
 		));

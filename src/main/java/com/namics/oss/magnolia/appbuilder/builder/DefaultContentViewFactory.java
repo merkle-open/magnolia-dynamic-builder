@@ -9,24 +9,26 @@ import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import java.util.List;
 import java.util.function.BiFunction;
 
-class DefaultContentViewFactory<T> implements BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> {
-	private final DropConstraintDefinition dropConstraint;
+public class DefaultContentViewFactory<T> implements BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> {
+	private final boolean multiSelect;
 
-	public DefaultContentViewFactory(final DropConstraintDefinition dropConstraint) {
-		this.dropConstraint = dropConstraint;
-	}
+    public DefaultContentViewFactory(final boolean multiSelect) {
+        this.multiSelect = multiSelect;
+    }
 
-	@Override
-	public List<ContentViewDefinition<T>> apply(DropConstraintDefinition dropConstraintDefinition, List<ColumnDefinition<T>> columnDefinitions) {
+    @Override
+	public List<ContentViewDefinition<T>> apply(final DropConstraintDefinition dropConstraint, final List<ColumnDefinition<T>> columnDefinitions) {
 		final TreeViewDefinition<T> tree = new TreeViewDefinition<>();
 		tree.setName("tree");
 		tree.setColumns(columnDefinitions);
 		tree.setDropConstraint(dropConstraint);
+		tree.setMultiSelect(multiSelect);
 
 		final ListViewDefinition<T> list = new ListViewDefinition<>();
 		list.setName("list");
 		list.setColumns(columnDefinitions);
 		list.setDropConstraint(dropConstraint);
+		list.setMultiSelect(multiSelect);
 		return List.of(tree, list);
 	}
 }
