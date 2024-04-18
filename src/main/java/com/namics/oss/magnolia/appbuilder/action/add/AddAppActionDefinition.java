@@ -25,6 +25,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	private final String nodeType;
 	private final String dialogId;
 	private final String icon;
+	private final Class<? extends CreateNodeActionDefinition.NodeNameProvider> nodeNameProviderClass;
 	@Nullable
 	private final String label;
 
@@ -32,7 +33,8 @@ public class AddAppActionDefinition implements AppActionDefinition {
 			final String name,
 			final String nodeType,
 			final String dialogId,
-			final String icon) {
+			final String icon
+	) {
 		this(name, nodeType, dialogId, icon, null);
 	}
 
@@ -43,17 +45,29 @@ public class AddAppActionDefinition implements AppActionDefinition {
 			final String icon,
 			@Nullable final String label
 	) {
+		this(name, nodeType, dialogId, icon, JcrNameNodeNameProvider.class, label);
+	}
+
+	public AddAppActionDefinition(
+			final String name,
+			final String nodeType,
+			final String dialogId,
+			final String icon,
+			final Class<? extends CreateNodeActionDefinition.NodeNameProvider> nodeNameProviderClass,
+			@Nullable final String label
+	) {
 		this.name = name;
 		this.nodeType = nodeType;
 		this.dialogId = dialogId;
 		this.icon = icon;
-		this.label = label;
+        this.nodeNameProviderClass = nodeNameProviderClass;
+        this.label = label;
 	}
 
 	@Override
 	public OpenDialogAction.Definition action() {
 		final OpenDialogAction.Definition definition = new OpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.ADD);
-		definition.setCustomCommitAction(new CreateNodeActionDefinition(nodeType));
+		definition.setCustomCommitAction(new CreateNodeActionDefinition(nodeType, nodeNameProviderClass));
 		definition.setName(name);
 		definition.setDialogId(dialogId);
 		definition.setLabel(label);
