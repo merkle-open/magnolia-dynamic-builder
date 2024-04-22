@@ -41,6 +41,8 @@ public class ColumnDefinitionBuilder<T> {
 	private Class<? extends DescriptionGenerator<T>> descriptionGenerator;
 	@Nullable
 	private Boolean sortable;
+	@Nullable
+	private String label;
 
 	public ColumnDefinitionBuilder<T> renderer(final Class<? extends AbstractRenderer> renderer) {
 		this.renderer = renderer;
@@ -97,6 +99,16 @@ public class ColumnDefinitionBuilder<T> {
 		return this;
 	}
 
+	public ColumnDefinitionBuilder<T> expandRatio(final int expandRatio) {
+		this.expandRatio = expandRatio;
+		return this;
+	}
+
+	public ColumnDefinitionBuilder<T> label(final String label) {
+		this.label = label;
+		return this;
+	}
+
 	public ColumnDefinition<T> build(final String name) {
 		final ConfiguredColumnDefinition<T> definition = new ConfiguredColumnDefinition<>();
 		definition.setName(name);
@@ -112,6 +124,7 @@ public class ColumnDefinitionBuilder<T> {
 		Optional.ofNullable(filterComponent).ifPresent(definition::setFilterComponent);
 		Optional.ofNullable(descriptionGenerator).ifPresent(definition::setDescriptionGenerator);
 		Optional.ofNullable(sortable).ifPresent(definition::setSortable);
+		Optional.ofNullable(label).ifPresent(definition::setLabel);
 		return definition;
 	}
 
