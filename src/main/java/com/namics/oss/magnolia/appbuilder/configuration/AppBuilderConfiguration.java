@@ -4,6 +4,7 @@ import info.magnolia.admincentral.AdmincentralModule;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.dialog.DialogDefinitionRegistry;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -41,5 +42,11 @@ public class AppBuilderConfiguration {
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public AppDescriptorRegistry appDescriptorRegistry() {
 		return Components.getComponent(AppDescriptorRegistry.class);
+	}
+
+	@Bean
+	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+	public DialogDefinitionRegistry dialogDefinitionRegistry() {
+		return Components.getComponent(DialogDefinitionRegistry.class);
 	}
 }
