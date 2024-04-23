@@ -1,21 +1,21 @@
 package com.namics.oss.magnolia.appbuilder;
 
-import com.google.common.collect.ImmutableList;
-import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
-import com.namics.oss.magnolia.appbuilder.builder.ModificationDateColumnDefinition;
-import com.vaadin.data.ValueProvider;
-import com.vaadin.v7.ui.Table;
 import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.column.jcr.JcrStatusColumnDefinition;
-import info.magnolia.ui.contentapp.configuration.*;
+import info.magnolia.ui.contentapp.configuration.BrowserDescriptor;
+import info.magnolia.ui.contentapp.configuration.GridViewDefinition;
+import info.magnolia.ui.contentapp.configuration.ListViewDefinition;
+import info.magnolia.ui.contentapp.configuration.TreeViewDefinition;
+import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import info.magnolia.ui.datasource.jcr.JcrDatasourceDefinition;
 import info.magnolia.ui.vaadin.integration.contentconnector.ConfiguredJcrContentConnectorDefinition;
@@ -28,11 +28,7 @@ import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-import org.apache.jackrabbit.JcrConstants;
-import org.springframework.aop.support.AopUtils;
 
-import javax.inject.Inject;
-import javax.jcr.Item;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +36,17 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.jcr.Item;
+
+import org.apache.jackrabbit.JcrConstants;
+
+import com.google.common.collect.ImmutableList;
+import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.namics.oss.magnolia.appbuilder.builder.ModificationDateColumnDefinition;
+import com.vaadin.data.ValueProvider;
+import com.vaadin.v7.ui.Table;
 
 /**
  * Provides legacy/UI5 appDescriptor to be able to open a legacy/UI5 chooser dialog to content from an UI6 app.
@@ -53,11 +60,11 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 
 	public LegacyAppDescriptorProvider(final Object appFactory) {
 		super(appFactory);
-		final AppFactory appFactoryAnnotation = AopUtils
-				.getTargetClass(appFactory)
-				.getAnnotation(AppFactory.class);
+		final AppFactory appFactoryAnnotation = appFactory.getClass().getAnnotation(AppFactory.class);
 		this.shouldRegister = appFactoryAnnotation.generateLegacyChooserApp();
-		this.metadata = new LegacyAppDefinitionMetaDataBuilder(appFactory).build();
+		this.metadata = new LegacyAppDefinitionMetaDataBuilder(appFactory, appFactoryAnnotation.id())
+				.type(DefinitionTypes.APP)
+				.build();
 	}
 
 	boolean shouldRegister() {
@@ -220,13 +227,13 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 	}
 
 	private static class LegacyAppDefinitionMetaDataBuilder extends AppDefinitionMetaDataBuilder {
-		public LegacyAppDefinitionMetaDataBuilder(final Object appFactory) {
-			super(appFactory);
+		public LegacyAppDefinitionMetaDataBuilder(final Object appFactory, final String id) {
+			super(appFactory, id);
 		}
 
 		@Override
-		protected String generateName(final AppFactory appFactoryAnnotation) {
-			return CONVERT_APP_NAME.apply(super.generateName(appFactoryAnnotation));
+		protected String generateName(final String id) {
+			return CONVERT_APP_NAME.apply(super.generateName(id));
 		}
 		@Override
 		protected String generateLocation(final Object appFactory) {

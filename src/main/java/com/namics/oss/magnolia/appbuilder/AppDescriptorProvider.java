@@ -8,6 +8,7 @@ import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.registry.DefinitionTypes;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.configuration.ContentAppDescriptor;
 import info.magnolia.ui.datasource.DatasourceDefinition;
@@ -26,7 +27,6 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
 
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.namics.oss.magnolia.appbuilder.annotations.AppPermissions;
@@ -40,10 +40,10 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 
 	public AppDescriptorProvider(final Object factoryObject) {
 		this.factoryObject = factoryObject;
-		this.metadata = new AppDefinitionMetaDataBuilder(factoryObject).build();
-		this.annotation = AopUtils
-				.getTargetClass(factoryObject)
-				.getAnnotation(AppFactory.class);
+		this.annotation = factoryObject.getClass().getAnnotation(AppFactory.class);
+		this.metadata = new AppDefinitionMetaDataBuilder(factoryObject, annotation.id())
+				.type(DefinitionTypes.APP)
+				.build();
 	}
 
 	@Override
@@ -101,7 +101,8 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 			final Class<? extends Annotation> annotation,
 			final Class<T> definitionType
 	) {
-		return Arrays.stream(AopUtils.getTargetClass(factoryObject).getDeclaredMethods())
+
+		return Arrays.stream(factoryObject.getClass().getDeclaredMethods())
 				.filter(method -> method.isAnnotationPresent(annotation))
 				.map(method -> {
 					try {
@@ -112,5 +113,16 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 						throw new Registry.InvalidDefinitionException(this.annotation.id());
 					}
 				});
+	}
+
+	protected static class AppDefinitionMetaDataBuilder extends ExplicitIdDefinitionMetaDataBuilder {
+		public AppDefinitionMetaDataBuilder(final Object appFactory, final String id) {
+			super(appFactory, id);
+		}
+
+		@Override
+		protected String buildReferenceId() {
+			return getName();
+		}
 	}
 }

@@ -5,8 +5,6 @@ import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
-import info.magnolia.config.source.ConfigurationSourceTypes;
-import info.magnolia.module.blossom.support.ExplicitIdDefinitionMetadataBuilder;
 import info.magnolia.ui.chooser.definition.AppAwareWorkbenchChooserDefinition;
 import info.magnolia.ui.chooser.definition.FullTextSearchExtensionViewDefinition;
 import info.magnolia.ui.chooser.definition.SingleItemWorkbenchChooserDefinition;
@@ -24,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
 
 import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 
@@ -36,13 +33,9 @@ public class ChooserDialogDefinitionProvider<T> implements DefinitionProvider<Di
 
     public ChooserDialogDefinitionProvider(final Object factoryObject) {
         this.factoryObject = factoryObject;
-        this.annotation = AopUtils
-                .getTargetClass(factoryObject)
-                .getAnnotation(ChooserDialogFactory.class);
-        this.metadata = new ExplicitIdDefinitionMetadataBuilder(annotation.id())
+        this.annotation = factoryObject.getClass().getAnnotation(ChooserDialogFactory.class);
+        this.metadata = new ExplicitIdDefinitionMetaDataBuilder(factoryObject, annotation.id())
                 .type(DefinitionTypes.DIALOG)
-                .configurationSourceType(ConfigurationSourceTypes.code)
-                .location(factoryObject.getClass().getName())
                 .build();
     }
 
@@ -92,7 +85,7 @@ public class ChooserDialogDefinitionProvider<T> implements DefinitionProvider<Di
     }
 
     private List<ContentViewDefinition<T>> getContentViews(final Object factoryObject, final ChooserDialogFactory annotation) {
-        return Arrays.stream(AopUtils.getTargetClass(factoryObject).getDeclaredMethods())
+        return Arrays.stream(factoryObject.getClass().getDeclaredMethods())
                 .filter(method -> method.getReturnType().isAssignableFrom(ContentViewDefinition.class))
                 .map(method -> {
                     try {

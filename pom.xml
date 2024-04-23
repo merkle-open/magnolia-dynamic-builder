@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>The AppBuilder module is a builder for Magnolia apps in a Blossom context.</description>
+	<description>The AppBuilder module is a builder for Magnolia apps using java code.</description>
 	<url>https://github.com/namics/magnolia-appbuilder</url>
 	<licenses>
 		<license>
@@ -30,7 +30,6 @@
 
 	<properties>
 		<magnolia.version>6.2.35</magnolia.version>
-		<magnolia.blossom.version>3.6.2</magnolia.blossom.version>
 		<!--Test dependency versions-->
 		<junit.version>5.7.1</junit.version>
 		<mockito.version>3.7.7</mockito.version>
@@ -51,13 +50,6 @@
 				<groupId>info.magnolia.bundle</groupId>
 				<artifactId>magnolia-bundle-parent</artifactId>
 				<version>${magnolia.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>info.magnolia.blossom</groupId>
-				<artifactId>magnolia-module-blossom</artifactId>
-				<version>${magnolia.blossom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -90,22 +82,10 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Magnolia provided -->
-		<dependency>
-			<groupId>info.magnolia.blossom</groupId>
-			<artifactId>magnolia-module-blossom</artifactId>
-		</dependency>
-
 		<!-- Vaadin Compatibility -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-compatibility-server</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
 			<scope>compile</scope>
 		</dependency>
 

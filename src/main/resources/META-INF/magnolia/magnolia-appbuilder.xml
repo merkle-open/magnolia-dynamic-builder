@@ -3,9 +3,8 @@
 <module>
     <name>magnolia-appbuilder</name>
     <displayName>Magnolia Appbuilder</displayName>
-    <description>The AppBuilder is a builder for Magnolia apps in a Blossom context.</description>
+    <description>The AppBuilder is a builder for Magnolia apps using java code.</description>
     <class>com.namics.oss.magnolia.appbuilder.AppBuilderModule</class>
-    <versionHandler>com.namics.oss.magnolia.appbuilder.setup.AppBuilderModuleVersionHandler</versionHandler>
     <version>${project.version}</version>
 
     <components>
@@ -14,6 +13,12 @@
             <type>com.namics.oss.magnolia.appbuilder.action.edit.clipboard.JcrContentClipboard</type>
             <implementation>com.namics.oss.magnolia.appbuilder.action.edit.clipboard.NodeTypeConstraintAwareJcrContentClipboard</implementation>
         </component>
+    </components>
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.namics.oss.magnolia.appbuilder.configuration.AppBuilderGuiceComponentConfigurer</class>
+        </configurer>
     </components>
 
     <dependencies>
