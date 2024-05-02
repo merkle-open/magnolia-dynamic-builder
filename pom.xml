@@ -30,6 +30,7 @@
 
 	<properties>
 		<magnolia.version>6.2.44</magnolia.version>
+		<namics.oss.definitionbuilder.version>1.0.18</namics.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>5.10.2</junit.version>
 		<mockito.version>5.11.0</mockito.version>
@@ -80,6 +81,16 @@
 			<groupId>info.magnolia.ui</groupId>
 			<artifactId>magnolia-ui-framework-compatibility</artifactId>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.namics.oss.magnolia</groupId>
+			<artifactId>magnolia-definition-builders</artifactId>
+			<version>${namics.oss.definitionbuilder.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.namics.oss.magnolia</groupId>
+			<artifactId>custom-definition-builders</artifactId>
+			<version>${namics.oss.definitionbuilder.version}</version>
 		</dependency>
 
 		<!-- Vaadin Compatibility -->

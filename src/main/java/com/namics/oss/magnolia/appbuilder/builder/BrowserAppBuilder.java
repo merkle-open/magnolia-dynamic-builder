@@ -26,10 +26,14 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegatingActionDefinition;
@@ -163,9 +167,9 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 			return columnDefinitions;
 		}
 		return List.of(
-				ColumnDefinitionBuilder.title(nodeTypeIcons != null ? nodeTypeIcons : Collections.emptyMap()),
-				ColumnDefinitionBuilder.status(),
-				ColumnDefinitionBuilder.modification()
+				new JcrTitleColumnDefinitionBuilder().nodeTypeToIcon(nodeTypeIcons != null ? nodeTypeIcons : Collections.emptyMap()).build(),
+				(ColumnDefinition<T>)new JcrStatusColumnDefinitionBuilder().build(),
+				(ColumnDefinition<T>)new ModificationDateColumnDefinitionBuilder().build()
 		);
 	}
 
@@ -212,16 +216,16 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 
 	private JcrDatasourceDefinition getJcrDatasource(
 			final String workspace,
-			final Set<String> allowedNodeTypes) {
-		final JcrDatasourceDefinition jcrDatasourceDefinition = new JcrDatasourceDefinition();
-		jcrDatasourceDefinition.setWorkspace(workspace);
-		jcrDatasourceDefinition.setRootPath("/");
-		jcrDatasourceDefinition.setAllowedNodeTypes(allowedNodeTypes);
+			final Set<String> allowedNodeTypes
+	) {
+		final JcrDatasourceDefinitionBuilder builder = new JcrDatasourceDefinitionBuilder()
+				.workspace(workspace)
+				.rootPath("/")
+				.allowedNodeTypes(allowedNodeTypes);
+		Optional.ofNullable(sortBy).ifPresent(builder::sortBy);
 		Optional.ofNullable(sortBy).map(m -> m.get("jcrName")).ifPresent(nodeNameSort -> // workaround for https://jira.magnolia-cms.com/browse/MGNLUI-8725
-			sortBy("jcrPath", nodeNameSort)
+				builder.sortBy("jcrPath", nodeNameSort)
 		);
-		Optional.ofNullable(sortBy).ifPresent(jcrDatasourceDefinition::setSortBy);
-		return jcrDatasourceDefinition;
+		return builder.build();
 	}
-
 }

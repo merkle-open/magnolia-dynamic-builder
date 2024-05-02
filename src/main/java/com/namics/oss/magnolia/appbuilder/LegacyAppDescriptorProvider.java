@@ -43,8 +43,8 @@ import javax.jcr.Item;
 import org.apache.jackrabbit.JcrConstants;
 
 import com.google.common.collect.ImmutableList;
+import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinition;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
-import com.namics.oss.magnolia.appbuilder.builder.ModificationDateColumnDefinition;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.v7.ui.Table;
 

@@ -6,9 +6,9 @@ import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import javax.annotation.Nullable;
 
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.OpenDialogAction;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;

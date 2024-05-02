@@ -1,12 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.action.activation;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
+
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 
 public class ActivateAppActionDefinition implements AppActionDefinition {
 

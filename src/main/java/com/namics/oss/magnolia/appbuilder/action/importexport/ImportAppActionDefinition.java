@@ -1,13 +1,14 @@
 package com.namics.oss.magnolia.appbuilder.action.importexport;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
+
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 
 public class ImportAppActionDefinition implements AppActionDefinition {
 

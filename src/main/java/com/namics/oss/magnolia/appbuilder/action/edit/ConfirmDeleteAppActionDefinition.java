@@ -1,13 +1,14 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.contentapp.action.DeleteNodesConfirmationActionDefinition;
+
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 
 public class ConfirmDeleteAppActionDefinition implements AppActionDefinition {
 	private final String icon;

@@ -6,9 +6,9 @@ import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 
 import java.util.Map;
 
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 
 public class ActivateRecursiveAppActionDefinition implements AppActionDefinition {

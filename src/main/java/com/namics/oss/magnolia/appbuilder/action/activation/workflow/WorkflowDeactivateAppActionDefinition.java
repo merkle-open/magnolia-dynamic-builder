@@ -1,12 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.action.activation.workflow;
 
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishedRuleDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
+
+import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 
 public class WorkflowDeactivateAppActionDefinition implements AppActionDefinition {
 
