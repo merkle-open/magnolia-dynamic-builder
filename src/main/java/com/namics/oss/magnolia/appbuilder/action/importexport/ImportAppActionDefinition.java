@@ -17,7 +17,7 @@ public class ImportAppActionDefinition implements AppActionDefinition {
 		final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
 		definition.setName("import");
 		definition.setDialogId("ui-framework-jcr:import");
-		definition.setIcon(MgnlIcon.EXPORT);
+		definition.setIcon(MgnlIcon.IMPORT);
 		definition.setLabel("actions.import");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.rule(new JcrIsNotDeletedRuleDefinition())
