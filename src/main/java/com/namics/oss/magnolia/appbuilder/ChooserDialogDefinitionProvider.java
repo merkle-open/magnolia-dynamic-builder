@@ -17,7 +17,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -87,6 +89,12 @@ public class ChooserDialogDefinitionProvider<T> implements DefinitionProvider<Di
     private List<ContentViewDefinition<T>> getContentViews(final Object factoryObject, final ChooserDialogFactory annotation) {
         return Arrays.stream(factoryObject.getClass().getDeclaredMethods())
                 .filter(method -> method.getReturnType().isAssignableFrom(ContentViewDefinition.class))
+                .sorted(Comparator.comparingInt(method ->
+                        Optional
+                                .ofNullable(method.getAnnotation(ChooserDialogFactory.Order.class))
+                                .map(ChooserDialogFactory.Order::value)
+                                .orElse(-1)
+                ))
                 .map(method -> {
                     try {
                         //noinspection unchecked
