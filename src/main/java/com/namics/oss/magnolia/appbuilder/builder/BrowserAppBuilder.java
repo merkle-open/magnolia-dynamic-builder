@@ -1,5 +1,6 @@
 package com.namics.oss.magnolia.appbuilder.builder;
 
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
@@ -31,7 +32,6 @@ import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusCol
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
@@ -46,11 +46,17 @@ import com.vaadin.shared.data.sort.SortDirection;
 public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	private final List<ContentAppContextMenuDefinition> contentContextMenuDefinitions = new ArrayList<>();
 	private List<AppActionGroupDefinition> rootActions = Collections.emptyList();
-	private String icon = MgnlIcon.PACKAGER_APP;
+	@Nullable
+	private String icon;
+	@Nullable
 	private DropConstraintDefinition dropConstraint;
+	@Nullable
 	private List<ColumnDefinition<T>> columnDefinitions;
+	@Nullable
 	private Map<String, String> nodeTypeIcons;
+	@Nullable
 	private Map<String, SortDirection> sortBy;
+	@Nullable
 	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory;
 
 	public BrowserAppBuilder<T, DS> contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory) {
@@ -58,43 +64,40 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return this;
 	}
 
+	public BrowserAppBuilder<T, DS> icon(final MagnoliaIcons icon) {
+		return icon(icon.getCssClass());
+	}
 	public BrowserAppBuilder<T, DS> icon(final String icon) {
 		this.icon = icon;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> rootActions(AppActionGroupDefinition... rootActions) {
+	public BrowserAppBuilder<T, DS> rootActions(final AppActionGroupDefinition... rootActions) {
 		return rootActions(List.of(rootActions));
 	}
-
-	public BrowserAppBuilder<T, DS> rootActions(List<AppActionGroupDefinition> rootActions) {
+	public BrowserAppBuilder<T, DS> rootActions(final List<AppActionGroupDefinition> rootActions) {
 		this.rootActions = rootActions;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> nodeActions(
-			final String nodeType,
-			final List<AppActionGroupDefinition> actionGroups) {
+	public BrowserAppBuilder<T, DS> nodeActions(final String nodeType, final List<AppActionGroupDefinition> actionGroups) {
 		return nodeActions(nodeType, null, actionGroups);
 	}
-
-	public BrowserAppBuilder<T, DS> nodeActions(
-			final String nodeType,
-			final AppActionGroupDefinition... actionGroups) {
+	public BrowserAppBuilder<T, DS> nodeActions(final String nodeType, final AppActionGroupDefinition... actionGroups) {
 		return nodeActions(nodeType, null, actionGroups);
 	}
-
 	public BrowserAppBuilder<T, DS> nodeActions(
 			final String nodeType,
 			@Nullable final AppActionDefinition doubleClickAction,
-			final AppActionGroupDefinition... actionGroups) {
+			final AppActionGroupDefinition... actionGroups
+	) {
 		return nodeActions(nodeType, doubleClickAction, List.of(actionGroups));
 	}
-
 	public BrowserAppBuilder<T, DS> nodeActions(
 			final String nodeType,
 			@Nullable final AppActionDefinition doubleClickAction,
-			final List<AppActionGroupDefinition> actionGroups) {
+			final List<AppActionGroupDefinition> actionGroups
+	) {
 		contentContextMenuDefinitions.add(new ContentAppContextMenuDefinition(nodeType, doubleClickAction, actionGroups));
 		return this;
 	}
@@ -104,13 +107,20 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return this;
 	}
 
+	public BrowserAppBuilder<T, DS> nodeTypeIcon(final String nodeType, final MagnoliaIcons icon) {
+		return nodeTypeIcon(nodeType, icon.getCssClass());
+	}
 	public BrowserAppBuilder<T, DS> nodeTypeIcon(final String nodeType, final String icon) {
 		return nodeTypeIcons(Stream.concat(
 				Stream.ofNullable(nodeTypeIcons).map(Map::entrySet).flatMap(Collection::stream),
 				Stream.of(Map.entry(nodeType, icon))
 		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
-
+	public BrowserAppBuilder<T, DS> nodeTypeIconsTyped(final Map<String, MagnoliaIcons> nodeTypeIcons) {
+		return nodeTypeIcons(nodeTypeIcons.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getCssClass()))
+		);
+	}
 	public BrowserAppBuilder<T, DS> nodeTypeIcons(final Map<String, String> nodeTypeIcons) {
 		this.nodeTypeIcons = nodeTypeIcons;
 		return this;
@@ -122,7 +132,6 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 				Stream.of(Map.entry(propertyName, direction))
 		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
-
 	public BrowserAppBuilder<T, DS> sortBy(final Map<String, SortDirection> sortBy) {
 		this.sortBy = sortBy;
 		return this;
@@ -147,7 +156,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		final BrowserDescriptor<T, DS> definition = new BrowserDescriptor<>();
 		definition.setSubAppClass(ContentBrowserSubApp.class);
 		definition.setName("browser");
-		definition.setIcon(icon);
+		definition.setIcon(icon != null ? icon : MagnoliaIcons.PACKAGER_APP.getCssClass());
 		definition.setActions(actions(contextMenuDefinitions));
 		definition.setActionbar(actionbar(contextMenuDefinitions));
 		if (dropConstraint == null) {

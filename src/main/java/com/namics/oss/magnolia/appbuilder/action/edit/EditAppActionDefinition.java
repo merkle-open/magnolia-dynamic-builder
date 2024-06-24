@@ -1,12 +1,12 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import javax.annotation.Nullable;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.OpenDialogAction;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
@@ -16,7 +16,7 @@ public class EditAppActionDefinition implements AppActionDefinition {
 	public static final EditAppActionDefinition FOLDER = new EditAppActionDefinition(
 			"editFolder",
 			"ui-framework-jcr:rename",
-			MgnlIcon.EDIT,
+			MagnoliaIcons.EDIT.getCssClass(),
 			"actions.editFolder"
 	);
 	private final String name;
@@ -26,7 +26,7 @@ public class EditAppActionDefinition implements AppActionDefinition {
 	private final String label;
 
 	public EditAppActionDefinition(final String name, final String dialogId) {
-		this(name, dialogId, MgnlIcon.EDIT, null);
+		this(name, dialogId, MagnoliaIcons.EDIT.getCssClass(), null);
 	}
 
 	public EditAppActionDefinition(final String name, final String dialogId, final String icon, @Nullable final String label) {

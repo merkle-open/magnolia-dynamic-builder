@@ -73,16 +73,19 @@ The following class is a demo app, made with the AppBuilder:
 ### AppFactory
 
 ```java
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
+import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinitions;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.add.AddAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.namics.oss.magnolia.appbuilder.annotations.Icon;
 import com.namics.oss.magnolia.appbuilder.annotations.SubApp;
 import com.namics.oss.magnolia.appbuilder.builder.BrowserAppBuilder;
-import com.namics.oss.magnolia.appbuilder.builder.ColumnDefinitionBuilder;
 
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
@@ -97,27 +100,27 @@ import javax.jcr.Item;
 @AppFactory(
         id = SampleApp.ID,
         name = SampleApp.NAME,
-        label = SampleApp.NAME,
-        icon = MgnlIcon.TAG_2_APP
+        label = SampleApp.NAME
 )
+@Icon(MagnoliaIcons.TAG_2_APP)
 public class SampleApp {
     public static final String NAME = "SampleApp";
     public static final String ID = "module:apps/" + NAME;
 
     private static final Map<String, String> NODE_TYPES_ICONS = Map.of(
-            NodeTypes.Folder.NAME, MgnlIcon.FOLDER
+            NodeTypes.Folder.NAME, MagnoliaIcons.FOLDER.getCssClass()
     );
 
     private final List<ColumnDefinition<Item>> columns = List.of(
-            ColumnDefinitionBuilder.title(NODE_TYPES_ICONS),
-            ColumnDefinitionBuilder.status(),
-            ColumnDefinitionBuilder.modification()
+            new JcrTitleColumnDefinitionBuilder().nodeTypeToIcon(NODE_TYPES_ICONS).buildTyped(),
+            new JcrStatusColumnDefinitionBuilder().build(),
+            new ModificationDateColumnDefinitionBuilder().build()
     );
 
     @SubApp
     public SubAppDescriptor getBrowser() {
         return new BrowserAppBuilder<Item, JcrDatasourceDefinition>()
-                .icon(MgnlIcon.TAG_2_APP)
+                .icon(MagnoliaIcons.TAG_2_APP)
                 .columns(columns)
                 .rootActions(
                         new AppActionGroupDefinition("addingActions", AddAppActionDefinition.FOLDER),
@@ -137,15 +140,18 @@ public class SampleApp {
 ```
 
 ### ChooserDialog sample:
+
 ```java
+import com.merkle.oss.magnolia.definition.builder.contentapp.column.ColumnDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
-import com.namics.oss.magnolia.appbuilder.builder.ColumnDefinitionBuilder;
+
 import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
 import info.magnolia.ui.contentapp.configuration.ListViewDefinition;
 import info.magnolia.ui.contentapp.configuration.TreeViewDefinition;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 
 import javax.jcr.Item;
+
 import java.util.List;
 
 @ChooserDialogFactory(

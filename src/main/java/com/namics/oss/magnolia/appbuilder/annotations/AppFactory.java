@@ -15,7 +15,11 @@ public @interface AppFactory {
 
 	String label();
 
-	String icon();
+	/**
+	 * @deprecated use {@link Icon} or {@link CustomIcon} annotation
+	 */
+	@Deprecated
+	String icon() default "";
 
 	String i18nBasename() default "";
 

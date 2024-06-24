@@ -1,11 +1,11 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.contentapp.action.MoveActionDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
@@ -15,7 +15,7 @@ public class MoveAppActionDefinition<T> implements AppActionDefinition {
 	private final String label;
 
 	public MoveAppActionDefinition() {
-		this(MgnlIcon.MOVE, "actions.move");
+		this(MagnoliaIcons.MOVE.getCssClass(), "actions.move");
 	}
 
 	public MoveAppActionDefinition(final String icon, final String label) {

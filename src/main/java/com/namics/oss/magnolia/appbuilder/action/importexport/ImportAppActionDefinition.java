@@ -1,11 +1,11 @@
 package com.namics.oss.magnolia.appbuilder.action.importexport;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
@@ -17,7 +17,7 @@ public class ImportAppActionDefinition implements AppActionDefinition {
 		final OpenDialogActionDefinition definition = new OpenDialogActionDefinition();
 		definition.setName("import");
 		definition.setDialogId("ui-framework-jcr:import");
-		definition.setIcon(MgnlIcon.IMPORT);
+		definition.setIcon(MagnoliaIcons.IMPORT.getCssClass());
 		definition.setLabel("actions.import");
 		definition.setAvailability(new AvailabilityDefinitionBuilder()
 				.rule(new JcrIsNotDeletedRuleDefinition())

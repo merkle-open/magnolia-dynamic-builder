@@ -6,6 +6,7 @@ import info.magnolia.config.registry.DefinitionProvider;
 import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.registry.DefinitionTypes;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.namics.oss.magnolia.appbuilder.annotations.AppPermissions;
+import com.namics.oss.magnolia.appbuilder.annotations.CustomIcon;
+import com.namics.oss.magnolia.appbuilder.annotations.Icon;
 import com.namics.oss.magnolia.appbuilder.annotations.SubApp;
 
 public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> {
@@ -77,13 +81,25 @@ public class AppDescriptorProvider implements DefinitionProvider<AppDescriptor> 
 		appDescriptor.setAppClass(ContentApp.class);
 		appDescriptor.setName(annotation.name());
 		appDescriptor.setEnabled(annotation.isEnabled());
-		appDescriptor.setIcon(annotation.icon());
+		getIcon().ifPresent(appDescriptor::setIcon);
 		appDescriptor.setTheme(annotation.theme());
 		appDescriptor.setLabel(annotation.label());
 		appDescriptor.setI18nBasename(annotation.i18nBasename());
 		appDescriptor.setSubApps(getSubApps());
 		getPermissions().ifPresent(appDescriptor::setPermissions);
 		return appDescriptor;
+	}
+
+	private Optional<String> getIcon() {
+		if (factoryObject.getClass().isAnnotationPresent(Icon.class) && factoryObject.getClass().isAnnotationPresent(CustomIcon.class)) {
+			throw new IllegalArgumentException("Either Icon or CustomIcon must be specified - not both!");
+		}
+		return Optional
+				.ofNullable(factoryObject.getClass().getAnnotation(Icon.class)).map(Icon::value).map(MagnoliaIcons::getCssClass)
+				.or(() ->
+						Optional.ofNullable(factoryObject.getClass().getAnnotation(CustomIcon.class)).map(CustomIcon::value)
+				)
+				.or(() -> Optional.ofNullable(annotation.icon()).filter(Predicate.not(String::isBlank)));
 	}
 
 	private Map<String, SubAppDescriptor> getSubApps() {

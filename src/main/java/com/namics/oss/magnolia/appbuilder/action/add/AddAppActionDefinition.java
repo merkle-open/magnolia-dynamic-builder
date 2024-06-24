@@ -1,13 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.action.add;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import javax.annotation.Nullable;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.OpenDialogAction;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
@@ -18,7 +18,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 			"addFolder",
 			NodeTypes.Folder.NAME,
 			"magnolia-appbuilder:createFolder",
-			MgnlIcon.ADD_FOLDER,
+			MagnoliaIcons.ADD_FOLDER.getCssClass(),
 			"actions.addFolder"
 	);
 	private final String name;

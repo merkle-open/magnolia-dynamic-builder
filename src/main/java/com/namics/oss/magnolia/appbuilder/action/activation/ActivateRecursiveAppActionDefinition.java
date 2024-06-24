@@ -1,5 +1,6 @@
 package com.namics.oss.magnolia.appbuilder.action.activation;
 
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
@@ -7,7 +8,6 @@ import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 import java.util.Map;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 
@@ -18,7 +18,7 @@ public class ActivateRecursiveAppActionDefinition implements AppActionDefinition
 		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
 		definition.setName("activateRecursive");
 		definition.setLabel("actions.activateRecursive");
-		definition.setIcon(MgnlIcon.PUBLISH_INCL_SUB);
+		definition.setIcon(MagnoliaIcons.PUBLISH_INCL_SUB.getCssClass());
 		definition.setCommand("publish");
 		definition.setParams(Map.of("recursive", true));
 		definition.setAsynchronous(true);

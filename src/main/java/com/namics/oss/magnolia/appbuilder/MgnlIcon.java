@@ -17,7 +17,10 @@ package com.namics.oss.magnolia.appbuilder;
  * Second run (with 'Match Case'):
  * Search for: (?<![a-z])-(?![a-z])
  * Replace with: _
+ *
+ * @deprecated use info.magnolia.icons.MagnoliaIcons
  */
+@Deprecated
 public final class MgnlIcon {
 
 	public static final String APPSLAUNCHER = "icon-appslauncher";

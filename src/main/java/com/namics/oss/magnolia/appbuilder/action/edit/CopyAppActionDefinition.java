@@ -1,10 +1,10 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.MgnlIcon;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.edit.clipboard.CopyContentActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
@@ -15,7 +15,7 @@ public class CopyAppActionDefinition implements AppActionDefinition {
 	private final String label;
 
 	public CopyAppActionDefinition() {
-		this(MgnlIcon.COPY, "actions.copy");
+		this(MagnoliaIcons.COPY.getCssClass(), "actions.copy");
 	}
 
 	public CopyAppActionDefinition(final String icon, final String label) {
