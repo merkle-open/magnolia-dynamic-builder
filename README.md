@@ -13,7 +13,7 @@ The AppBuilder module is a builder for Magnolia apps in a java comparable to Blo
 <dependency>
     <groupId>com.namics.oss.magnolia</groupId>
     <artifactId>magnolia-appbuilder</artifactId>
-    <version>1.2.2</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
