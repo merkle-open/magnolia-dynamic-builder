@@ -1,10 +1,10 @@
 package com.namics.oss.magnolia.appbuilder.action.activation;
 
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -12,7 +12,7 @@ import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 public class ActivateDeletionAppActionDefinition implements AppActionDefinition {
 
 	@Override
-	public ConfiguredActionDefinition action() {
+	public JcrCommandActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
 		definition.setName("activateDeletion");
 		definition.setLabel("actions.activateDeleted");

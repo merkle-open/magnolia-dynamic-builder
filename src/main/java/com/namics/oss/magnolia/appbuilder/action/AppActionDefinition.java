@@ -1,10 +1,11 @@
 package com.namics.oss.magnolia.appbuilder.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 public interface AppActionDefinition {
 
-	ConfiguredActionDefinition action();
+	ConfiguredActionDefinition action(DropConstraintDefinition dropConstraint);
 
 	/**
 	 * Return true if this action should be shown if multiple nodes are selected

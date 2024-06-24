@@ -2,7 +2,7 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -25,7 +25,7 @@ public class PasteAppActionDefinition implements AppActionDefinition {
 	}
 
 	@Override
-	public ConfiguredActionDefinition action() {
+	public PasteContentActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final PasteContentActionDefinition definition = new PasteContentActionDefinition();
 		definition.setName("paste");
 		definition.setLabel(label);

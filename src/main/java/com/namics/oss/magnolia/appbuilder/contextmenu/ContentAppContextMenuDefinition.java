@@ -3,6 +3,7 @@ package com.namics.oss.magnolia.appbuilder.contextmenu;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,31 +42,30 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 	}
 
 	@Override
-	public Stream<ActionbarSectionDefinition> sections() {
+	public Stream<ActionbarSectionDefinition> sections(final DropConstraintDefinition dropConstraint) {
 		final ConfiguredActionbarSectionDefinition singleSectionDefinition = new ConfiguredActionbarSectionDefinition();
 		singleSectionDefinition.setName(uniqueNameProvider.get());
-		singleSectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		singleSectionDefinition.setGroups(actionbarGroupDefinitions(false, dropConstraint).collect(Collectors.toList()));
 		singleSectionDefinition.setAvailability(availabilityDefinitionProvider.get());
 
 		final ConfiguredActionbarSectionDefinition multipleSectionDefinition = new ConfiguredActionbarSectionDefinition();
 		multipleSectionDefinition.setName(uniqueNameProvider.get());
-		multipleSectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		multipleSectionDefinition.setGroups(actionbarGroupDefinitions(false, dropConstraint).collect(Collectors.toList()));
 		multipleSectionDefinition.setAvailability(availabilityDefinitionProvider.get());
 
 		return Stream.of(singleSectionDefinition, multipleSectionDefinition);
 	}
 
-	public Optional<DoubleClickAction> doubleClickAction() {
+	public Optional<DoubleClickAction> doubleClickAction(final DropConstraintDefinition dropConstraint) {
 		return Optional.ofNullable(doubleClickAction).map(action ->
 				new DoubleClickAction() {
 					@Override
 					public String nodeType() {
 						return nodeType;
 					}
-
 					@Override
 					public String action() {
-						return getUniqueName(action.action());
+						return getUniqueName(action.action(dropConstraint));
 					}
 				}
 		);

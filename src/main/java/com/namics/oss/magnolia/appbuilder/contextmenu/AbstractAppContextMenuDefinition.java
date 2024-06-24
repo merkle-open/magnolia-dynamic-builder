@@ -1,8 +1,5 @@
 package com.namics.oss.magnolia.appbuilder.contextmenu;
 
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.builder.actionbar.SimpleActionBarItem;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
@@ -10,11 +7,17 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
-import javax.inject.Provider;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.inject.Provider;
+
+import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
+import com.namics.oss.magnolia.appbuilder.builder.actionbar.SimpleActionBarItem;
 
 public abstract class AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 	protected final Provider<String> uniqueNameProvider;
@@ -30,37 +33,37 @@ public abstract class AbstractAppContextMenuDefinition implements AppContextMenu
 		this.actionGroups = actionGroups;
 	}
 
-	protected Stream<ActionbarGroupDefinition> actionbarGroupDefinitions(final boolean multiple) {
+	protected Stream<ActionbarGroupDefinition> actionbarGroupDefinitions(final boolean multiple, final DropConstraintDefinition dropConstraint) {
 		return actionGroups.stream()
 				.map(group -> {
 					final ConfiguredActionbarGroupDefinition definition = new ConfiguredActionbarGroupDefinition();
 					definition.setName(group.name());
-					definition.setItems(actionbarItems(group.actions(), multiple));
+					definition.setItems(actionbarItems(group.actions(), multiple, dropConstraint));
 					return (ActionbarGroupDefinition)definition;
 				})
 				.filter(group -> !group.getItems().isEmpty());
 	}
 
-	private List<ActionbarItemDefinition> actionbarItems(final List<AppActionDefinition> actions, final boolean multiple) {
+	private List<ActionbarItemDefinition> actionbarItems(final List<AppActionDefinition> actions, final boolean multiple, final DropConstraintDefinition dropConstraint) {
 		return actions.stream()
 				.filter(browserActionDefinition -> !browserActionDefinition.isCallback())
 				.filter(browserActionDefinition -> browserActionDefinition.multiple() || multiple == browserActionDefinition.multiple())
-				.map(AppActionDefinition::action)
+				.map(appAction -> appAction.action(dropConstraint))
 				.map(this::getUniqueName)
 				.map(SimpleActionBarItem::name)
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Stream<ActionDefinition> actions() {
+	public Stream<ActionDefinition> actions(final DropConstraintDefinition dropConstraint) {
 		return actionGroups.stream()
 				.flatMap(group -> group.actions().stream())
-				.map(this::map);
+				.map(action -> map(action, dropConstraint));
 	}
 
-	private ActionDefinition map(final AppActionDefinition browserAction) {
+	private ActionDefinition map(final AppActionDefinition browserAction, final DropConstraintDefinition dropConstraint) {
 		// Somehow actionDefinition must be the same instance (Magnolia magic?!). Otherwise the execution in OpenCreateDialogAction will fail.
-		final ConfiguredActionDefinition action = browserAction.action();
+		final ConfiguredActionDefinition action = browserAction.action(dropConstraint);
 		if (!browserAction.isCallback()) {
 			action.setName(getUniqueName(action));
 			action.setAvailability(merge(action.getAvailability(), browserAction));

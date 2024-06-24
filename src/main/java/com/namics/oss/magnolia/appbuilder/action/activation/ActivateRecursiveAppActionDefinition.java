@@ -1,9 +1,9 @@
 package com.namics.oss.magnolia.appbuilder.action.activation;
 
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import com.namics.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinit
 public class ActivateRecursiveAppActionDefinition implements AppActionDefinition {
 
 	@Override
-	public ConfiguredActionDefinition action() {
+	public JcrCommandActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
 		definition.setName("activateRecursive");
 		definition.setLabel("actions.activateRecursive");

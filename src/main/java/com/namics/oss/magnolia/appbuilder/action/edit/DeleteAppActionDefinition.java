@@ -1,8 +1,8 @@
 package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -12,7 +12,7 @@ import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefi
 public class DeleteAppActionDefinition implements AppActionDefinition {
 
 	@Override
-	public ConfiguredActionDefinition action() {
+	public JcrCommandActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final JcrCommandActionDefinition definition = new JcrCommandActionDefinition();
 		definition.setName("delete");
 		definition.setLabel("actions.delete");

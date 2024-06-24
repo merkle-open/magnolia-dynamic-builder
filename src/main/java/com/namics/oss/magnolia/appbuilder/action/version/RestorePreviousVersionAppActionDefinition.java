@@ -2,9 +2,9 @@ package com.namics.oss.magnolia.appbuilder.action.version;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition;
 import info.magnolia.ui.contentapp.action.RestoreJcrVersionActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -12,7 +12,7 @@ import com.namics.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefi
 
 public class RestorePreviousVersionAppActionDefinition implements AppActionDefinition {
 	@Override
-	public ConfiguredActionDefinition action() {
+	public RestoreJcrVersionActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final RestoreJcrVersionActionDefinition definition = new RestoreJcrVersionActionDefinition();
 		definition.setName("restorePreviousVersion");
 		definition.setLabel("actions.restorePreviousVersion");

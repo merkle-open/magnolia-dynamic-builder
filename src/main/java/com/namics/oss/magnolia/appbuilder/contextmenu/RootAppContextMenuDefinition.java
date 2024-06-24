@@ -3,6 +3,7 @@ package com.namics.oss.magnolia.appbuilder.contextmenu;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,10 +28,10 @@ public class RootAppContextMenuDefinition extends AbstractAppContextMenuDefiniti
 	}
 
 	@Override
-	public Stream<ActionbarSectionDefinition> sections() {
+	public Stream<ActionbarSectionDefinition> sections(final DropConstraintDefinition dropConstraint) {
 		final ConfiguredActionbarSectionDefinition sectionDefinition = new ConfiguredActionbarSectionDefinition();
 		sectionDefinition.setName(uniqueNameProvider.get());
-		sectionDefinition.setGroups(actionbarGroupDefinitions(false).collect(Collectors.toList()));
+		sectionDefinition.setGroups(actionbarGroupDefinitions(false, dropConstraint).collect(Collectors.toList()));
 		sectionDefinition.setAvailability(availabilityDefinitionProvider.get());
 		return Stream.of(sectionDefinition);
 	}

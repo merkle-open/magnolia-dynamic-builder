@@ -3,6 +3,7 @@ package com.namics.oss.magnolia.appbuilder.action.add;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import javax.annotation.Nullable;
@@ -65,7 +66,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	}
 
 	@Override
-	public OpenDialogAction.Definition action() {
+	public OpenDialogAction.Definition action(final DropConstraintDefinition dropConstraint) {
 		final OpenDialogAction.Definition definition = new OpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.ADD);
 		definition.setCustomCommitAction(new CreateNodeActionDefinition(nodeType, nodeNameProviderClass));
 		definition.setName(name);

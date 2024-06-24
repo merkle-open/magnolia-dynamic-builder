@@ -152,16 +152,16 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 				Stream.of(new RootAppContextMenuDefinition(rootActions)),
 				contentContextMenuDefinitions.stream()
 		).collect(Collectors.toList());
+		if (dropConstraint == null) {
+			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
+		}
 
 		final BrowserDescriptor<T, DS> definition = new BrowserDescriptor<>();
 		definition.setSubAppClass(ContentBrowserSubApp.class);
 		definition.setName("browser");
 		definition.setIcon(icon != null ? icon : MagnoliaIcons.PACKAGER_APP.getCssClass());
-		definition.setActions(actions(contextMenuDefinitions));
-		definition.setActionbar(actionbar(contextMenuDefinitions));
-		if (dropConstraint == null) {
-			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
-		}
+		definition.setActions(actions(contextMenuDefinitions, dropConstraint));
+		definition.setActionbar(actionbar(contextMenuDefinitions, dropConstraint));
 		definition.setWorkbench(workbench(
 				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(false),
 				getColumnDefinitions(),
@@ -182,9 +182,9 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		);
 	}
 
-	private ActionbarDefinition actionbar(final List<AppContextMenuDefinition> contextMenuDefinitions) {
+	private ActionbarDefinition actionbar(final List<AppContextMenuDefinition> contextMenuDefinitions, final DropConstraintDefinition dropConstraint) {
 		final List<ActionbarSectionDefinition> sections = contextMenuDefinitions.stream()
-				.flatMap(AppContextMenuDefinition::sections)
+				.flatMap(contextMenu -> contextMenu.sections(dropConstraint))
 				.collect(Collectors.toList());
 		final ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
 		definition.setDefaultAction("defaultAction");
@@ -192,11 +192,11 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return definition;
 	}
 
-	private Map<String, ActionDefinition> actions(final List<AppContextMenuDefinition> contextMenuDefinitions) {
+	private Map<String, ActionDefinition> actions(final List<AppContextMenuDefinition> contextMenuDefinitions, final DropConstraintDefinition dropConstraint) {
 		final Map<String, String> doubleClickNodeTypeActions = contextMenuDefinitions.stream()
 				.filter(ContentAppContextMenuDefinition.class::isInstance)
 				.map(ContentAppContextMenuDefinition.class::cast)
-				.map(ContentAppContextMenuDefinition::doubleClickAction)
+				.map(contextMenu -> contextMenu.doubleClickAction(dropConstraint))
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.collect(Collectors.toMap(DoubleClickAction::nodeType, DoubleClickAction::action));
@@ -208,7 +208,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return Stream
 				.concat(
 						Stream.of(defaultAction),
-						contextMenuDefinitions.stream().flatMap(AppContextMenuDefinition::actions)
+						contextMenuDefinitions.stream().flatMap(contextMenu -> contextMenu.actions(dropConstraint))
 				)
 				.collect(Collectors.toMap(ActionDefinition::getName, action -> action, (t, t2) -> t)); //overwrite duplicate keys (==action name)
 	}

@@ -2,8 +2,8 @@ package com.namics.oss.magnolia.appbuilder.action.edit;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.contentapp.action.DeleteNodesConfirmationActionDefinition;
+import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -22,7 +22,7 @@ public class ConfirmDeleteAppActionDefinition implements AppActionDefinition {
 	}
 
 	@Override
-	public ConfiguredActionDefinition action() {
+	public DeleteNodesConfirmationActionDefinition action(final DropConstraintDefinition dropConstraint) {
 		final DeleteNodesConfirmationActionDefinition definition = new DeleteNodesConfirmationActionDefinition();
 		definition.setName("confirmDelete");
 		definition.setLabel("actions.confirmDeletion");
