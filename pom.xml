@@ -30,7 +30,7 @@
 
 	<properties>
 		<magnolia.version>6.2.44</magnolia.version>
-		<namics.oss.definitionbuilder.version>1.0.18</namics.oss.definitionbuilder.version>
+		<namics.oss.definitionbuilder.version>1.0.26</namics.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>5.10.2</junit.version>
 		<mockito.version>5.11.0</mockito.version>

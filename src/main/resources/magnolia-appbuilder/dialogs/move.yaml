@@ -4,20 +4,15 @@ actions:
     availability:
       rules:
         CanMoveRuleDefinition:
-          dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
+          dropLocation: ON_TOP
   above:
     availability:
       rules:
         CanMoveRuleDefinition:
-          dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
           dropLocation: ABOVE
 
   below:
     availability:
       rules:
         CanMoveRuleDefinition:
-          dropConstraint:
-            class: com.namics.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition
           dropLocation: BELOW
