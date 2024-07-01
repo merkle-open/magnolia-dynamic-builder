@@ -22,14 +22,17 @@ public class AppRegistrar {
 
 	private final Set<Class<?>> appFactories;
 	private final AppDescriptorRegistry appDescriptorRegistry;
+	private final LegacyAppDescriptorProvider.ColumnDefinitionFilter legacyAppColumnDefinitionFilter;
 
 	@Inject
 	public AppRegistrar(
 			@AppFactories final Set<Class<?>> appFactories,
-			final AppDescriptorRegistry appDescriptorRegistry
+			final AppDescriptorRegistry appDescriptorRegistry,
+			final LegacyAppDescriptorProvider.ColumnDefinitionFilter legacyAppColumnDefinitionFilter
 	) {
 		this.appFactories = appFactories;
 		this.appDescriptorRegistry = appDescriptorRegistry;
+		this.legacyAppColumnDefinitionFilter = legacyAppColumnDefinitionFilter;
 	}
 
 	public void register() {
@@ -41,7 +44,7 @@ public class AppRegistrar {
 		// build app descriptor from detected factory bean
 		final Object factory = Components.newInstance(factoryClass);
 		final AppDescriptorProvider appDescriptorProvider = new AppDescriptorProvider(factory);
-		final LegacyAppDescriptorProvider legacyAppDescriptorProvider = new LegacyAppDescriptorProvider(factory);
+		final LegacyAppDescriptorProvider legacyAppDescriptorProvider = new LegacyAppDescriptorProvider(factory, legacyAppColumnDefinitionFilter);
 		// register app descriptor
 		if(legacyAppDescriptorProvider.shouldRegister()) {
 			LOG.info("Registered legacy chooser app '{}'", legacyAppDescriptorProvider.getMetadata().getReferenceId());

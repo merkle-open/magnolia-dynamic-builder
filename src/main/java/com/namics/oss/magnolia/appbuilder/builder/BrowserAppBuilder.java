@@ -28,10 +28,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
-import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
-import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
-import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
 import com.namics.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.namics.oss.magnolia.appbuilder.action.DoubleClickAction;
@@ -52,8 +49,6 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	private DropConstraintDefinition dropConstraint;
 	@Nullable
 	private List<ColumnDefinition<T>> columnDefinitions;
-	@Nullable
-	private Map<String, String> nodeTypeIcons;
 	@Nullable
 	private Map<String, SortDirection> sortBy;
 	@Nullable
@@ -107,25 +102,6 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> nodeTypeIcon(final String nodeType, final MagnoliaIcons icon) {
-		return nodeTypeIcon(nodeType, icon.getCssClass());
-	}
-	public BrowserAppBuilder<T, DS> nodeTypeIcon(final String nodeType, final String icon) {
-		return nodeTypeIcons(Stream.concat(
-				Stream.ofNullable(nodeTypeIcons).map(Map::entrySet).flatMap(Collection::stream),
-				Stream.of(Map.entry(nodeType, icon))
-		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-	}
-	public BrowserAppBuilder<T, DS> nodeTypeIconsTyped(final Map<String, MagnoliaIcons> nodeTypeIcons) {
-		return nodeTypeIcons(nodeTypeIcons.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getCssClass()))
-		);
-	}
-	public BrowserAppBuilder<T, DS> nodeTypeIcons(final Map<String, String> nodeTypeIcons) {
-		this.nodeTypeIcons = nodeTypeIcons;
-		return this;
-	}
-
 	public BrowserAppBuilder<T, DS> sortBy(final String propertyName, final SortDirection direction) {
 		return sortBy(Stream.concat(
 				Stream.ofNullable(sortBy).map(Map::entrySet).flatMap(Collection::stream),
@@ -164,22 +140,11 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		definition.setActionbar(actionbar(contextMenuDefinitions, dropConstraint));
 		definition.setWorkbench(workbench(
 				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(false),
-				getColumnDefinitions(),
+				columnDefinitions != null ? columnDefinitions : Collections.emptyList(),
 				dropConstraint
 		));
 		definition.setDatasource(datasourceDefinition);
 		return definition;
-	}
-
-	private List<ColumnDefinition<T>> getColumnDefinitions() {
-		if (columnDefinitions != null) {
-			return columnDefinitions;
-		}
-		return List.of(
-				new JcrTitleColumnDefinitionBuilder().nodeTypeToIcon(nodeTypeIcons != null ? nodeTypeIcons : Collections.emptyMap()).build(),
-				(ColumnDefinition<T>)new JcrStatusColumnDefinitionBuilder().build(),
-				(ColumnDefinition<T>)new ModificationDateColumnDefinitionBuilder().build()
-		);
 	}
 
 	private ActionbarDefinition actionbar(final List<AppContextMenuDefinition> contextMenuDefinitions, final DropConstraintDefinition dropConstraint) {

@@ -10,7 +10,6 @@ import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.column.jcr.JcrStatusColumnDefinition;
 import info.magnolia.ui.contentapp.configuration.BrowserDescriptor;
 import info.magnolia.ui.contentapp.configuration.GridViewDefinition;
 import info.magnolia.ui.contentapp.configuration.ListViewDefinition;
@@ -43,7 +42,6 @@ import javax.jcr.Item;
 import org.apache.jackrabbit.JcrConstants;
 
 import com.google.common.collect.ImmutableList;
-import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinition;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.v7.ui.Table;
@@ -57,9 +55,14 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 	public static final UnaryOperator<String> CONVERT_APP_NAME = appName -> appName + "-legacyChooser";
 	private final DefinitionMetadata metadata;
 	private final boolean shouldRegister;
+	private final ColumnDefinitionFilter columnDefinitionFilter;
 
-	public LegacyAppDescriptorProvider(final Object appFactory) {
+	public LegacyAppDescriptorProvider(
+			final Object appFactory,
+			final ColumnDefinitionFilter columnDefinitionFilter
+	) {
 		super(appFactory);
+		this.columnDefinitionFilter = columnDefinitionFilter;
 		final AppFactory appFactoryAnnotation = appFactory.getClass().getAnnotation(AppFactory.class);
 		this.shouldRegister = appFactoryAnnotation.generateLegacyChooserApp();
 		this.metadata = new LegacyAppDefinitionMetaDataBuilder(appFactory, appFactoryAnnotation.id())
@@ -171,7 +174,7 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 	) {
 		return gridViewDefinition.getColumns()
 				.stream()
-				.filter(Predicate.not(ModificationDateColumnDefinition.class::isInstance).and(Predicate.not(JcrStatusColumnDefinition.class::isInstance)))
+				.filter(columnDefinitionFilter)
 				.map(column ->
 						convert(appDescriptor, browserDescriptor, column)
 				)
@@ -238,6 +241,13 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 		@Override
 		protected String generateLocation(final Object appFactory) {
 			return CONVERT_APP_NAME.apply(super.generateLocation(appFactory));
+		}
+	}
+
+	public static class ColumnDefinitionFilter implements Predicate<ColumnDefinition<?>>{
+		@Override
+		public boolean test(final ColumnDefinition<?> columnDefinition) {
+			return true;
 		}
 	}
 }

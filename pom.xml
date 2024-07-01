@@ -87,11 +87,6 @@
 			<artifactId>magnolia-definition-builders</artifactId>
 			<version>${namics.oss.definitionbuilder.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.namics.oss.magnolia</groupId>
-			<artifactId>custom-definition-builders</artifactId>
-			<version>${namics.oss.definitionbuilder.version}</version>
-		</dependency>
 
 		<!-- Vaadin Compatibility -->
 		<dependency>

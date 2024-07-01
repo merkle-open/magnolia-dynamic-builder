@@ -27,6 +27,10 @@ The AppBuilder module is a builder for Magnolia apps in a java comparable to Blo
         <configurer>
             <class>GuiceComponentConfigurer</class>
         </configurer>
+        <component>
+            <type>com.namics.oss.magnolia.appbuilder.builder.DefaultColumnDefinitionsFactory</type>
+            <implementation>...</implementation>
+        </component>
     </components>
     ...
 </module>

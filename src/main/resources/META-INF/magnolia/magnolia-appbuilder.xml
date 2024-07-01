@@ -19,6 +19,10 @@
         <configurer>
             <class>com.namics.oss.magnolia.appbuilder.configuration.AppBuilderGuiceComponentConfigurer</class>
         </configurer>
+        <component>
+            <type>com.namics.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</type>
+            <implementation>com.namics.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</implementation>
+        </component>
     </components>
 
     <dependencies>
