@@ -3,8 +3,8 @@
 The AppBuilder module is a builder for Magnolia apps in a java comparable to Blossom DialogBuilder.
 
 ## Requirements
-* Java 11
-* Magnolia >= 6.0
+* Java 17
+* Magnolia >= 6.3
 
 ## Setup
 
@@ -43,19 +43,19 @@ import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.reflections.Reflections;
 
 import com.google.inject.multibindings.Multibinder;
-import com.namics.oss.magnolia.appbuilder.AppRegistrar;
-import com.namics.oss.magnolia.appbuilder.ChooserDialogRegistrar;
+import com.namics.oss.magnolia.appbuilder.annotations.AppFactories;
 import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactories;
 import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 
 public class GuiceComponentConfigurer extends AbstractGuiceComponentConfigurer {
     @Override
     protected void configure() {
         // Here we use Reflections, but you can also use ClassPathScanningCandidateComponentProvider or bind each factory manually 
-        final Multibinder<Class<?>> appFactoryMultibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<>() {}, AppRegistrar.AppFactories.class);
+        final Multibinder<Class<?>> appFactoryMultibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<>() {}, AppFactories.class);
         new Reflections(getClass()).getTypesAnnotatedWith(AppFactory.class).forEach(clazz -> appFactoryMultibinder.addBinding().toInstance(clazz));
 
-        final Multibinder<Class<?>> chooserDialogFactoryMultibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<>() {}, ChooserDialogRegistrar.ChooserDialogFactories.class);
+        final Multibinder<Class<?>> chooserDialogFactoryMultibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<>() {}, ChooserDialogFactories.class);
         new Reflections(getClass()).getTypesAnnotatedWith(ChooserDialogFactory.class).forEach(clazz -> chooserDialogFactoryMultibinder.addBinding().toInstance(clazz));
     }
 }

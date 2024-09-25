@@ -2,6 +2,8 @@ package com.namics.oss.magnolia.appbuilder;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.dialog.DialogDefinitionRegistry;
 
 import java.lang.invoke.MethodHandles;
 
@@ -12,23 +14,31 @@ import org.slf4j.LoggerFactory;
 
 public class AppBuilderModule implements ModuleLifecycle {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final AppRegistrar appRegistrar;
-    private final ChooserDialogRegistrar chooserDialogRegistrar;
+    private final DialogDefinitionRegistry dialogDefinitionRegistry;
+    private final ChooserDialogConfigurationSource chooserDialogRegistrar;
+    private final AppDescriptorRegistry appDescriptorRegistry;
+    private final AppConfigurationSource appConfigurationSource;
 
     @Inject
 	public AppBuilderModule(
-			final AppRegistrar appRegistrar,
-			final ChooserDialogRegistrar chooserDialogRegistrar
+			final AppDescriptorRegistry appDescriptorRegistry,
+			final AppConfigurationSource appConfigurationSource,
+			final DialogDefinitionRegistry dialogDefinitionRegistry,
+			final ChooserDialogConfigurationSource chooserDialogRegistrar
 	) {
-        this.appRegistrar = appRegistrar;
+        this.appDescriptorRegistry = appDescriptorRegistry;
+        this.appConfigurationSource = appConfigurationSource;
+        this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.chooserDialogRegistrar = chooserDialogRegistrar;
     }
 
 	@Override
 	public void start(ModuleLifecycleContext moduleLifecycleContext) {
 		LOG.debug("Starting AppBuilder Module");
-		appRegistrar.register();
-		chooserDialogRegistrar.register();
+		appDescriptorRegistry.bindTo(appConfigurationSource);
+		dialogDefinitionRegistry.bindTo(chooserDialogRegistrar);
+		appConfigurationSource.start();
+		chooserDialogRegistrar.start();
 	}
 
 	@Override
