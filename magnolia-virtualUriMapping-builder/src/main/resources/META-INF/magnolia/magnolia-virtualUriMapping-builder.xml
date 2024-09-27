@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-virtualUriMapping-builder</name>
+    <displayName>Magnolia VirtualUriMapping builder</displayName>
+    <description>The VirtualUriMappingBuilder is a builder for Magnolia virtualUriMappings using java code.</description>
+    <class>com.merkle.oss.magnolia.virtualurimappingbuilder.VirtualUriMappingBuilderModule</class>
+    <version>${project.version}</version>
+
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.merkle.oss.magnolia.virtualurimappingbuilder.configuration.VirtualUriMappingBuilderGuiceComponentConfigurer</class>
+        </configurer>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>

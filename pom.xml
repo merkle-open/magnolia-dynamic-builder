@@ -39,6 +39,7 @@
 		<module>magnolia-builder-common</module>
 		<module>magnolia-appbuilder</module>
 		<module>magnolia-dialogbuilder</module>
+    <module>magnolia-virtualUriMapping-builder</module>
   </modules>
 
 	<properties>
