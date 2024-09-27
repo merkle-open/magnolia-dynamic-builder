@@ -39,12 +39,14 @@
 		<module>magnolia-builder-common</module>
 		<module>magnolia-appbuilder</module>
 		<module>magnolia-dialogbuilder</module>
+    <module>magnolia-templatebuilder</module>
     <module>magnolia-virtualUriMapping-builder</module>
   </modules>
 
 	<properties>
 		<!--	mvn versions:display-property-updates	-->
 		<magnolia.version>6.3.0</magnolia.version>
+		<magnolia.advancedcache.version>3.0.0</magnolia.advancedcache.version>
 		<jsr305.nullable.version>3.0.2</jsr305.nullable.version>
 		<namics.oss.definitionbuilder.version>1.2.0</namics.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
@@ -78,6 +80,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>info.magnolia.advancedcache</groupId>
+				<artifactId>magnolia-advanced-cache-dpc</artifactId>
+				<version>${magnolia.advancedcache.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>

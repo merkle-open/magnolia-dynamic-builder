@@ -14,3 +14,6 @@ The DialogBuilder module is a builder for Magnolia dialogs in a java.
 
 ## [Magnolia-VirtualUriMapping-builder](magnolia-virtualUriMapping-builder/README.md)
 The VirtualUriMapping-Builder module is a builder for Magnolia virtualUriMappings in a java.
+
+## [Magnolia-templatebuilder](magnolia-templatebuilder/README.md)
+The TemplateBuilder module is a builder for Magnolia templates in a java.

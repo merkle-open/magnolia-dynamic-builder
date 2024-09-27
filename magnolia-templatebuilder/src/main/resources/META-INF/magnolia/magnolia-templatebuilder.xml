@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-templatebuilder</name>
+    <displayName>Magnolia TemplateBuilder</displayName>
+    <description>The TemplateBuilder is a builder for Magnolia templates using java code.</description>
+    <class>com.merkle.oss.magnolia.templatebuilder.TemplateBuilderModule</class>
+    <version>${project.version}</version>
+
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.merkle.oss.magnolia.templatebuilder.configuration.TemplateBuilderGuiceComponentConfigurer</class>
+        </configurer>
+        <component>
+            <type>com.merkle.oss.magnolia.templatebuilder.TemplateAvailabilityResolver</type>
+            <implementation>com.merkle.oss.magnolia.templatebuilder.TemplateAvailabilityResolver</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.templatebuilder.parameter.AvailabilityParameterResolverFactory</type>
+            <implementation>com.merkle.oss.magnolia.templatebuilder.parameter.DefaultAvailabilityParameterResolver$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.templatebuilder.parameter.AutoGeneratorParameterResolverFactory</type>
+            <implementation>com.merkle.oss.magnolia.templatebuilder.parameter.DefaultAutoGeneratorParameterResolver$Factory</implementation>
+        </component>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>
