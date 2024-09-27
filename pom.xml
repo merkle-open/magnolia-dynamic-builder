@@ -38,6 +38,7 @@
 	<modules>
 		<module>magnolia-builder-common</module>
 		<module>magnolia-appbuilder</module>
+		<module>magnolia-dialogbuilder</module>
   </modules>
 
 	<properties>

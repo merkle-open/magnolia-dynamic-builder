@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-dialogbuilder</name>
+    <displayName>Magnolia DialogBuilder</displayName>
+    <description>The DialogBuilder is a builder for Magnolia dialogs using java code.</description>
+    <class>com.merkle.oss.magnolia.dialogbuilder.DialogBuilderModule</class>
+    <version>${project.version}</version>
+
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.merkle.oss.magnolia.dialogbuilder.configuration.DialogBuilderGuiceComponentConfigurer</class>
+        </configurer>
+        <component>
+            <type>com.merkle.oss.magnolia.dialogbuilder.DialogDefinitionProvider$Factory</type>
+            <implementation>com.merkle.oss.magnolia.dialogbuilder.DialogDefinitionProvider$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.dialogbuilder.parameter.DialogCreationContext$Factory</type>
+            <implementation>com.merkle.oss.magnolia.dialogbuilder.parameter.DialogCreationContext$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.dialogbuilder.parameter.DialogParameterResolverFactory</type>
+            <implementation>com.merkle.oss.magnolia.dialogbuilder.parameter.DefaultDialogParameterResolver$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.dialogbuilder.DialogDefinitionProvider$TabComparatorFactory</type>
+            <implementation>com.merkle.oss.magnolia.dialogbuilder.DefaultTabComparator$Factory</implementation>
+        </component>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>
