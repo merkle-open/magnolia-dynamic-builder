@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-appbuilder</name>
+    <displayName>Magnolia Appbuilder</displayName>
+    <description>The AppBuilder is a builder for Magnolia apps using java code.</description>
+    <class>com.merkle.oss.magnolia.appbuilder.AppBuilderModule</class>
+    <version>${project.version}</version>
+
+    <components>
+        <id>admincentral</id>
+        <component>
+            <type>com.merkle.oss.magnolia.appbuilder.action.edit.clipboard.JcrContentClipboard</type>
+            <implementation>com.merkle.oss.magnolia.appbuilder.action.edit.clipboard.NodeTypeConstraintAwareJcrContentClipboard</implementation>
+        </component>
+    </components>
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.merkle.oss.magnolia.appbuilder.configuration.AppBuilderGuiceComponentConfigurer</class>
+        </configurer>
+        <component>
+            <type>com.merkle.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</type>
+            <implementation>com.merkle.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</implementation>
+        </component>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+        <dependency>
+            <name>rendering</name>
+            <version>*</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <name>ui-contentapp</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>

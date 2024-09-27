@@ -3,42 +3,58 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.namics.oss.magnolia</groupId>
-	<artifactId>magnolia-appbuilder</artifactId>
+	<groupId>com.merkle.oss.magnolia</groupId>
+	<artifactId>magnolia-dynamic-builder</artifactId>
 	<version>1.4.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
 	<description>The AppBuilder module is a builder for Magnolia apps using java code.</description>
 	<url>https://github.com/namics/magnolia-appbuilder</url>
+
 	<licenses>
 		<license>
-			<name>GNU General Public License version 3 (GPLv3)</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
 	<developers>
 		<developer>
-			<name>Namics Magnolia</name>
-			<email>magnolia@namics.com</email>
-			<organization>Namics AG</organization>
-			<organizationUrl>http://www.namics.com</organizationUrl>
+			<name>Merkle Magnolia</name>
+			<email>magnolia@merkle.com</email>
+			<organization>Merkle DACH</organization>
+			<organizationUrl>https://merkleinc.ch</organizationUrl>
 		</developer>
 	</developers>
+
+	<scm>
+		<url>https://github.com/namics/magnolia-dynamic-builder</url>
+		<connection>scm:git:git@github.com:namics/magnolia-dynamic-builder.git</connection>
+		<developerConnection>scm:git:git@github.com:namics/magnolia-dynamic-builder.git</developerConnection>
+	</scm>
+
+	<modules>
+		<module>magnolia-builder-common</module>
+		<module>magnolia-appbuilder</module>
+  </modules>
 
 	<properties>
 		<!--	mvn versions:display-property-updates	-->
 		<magnolia.version>6.3.0</magnolia.version>
+		<jsr305.nullable.version>3.0.2</jsr305.nullable.version>
 		<namics.oss.definitionbuilder.version>1.2.0</namics.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>5.11.0</junit.version>
 		<mockito.version>5.13.0</mockito.version>
 
 		<!-- Maven Plugins -->
-		<mvn.compiler.plugin.version>3.13.0</mvn.compiler.plugin.version>
-		<mvn.source.plugin.version>3.3.1</mvn.source.plugin.version>
+		<mvn.compiler.plugin.version>3.11.0</mvn.compiler.plugin.version>
+		<mvn.source.plugin.version>3.3.0</mvn.source.plugin.version>
+		<mvn.javadoc.version>3.8.0</mvn.javadoc.version>
+		<mvn.gpg.plugin.version>3.2.5</mvn.gpg.plugin.version>
+		<mvn.sonatype.publishing.plugin.version>0.5.0</mvn.sonatype.publishing.plugin.version>
 		<mvn.surefire.plugin.version>3.5.0</mvn.surefire.plugin.version>
 
 		<javaVersion>17</javaVersion>
@@ -47,7 +63,12 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Importing depMgt -->
+			<dependency>
+				<groupId>com.merkle.oss.magnolia</groupId>
+				<artifactId>magnolia-dynamic-builder-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- Magnolia -->
 			<dependency>
 				<groupId>info.magnolia.bundle</groupId>
 				<artifactId>magnolia-bundle-parent</artifactId>
@@ -55,72 +76,27 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>jsr305</artifactId>
+				<version>${jsr305.nullable.version}</version>
+			</dependency>
+
+			<!-- TESTING DEPENDENCIES -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<dependencies>
-		<!-- Magnolia -->
-		<!-- compile time dependencies mostly used in
-			 DefinitionExtender
-			 to generate builder classes -->
-		<dependency>
-			<groupId>info.magnolia</groupId>
-			<artifactId>magnolia-core</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-framework</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-api</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia.ui</groupId>
-			<artifactId>magnolia-ui-framework-compatibility</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.namics.oss.magnolia</groupId>
-			<artifactId>magnolia-definition-builders</artifactId>
-			<version>${namics.oss.definitionbuilder.version}</version>
-		</dependency>
-
-		<!-- Vaadin Compatibility -->
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-compatibility-server</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- TESTING DEPENDENCIES -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.magnolia</groupId>
-			<artifactId>magnolia-core</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<plugins>
@@ -178,22 +154,14 @@
 		</repository>
 	</repositories>
 
+
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
+		<!-- central portal doesn't support SNAPSHOT versions: https://central.sonatype.org/faq/snapshot-releases -->
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>central</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-
-	<scm>
-		<url>https://github.com/namics/magnolia-appbuilder</url>
-		<connection>scm:git:git@github.com:namics/magnolia-appbuilder.git</connection>
-		<developerConnection>scm:git:git@github.com:namics/magnolia-appbuilder.git</developerConnection>
-	</scm>
 
 	<profiles>
 		<profile>
@@ -202,37 +170,8 @@
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.1.1</version>
-						<configuration>
-							<failOnError>false</failOnError>
-						</configuration>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>3.1.0</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>${mvn.gpg.plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -251,24 +190,15 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>${mvn.sonatype.publishing.plugin.version}</version>
 						<extensions>true</extensions>
 						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<publishingServerId>central</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
 						</configuration>
-						<executions>
-							<execution>
-								<id>deploy-to-sonatype</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>deploy</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>
