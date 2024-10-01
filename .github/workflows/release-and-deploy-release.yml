@@ -65,9 +65,9 @@ jobs:
         with:
           servers: |
             [{
-              "id": "magnolia.enterprise.group",
-              "username": "${{secrets.MGNL_NEXUS_USER}}",
-              "password": "${{secrets.MGNL_NEXUS_PASS}}"
+                "id": "magnolia.enterprise.group",
+                "username": "${{secrets.MGNL_NEXUS_USER}}",
+                "password": "${{secrets.MGNL_NEXUS_PASS}}"
             },
             {
               "id": "central",
@@ -76,7 +76,7 @@ jobs:
             },
             {
               "id": "gpg.passphrase",
-              "passphrase": "${{secrets.GPG_PASSPHRASE}}",
+              "passphrase": "${{secrets.GPG_PASSPHRASE}}"
             }]
       - name: Release Maven package
         run: mvn deploy -Pdeploy
