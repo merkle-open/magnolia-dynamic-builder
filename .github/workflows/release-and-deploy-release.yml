@@ -59,14 +59,26 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Maven setup
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          servers: |
+            [
+              {
+                "id": "magnolia.enterprise.group",
+                "username": "${{secrets.MGNL_NEXUS_USER}}",
+                "password": "${{secrets.MGNL_NEXUS_PASS}}"
+              },
+              {
+                "id": "central",
+                "username": "${{secrets.SONATYPE_USER}}",
+                "password": "${{secrets.SONATYPE_PASSWORD}}"
+              },
+              {
+                "id": "gpg.passphrase",
+                "passphrase": "${{secrets.GPG_PASSPHRASE}}",
+              }
+            ]
       - name: Release Maven package
         run: mvn deploy -Pdeploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
-          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
