@@ -19,7 +19,6 @@ jobs:
       - name: Maven setup
         uses: s4u/maven-settings-action@v3.0.0
         with:
-          override: false
           servers: |
             [{
               "id": "magnolia.enterprise.group",
