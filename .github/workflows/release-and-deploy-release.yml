@@ -64,21 +64,19 @@ jobs:
         uses: s4u/maven-settings-action@v3.0.0
         with:
           servers: |
-            [
-              {
-                "id": "magnolia.enterprise.group",
-                "username": "${{secrets.MGNL_NEXUS_USER}}",
-                "password": "${{secrets.MGNL_NEXUS_PASS}}"
-              },
-              {
-                "id": "central",
-                "username": "${{secrets.SONATYPE_USER}}",
-                "password": "${{secrets.SONATYPE_PASSWORD}}"
-              },
-              {
-                "id": "gpg.passphrase",
-                "passphrase": "${{secrets.GPG_PASSPHRASE}}",
-              }
-            ]
+            [{
+              "id": "magnolia.enterprise.group",
+              "username": "${{secrets.MGNL_NEXUS_USER}}",
+              "password": "${{secrets.MGNL_NEXUS_PASS}}"
+            },
+            {
+              "id": "central",
+              "username": "${{secrets.SONATYPE_USER}}",
+              "password": "${{secrets.SONATYPE_PASSWORD}}"
+            },
+            {
+              "id": "gpg.passphrase",
+              "passphrase": "${{secrets.GPG_PASSPHRASE}}",
+            }]
       - name: Release Maven package
         run: mvn deploy -Pdeploy
