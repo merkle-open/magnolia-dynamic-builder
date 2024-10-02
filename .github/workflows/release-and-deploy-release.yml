@@ -7,9 +7,7 @@ on:
 
 jobs:
   release:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,17 +17,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Maven setup
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          servers: |
-            [{
-              "id": "magnolia.enterprise.group",
-              "username": "${{secrets.MGNL_NEXUS_USER}}",
-              "password": "${{secrets.MGNL_NEXUS_PASS}}"
-            }]
       - name: Maven verify
-        run: mvn verify --batch-mode
+        run: mvn -s ci/mvnsettings.xml verify --batch-mode
+        env:
+          MAGNOLIA_REPO_USER: ${{ secrets.MGNL_NEXUS_USER }}
+          MAGNOLIA_REPO_PASSWORD: ${{ secrets.MGNL_NEXUS_PASS }}
       # Install xmllint
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install libxml2-utils
@@ -45,7 +37,6 @@ jobs:
           ci/mvn-release.sh
 
   deploy-release:
-
     needs: release
     runs-on: ubuntu-latest
 
@@ -60,23 +51,11 @@ jobs:
           distribution: temurin
           java-version: 17
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-      - name: Maven setup
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          servers: |
-            [{
-                "id": "magnolia.enterprise.group",
-                "username": "${{secrets.MGNL_NEXUS_USER}}",
-                "password": "${{secrets.MGNL_NEXUS_PASS}}"
-            },
-            {
-              "id": "central",
-              "username": "${{secrets.SONATYPE_USER}}",
-              "password": "${{secrets.SONATYPE_PASSWORD}}"
-            },
-            {
-              "id": "gpg.passphrase",
-              "passphrase": "${{secrets.GPG_PASSPHRASE}}"
-            }]
       - name: Release Maven package
-        run: mvn deploy -Pdeploy
+        run: mvn -s ci/mvnsettings.xml deploy -Pdeploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAGNOLIA_REPO_USER: ${{ secrets.MGNL_NEXUS_USER }}
+          MAGNOLIA_REPO_PASSWORD: ${{ secrets.MGNL_NEXUS_PASS }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
