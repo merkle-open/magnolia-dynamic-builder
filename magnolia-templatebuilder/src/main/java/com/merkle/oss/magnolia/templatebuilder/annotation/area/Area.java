@@ -20,7 +20,7 @@ public @interface Area {
      */
     String renderer() default "";
 
-    String templateScript() default "";
+    String templateScript() default "undefined";
 
     String title() default "";
 

@@ -23,7 +23,7 @@ public @interface Template {
 
     String dialog() default "";
 
-    String templateScript() default "";
+    String templateScript() default "undefined";
 
     /**
      * Defines the visibility of the template. When set to false the template is never presented in the user interface.

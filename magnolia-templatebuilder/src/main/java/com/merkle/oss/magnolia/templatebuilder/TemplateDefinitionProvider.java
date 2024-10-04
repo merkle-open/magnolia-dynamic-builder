@@ -95,7 +95,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         template.setDeletable(annotation.deletable().getValue());
         template.setAreas(getAreas(template, factoryObject.getClass()));
         Optional.of(annotation.modelClass()).filter(RenderingModel.class::isAssignableFrom).ifPresent(template::setModelClass);
-        Optional.ofNullable(StringUtils.trimToNull(annotation.templateScript())).ifPresent(template::setTemplateScript);
+        template.setTemplateScript(annotation.templateScript());
         dynamicFragment(factoryObject.getClass()).ifPresent(template::setFragmentDefinition);
         return template;
     }
@@ -117,7 +117,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         Optional.of(annotation.maxComponents()).filter(max -> Integer.MAX_VALUE != max).ifPresent(area::setMaxComponents);
         area.setOptional(annotation.optional().getValue());
         area.setCreateAreaNode(annotation.createAreaNode().getValue());
-        Optional.ofNullable(StringUtils.trimToNull(annotation.templateScript())).ifPresent(area::setTemplateScript);
+        area.setTemplateScript(annotation.templateScript()); // If the templateScript is null the area is rendered simply by looping the components. (default annotation value is undefined)
         getInheritanceConfiguration(areaClazz).ifPresent(area::setInheritance);
         getAutoGenerationConfiguration(template, area, areaClazz).ifPresent(area::setAutoGeneration);
         area.setAvailableComponents(getAvailableComponents(areaClazz));
