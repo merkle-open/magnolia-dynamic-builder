@@ -7,6 +7,8 @@ import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,6 +19,7 @@ import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.DoubleClickAction;
 
 public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
+	private static final Pattern NODE_TYPE_NAME_PATTERN = Pattern.compile("^[^:]+:(.*)$");
 	private final String nodeType;
 	@Nullable
 	private final AppActionDefinition doubleClickAction;
@@ -26,7 +29,13 @@ public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefin
 			@Nullable final AppActionDefinition doubleClickAction,
 			final List<AppActionGroupDefinition> actionGroups) {
 		super(
-				() -> nodeType.replaceFirst("mgnl:", ""),
+				() -> {
+					final Matcher matcher = NODE_TYPE_NAME_PATTERN.matcher(nodeType);
+					if(matcher.matches()) {
+						return matcher.group(1);
+					}
+					return nodeType;
+				},
 				() -> {
 					final ConfiguredAvailabilityDefinition definition = new ConfiguredAvailabilityDefinition();
 					definition.setRoot(false);
