@@ -58,6 +58,7 @@ public abstract class AbstractDynamicDefinitionProvider<T> implements Definition
                         .withRelatedException(e)
                         .withDetails(e.getClass().getName() + " " + ExceptionUtils.getRootCauseMessage(e))
                         .withLocation(getMetadata().getLocation())
+                        .withType(Problem.DefaultTypes.RESOLUTION)
                         .withTitle(getMetadata().getName())
                         .build()
         );
