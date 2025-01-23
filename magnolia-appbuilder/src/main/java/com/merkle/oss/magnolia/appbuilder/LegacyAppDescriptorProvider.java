@@ -87,7 +87,7 @@ public class LegacyAppDescriptorProvider extends AppDescriptorProvider {
 
 	@Override
 	protected AppDescriptor getInternal() throws Registry.InvalidDefinitionException {
-		final AppDescriptor appDescriptor = super.get();
+		final AppDescriptor appDescriptor = super.getInternal();
 		final ConfiguredContentAppDescriptor legacyAppDescriptor = new ConfiguredContentAppDescriptor();
 		legacyAppDescriptor.setName(CONVERT_APP_NAME.apply(appDescriptor.getName()));
 		legacyAppDescriptor.setAppClass(ContentApp.class);
