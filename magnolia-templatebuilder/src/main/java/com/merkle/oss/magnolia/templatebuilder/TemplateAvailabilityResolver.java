@@ -54,8 +54,11 @@ public class TemplateAvailabilityResolver {
     }
 
     private Stream<Method> streamMethods(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
-        return Arrays
-                .stream(clazz.getDeclaredMethods())
+        return Stream.concat(
+                        Arrays.stream(clazz.getDeclaredMethods()),
+                        Arrays.stream(clazz.getMethods())
+                )
+                .distinct()
                 .filter(method -> method.isAnnotationPresent(annotationClass) && !Modifier.isStatic(method.getModifiers()));
     }
 }

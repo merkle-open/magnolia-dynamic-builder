@@ -66,7 +66,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         this.areaDefinitionFactory = areaDefinitionFactory;
         this.templateFactories = templateFactories;
         this.factoryObjectProvider = factoryObjectProvider;
-        this.annotation = factoryClass.getAnnotation(Template.class);
+        this.annotation = factoryClass.getDeclaredAnnotation(Template.class);
         this.metadata = new DynamicDefinitionMetaData.Builder(factoryClass, annotation.id())
                 .type(DefinitionTypes.TEMPLATE)
                 .build();
@@ -102,8 +102,8 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
 
     protected Map<String, AreaDefinition> getAreas(final ConfiguredTemplateDefinition definition, final Class<?> clazz) {
         return streamClasses(clazz, Area.class)
-                .map(areaClazz -> getAreaDefinition(definition, areaClazz, areaClazz.getAnnotation(Area.class)))
-                .collect(Collectors.toMap(AreaDefinition::getName, Function.identity()));
+                .map(areaClazz -> getAreaDefinition(definition, areaClazz, areaClazz.getDeclaredAnnotation(Area.class)))
+                .collect(Collectors.toMap(AreaDefinition::getName, Function.identity(), (first, second) -> first));
     }
 
     protected AreaDefinition getAreaDefinition(final ConfiguredTemplateDefinition template, final Class<?> areaClazz, final Area annotation) {
@@ -143,7 +143,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
 
     private Optional<ConfiguredInheritance> getInheritanceConfiguration(final Class<?> areaClazz) {
         return Optional
-                .ofNullable(areaClazz.getAnnotation(Inherits.class))
+                .ofNullable(areaClazz.getDeclaredAnnotation(Inherits.class))
                 .map(inherits -> {
                     final ConfiguredInheritance inheritance = new ConfiguredInheritance();
                     inheritance.setEnabled(true);
@@ -156,12 +156,12 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
     protected Map<String, ComponentAvailability> getAvailableComponents(final Class<?> areaClazz) {
         return Stream
                 .concat(
-                        Stream.ofNullable(areaClazz.getAnnotation(AvailableComponents.class))
+                        Stream.ofNullable(areaClazz.getDeclaredAnnotation(AvailableComponents.class))
                                 .map(AvailableComponents::value).flatMap(Arrays::stream),
-                        Stream.ofNullable(areaClazz.getAnnotation(AvailableComponentClasses.class))
+                        Stream.ofNullable(areaClazz.getDeclaredAnnotation(AvailableComponentClasses.class))
                                 .map(AvailableComponentClasses::value).flatMap(Arrays::stream)
                                 .flatMap(componentClazz -> resolveAvailableComponentIds(areaClazz, componentClazz))
-                                .map(componentClazz -> Optional.ofNullable(componentClazz.getAnnotation(Template.class)).map(Template::id).orElseThrow(() ->
+                                .map(componentClazz -> Optional.ofNullable(componentClazz.getDeclaredAnnotation(Template.class)).map(Template::id).orElseThrow(() ->
                                         new IllegalArgumentException("available component clazz " + componentClazz.getName() + " is not annotated with @" + Template.class.getSimpleName())
                                 ))
                 )
@@ -193,14 +193,20 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
     }
 
     private Stream<Class<?>> streamClasses(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
-        return Arrays
-                .stream(clazz.getDeclaredClasses())
-                .filter(method -> method.isAnnotationPresent(annotationClass));
+        return Stream.concat(
+                        Arrays.stream(clazz.getDeclaredClasses()),
+                        Arrays.stream(clazz.getClasses())
+                )
+                .distinct()
+                .filter(anonymousClass -> anonymousClass.isAnnotationPresent(annotationClass));
     }
 
     private Stream<Method> streamMethods(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
-        return Arrays
-                .stream(clazz.getDeclaredMethods())
+        return Stream.concat(
+                        Arrays.stream(clazz.getDeclaredMethods()),
+                        Arrays.stream(clazz.getMethods())
+                )
+                .distinct()
                 .filter(method -> method.isAnnotationPresent(annotationClass) && !Modifier.isStatic(method.getModifiers()));
     }
 
