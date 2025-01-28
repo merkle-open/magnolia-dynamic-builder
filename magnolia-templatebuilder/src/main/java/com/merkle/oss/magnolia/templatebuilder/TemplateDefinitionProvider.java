@@ -194,13 +194,13 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
 
     private Stream<Class<?>> streamClasses(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
         return Arrays
-                .stream(clazz.getDeclaredClasses())
+                .stream(clazz.getClasses())
                 .filter(method -> method.isAnnotationPresent(annotationClass));
     }
 
     private Stream<Method> streamMethods(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
         return Arrays
-                .stream(clazz.getDeclaredMethods())
+                .stream(clazz.getMethods())
                 .filter(method -> method.isAnnotationPresent(annotationClass) && !Modifier.isStatic(method.getModifiers()));
     }
 
