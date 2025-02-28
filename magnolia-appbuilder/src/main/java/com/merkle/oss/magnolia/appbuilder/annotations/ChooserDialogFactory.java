@@ -11,6 +11,7 @@ public @interface ChooserDialogFactory {
     String id();
     String label();
     boolean hasFullTextSearch() default true;
+    boolean hasSearchBar() default false;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.METHOD})

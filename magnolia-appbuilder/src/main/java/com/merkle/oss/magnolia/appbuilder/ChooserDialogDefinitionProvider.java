@@ -68,6 +68,7 @@ public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitio
     private WorkbenchDefinition<T> getWorkbench(final Object factoryObject, final ChooserDialogFactory annotation) {
         final WorkbenchDefinition<T> workbench = new WorkbenchDefinition<>();
         workbench.setContentViews(getContentViews(factoryObject));
+        workbench.setSearchEnabled(annotation.hasSearchBar());
         if (annotation.hasFullTextSearch()) {
             workbench.setExtensionViews(List.of(new FullTextSearchExtensionViewDefinition()));
         }
