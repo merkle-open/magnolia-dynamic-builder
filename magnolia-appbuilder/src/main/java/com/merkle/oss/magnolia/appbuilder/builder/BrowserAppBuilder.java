@@ -53,6 +53,8 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	private Map<String, SortDirection> sortBy;
 	@Nullable
 	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory;
+	@Nullable
+	private Boolean hasSearchBar;
 
 	public BrowserAppBuilder<T, DS> contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory) {
 		this.contentViewFactory = contentViewFactory;
@@ -115,6 +117,11 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 
 	public BrowserAppBuilder<T, DS> dropConstraint(final DropConstraintDefinition dropConstraint) {
 		this.dropConstraint = dropConstraint;
+		return this;
+	}
+
+	public BrowserAppBuilder<T, DS> hasSearchBar(final boolean hasSearchBar) {
+		this.hasSearchBar = hasSearchBar;
 		return this;
 	}
 
@@ -185,6 +192,7 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	) {
 		final WorkbenchDefinition<T> definition = new WorkbenchDefinition<>();
 		definition.setContentViews(contentViewFactory.apply(dropConstraint, columnDefinitions));
+		Optional.ofNullable(hasSearchBar).ifPresent(definition::setSearchEnabled);
 		return definition;
 	}
 
