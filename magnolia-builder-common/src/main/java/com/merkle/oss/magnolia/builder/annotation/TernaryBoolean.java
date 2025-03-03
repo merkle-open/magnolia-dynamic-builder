@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.templatebuilder.annotation;
+package com.merkle.oss.magnolia.builder.annotation;
 
 public enum TernaryBoolean {
     TRUE(true),
