@@ -5,12 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ChooserDialogFactory {
     String id();
     String label();
-    boolean hasFullTextSearch() default true;
+    TernaryBoolean hasSearchBar() default TernaryBoolean.UNSPECIFIED;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.METHOD})

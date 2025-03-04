@@ -6,7 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.merkle.oss.magnolia.templatebuilder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

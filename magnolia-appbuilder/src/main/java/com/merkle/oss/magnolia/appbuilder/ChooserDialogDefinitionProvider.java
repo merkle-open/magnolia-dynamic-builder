@@ -5,7 +5,6 @@ import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.chooser.definition.AppAwareWorkbenchChooserDefinition;
-import info.magnolia.ui.chooser.definition.FullTextSearchExtensionViewDefinition;
 import info.magnolia.ui.chooser.definition.SingleItemWorkbenchChooserDefinition;
 import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
 import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
@@ -25,6 +24,7 @@ import javax.inject.Provider;
 import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
 
 public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitionProvider<DialogDefinition> {
     private final DefinitionMetadata metadata;
@@ -68,8 +68,8 @@ public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitio
     private WorkbenchDefinition<T> getWorkbench(final Object factoryObject, final ChooserDialogFactory annotation) {
         final WorkbenchDefinition<T> workbench = new WorkbenchDefinition<>();
         workbench.setContentViews(getContentViews(factoryObject));
-        if (annotation.hasFullTextSearch()) {
-            workbench.setExtensionViews(List.of(new FullTextSearchExtensionViewDefinition()));
+        if(annotation.hasSearchBar() != TernaryBoolean.UNSPECIFIED) {
+            workbench.setSearchEnabled(annotation.hasSearchBar() == TernaryBoolean.TRUE);
         }
         return workbench;
     }
