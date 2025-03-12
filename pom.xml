@@ -41,6 +41,7 @@
 		<module>magnolia-dialogbuilder</module>
     <module>magnolia-templatebuilder</module>
     <module>magnolia-virtualUriMapping-builder</module>
+    <module>magnolia-sitebuilder</module>
   </modules>
 
 	<properties>

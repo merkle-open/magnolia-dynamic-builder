@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-sitebuilder</name>
+    <displayName>Magnolia SiteBuilder</displayName>
+    <description>The SiteBuilder is a builder for Magnolia sites using java code.</description>
+    <class>com.merkle.oss.magnolia.sitebuilder.SiteBuilderModule</class>
+    <version>${project.version}</version>
+
+    <components>
+        <id>main</id>
+        <configurer>
+            <class>com.merkle.oss.magnolia.sitebuilder.configuration.SiteBuilderGuiceComponentConfigurer</class>
+        </configurer>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>

@@ -17,3 +17,6 @@ The VirtualUriMapping-Builder module is a builder for Magnolia virtualUriMapping
 
 ## [Magnolia-templatebuilder](magnolia-templatebuilder/README.md)
 The TemplateBuilder module is a builder for Magnolia templates in a java.
+
+## [Magnolia-sitebuilder](magnolia-sitebuilder/README.md)
+The SiteBuilder module is a builder for Magnolia sites in a java.
