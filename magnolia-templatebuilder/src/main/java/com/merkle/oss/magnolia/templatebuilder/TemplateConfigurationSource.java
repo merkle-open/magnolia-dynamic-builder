@@ -31,7 +31,7 @@ public class TemplateConfigurationSource extends AbstractDynamicConfigurationSou
 
     @Override
     protected Stream<DefinitionProvider<TemplateDefinition>> definitionProviders(final Class<?> factoryClass) {
-        LOG.info("Registered dialog '{}' from {}", factoryClass.getSimpleName(), factoryClass.getName());
+        LOG.info("Registered template '{}' from {}", factoryClass.getSimpleName(), factoryClass.getName());
         return Stream.of(templateDefinitionProviderFactory.create(factories, factoryClass));
     }
 }
