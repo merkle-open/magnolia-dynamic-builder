@@ -36,7 +36,7 @@
 	</scm>
 
 	<modules>
-		<module>magnolia-builder-common</module>
+		<module>magnolia-dynamic-builder-common</module>
 		<module>magnolia-appbuilder</module>
 		<module>magnolia-dialogbuilder</module>
     <module>magnolia-templatebuilder</module>
