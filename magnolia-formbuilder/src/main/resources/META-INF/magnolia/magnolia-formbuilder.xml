@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+    <name>magnolia-formbuilder</name>
+    <displayName>Magnolia FormBuilder</displayName>
+    <description>The FormBuilder is a builder for Magnolia forms using java code.</description>
+    <version>${project.version}</version>
+
+    <components>
+        <id>main</id>
+        <component>
+            <type>com.merkle.oss.magnolia.formbuilder.parameter.FormParameterResolverFactory</type>
+            <implementation>com.merkle.oss.magnolia.formbuilder.parameter.DefaultFormParameterResolver$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.formbuilder.FormFactory$TabComparatorFactory</type>
+            <implementation>com.merkle.oss.magnolia.formbuilder.DefaultTabComparator$Factory</implementation>
+        </component>
+    </components>
+
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>*</version>
+        </dependency>
+    </dependencies>
+</module>

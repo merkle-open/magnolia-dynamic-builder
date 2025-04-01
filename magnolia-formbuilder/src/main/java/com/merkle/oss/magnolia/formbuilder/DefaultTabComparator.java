@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.dialogbuilder;
+package com.merkle.oss.magnolia.formbuilder;
 
 import info.magnolia.ui.framework.layout.ConfiguredTabDefinition;
 
@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.merkle.oss.magnolia.dialogbuilder.annotation.TabOrder;
+import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
 
 
 public class DefaultTabComparator implements Comparator<ConfiguredTabDefinition> {
@@ -25,7 +25,7 @@ public class DefaultTabComparator implements Comparator<ConfiguredTabDefinition>
         return ArrayUtils.indexOf(order, tab1.getName()) - ArrayUtils.indexOf(order, tab2.getName());
     }
 
-    public static class Factory implements DialogDefinitionProvider.TabComparatorFactory {
+    public static class Factory implements FormFactory.TabComparatorFactory {
         @Override
         public Comparator<ConfiguredTabDefinition> create(@Nullable final TabOrder tabOrder) {
             return new DefaultTabComparator(tabOrder);

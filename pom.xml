@@ -38,6 +38,7 @@
 	<modules>
 		<module>magnolia-dynamic-builder-common</module>
 		<module>magnolia-appbuilder</module>
+		<module>magnolia-formbuilder</module>
 		<module>magnolia-dialogbuilder</module>
     <module>magnolia-templatebuilder</module>
     <module>magnolia-virtualUriMapping-builder</module>
@@ -49,7 +50,7 @@
 		<magnolia.version>6.3.5</magnolia.version>
 		<magnolia.advancedcache.version>3.0.0</magnolia.advancedcache.version>
 		<jsr305.nullable.version>3.0.2</jsr305.nullable.version>
-		<namics.oss.definitionbuilder.version>1.2.14</namics.oss.definitionbuilder.version>
+		<namics.oss.definitionbuilder.version>1.2.15</namics.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>5.11.0</junit.version>
 		<mockito.version>5.13.0</mockito.version>
@@ -73,6 +74,12 @@
 				<artifactId>magnolia-dynamic-builder-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.merkle.oss.magnolia</groupId>
+				<artifactId>magnolia-formbuilder</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<!-- Magnolia -->
 			<dependency>
 				<groupId>info.magnolia.bundle</groupId>

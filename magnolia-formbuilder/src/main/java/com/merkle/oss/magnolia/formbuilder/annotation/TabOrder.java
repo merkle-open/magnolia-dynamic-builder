@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.dialogbuilder.annotation;
+package com.merkle.oss.magnolia.formbuilder.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface TabFactory {
-    String value();
+@Target({ElementType.TYPE})
+public @interface TabOrder {
+    String[] value();
 }

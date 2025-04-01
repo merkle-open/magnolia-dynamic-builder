@@ -67,9 +67,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.merkle.oss.magnolia.dialogbuilder.annotation.DialogFactory;
-import com.merkle.oss.magnolia.dialogbuilder.annotation.PostCreate;
-import com.merkle.oss.magnolia.dialogbuilder.annotation.TabFactory;
-import com.merkle.oss.magnolia.dialogbuilder.annotation.TabOrder;
+import com.merkle.oss.magnolia.formbuilder.annotation.PostCreate;
+import com.merkle.oss.magnolia.formbuilder.annotation.TabFactory;
+import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
 
 import info.magnolia.ui.contentapp.action.CommitActionDefinition;
 import info.magnolia.ui.dialog.ConfiguredFormDialogDefinition;
@@ -106,7 +106,7 @@ public class TextDialog {
 Bind a different TabComparatorFactory to adjust the order. 
 ```xml
 <component>
-    <type>com.merkle.oss.magnolia.dialogbuilder.DialogDefinitionProvider$TabComparatorFactory</type>
+    <type>com.merkle.oss.magnolia.formbuilder.FormFactory$TabComparatorFactory</type>
     <implementation>com.sampe.CustomTabComparatorFactory</implementation>
 </component>
 ```
@@ -140,7 +140,7 @@ public class CustomDialogParameterResolverFactory extends ParameterResolver {
     public static class Factory implements DialogParameterResolverFactory {
         @Override
         public ParameterResolver create(final DialogCreationContext context, final ConfiguredFormDialogDefinition<Node> dialog) {
-            return new DialogParameterResolverFactory(dialog, context);
+            return new CustomDialogParameterResolverFactory(dialog, context);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.dialogbuilder.annotation;
+package com.merkle.oss.magnolia.formbuilder.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
