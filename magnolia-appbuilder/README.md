@@ -73,6 +73,8 @@ The following class is a demo app, made with the AppBuilder:
 ### AppFactory
 
 ```java
+import com.merkle.oss.magnolia.appbuilder.annotations.SubApp;
+import com.merkle.oss.magnolia.appbuilder.builder.detail.DetailAppBuilder;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
@@ -117,6 +119,13 @@ public class SampleApp {
             new ModificationDateColumnDefinitionBuilder().build()
     );
 
+    private final Provider<DetailAppBuilder.Factory> detailAppBuilderFactory;
+
+    @Inject
+    public SampleApp(final Provider<DetailAppBuilder.Factory> detailAppBuilderFactory) {
+        this.detailAppBuilderFactory = detailAppBuilderFactory;
+    }
+
     @SubApp
     public SubAppDescriptor getBrowser() {
         return new BrowserAppBuilder<Item, JcrDatasourceDefinition>()
@@ -135,6 +144,45 @@ public class SampleApp {
                         new AppActionGroupDefinition("importExportActions", AppActionDefinitions.IMPORT_EXPORT)
                 )
                 .build("<WORKSPACE>", Set.of(NodeTypes.Folder.NAME));
+    }
+
+    @SubApp
+    public SubAppDescriptor getDetail() {
+        return detailAppBuilderFactory.get().create().build(SomeDetailApp.class, SomeDetailApp.NAME, "<WORKSPACE>");
+    }
+}
+```
+
+```java
+import info.magnolia.ui.field.EditorPropertyDefinition;
+
+import java.util.List;
+
+import com.merkle.oss.magnolia.appbuilder.builder.detail.DetailSubApp;
+import com.merkle.oss.magnolia.formbuilder.annotation.PostCreate;
+import com.merkle.oss.magnolia.formbuilder.annotation.TabFactory;
+import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
+
+import info.magnolia.ui.contentapp.action.CommitActionDefinition;
+import info.magnolia.ui.dialog.ConfiguredFormDialogDefinition;
+
+@TabOrder({ "tabMain" })
+public class SomeDetailApp {
+    public static final String NAME = "someDetail"; 
+
+    @TabFactory("tabMain")
+    public List<EditorPropertyDefinition> tabMain(/* any parameter defined in com.merkle.oss.magnolia.appbuilder.builder.detail.parameter.DefaultDetailAppParameterResolver can be injected */) {
+        return List.of(
+                ...
+        );
+    }
+
+    //Executed after the detailSubApp definition has been created
+    @PostCreate
+    public void postCreate(final DetailSubApp.Definition detailSubAppDefinition) {
+        final CommitActionDefinition save = new CommitActionDefinition();
+        save.setImplementationClass(SomeCustomCommitAction.class);
+        detailSubAppDefinition.getActions().put(CommitActionDefinition.COMMIT_ACTION_NAME, save);
     }
 }
 ```

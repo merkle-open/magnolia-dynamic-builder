@@ -17,6 +17,10 @@
       <groupId>com.merkle.oss.magnolia</groupId>
       <artifactId>magnolia-dynamic-builder-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.merkle.oss.magnolia</groupId>
+      <artifactId>magnolia-formbuilder</artifactId>
+    </dependency>
 
     <!-- Magnolia -->
     <dependency>

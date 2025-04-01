@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.appbuilder.builder.action;
+package com.merkle.oss.magnolia.appbuilder.builder.browser.action;
 
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;

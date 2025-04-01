@@ -7,7 +7,7 @@ import info.magnolia.ui.editor.FormView;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-public abstract class FixedNodeNameProvider implements CreateNodeActionDefinition.NodeNameProvider {
+public abstract class FixedNodeNameProvider implements NodeNameProvider {
     private final NodeNameHelper nodeNameHelper;
     private final String name;
 

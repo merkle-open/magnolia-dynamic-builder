@@ -17,6 +17,7 @@ import com.merkle.oss.magnolia.appbuilder.action.edit.ConfirmDeleteAppActionDefi
 import com.merkle.oss.magnolia.appbuilder.action.edit.CopyAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.DeleteAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.action.edit.EditDetailAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.MarkAsDeletedAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.MoveAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.PasteAppActionDefinition;
@@ -78,6 +79,13 @@ public class AppActionDefinitions {
 	);
 
 	public static final List<AppActionDefinition> editActions(final EditAppActionDefinition editAppActionDefinition) {
+		return add(
+				EDIT_ACTIONS,
+				editAppActionDefinition
+		);
+	}
+
+	public static final List<AppActionDefinition> editActions(final EditDetailAppActionDefinition editAppActionDefinition) {
 		return add(
 				EDIT_ACTIONS,
 				editAppActionDefinition

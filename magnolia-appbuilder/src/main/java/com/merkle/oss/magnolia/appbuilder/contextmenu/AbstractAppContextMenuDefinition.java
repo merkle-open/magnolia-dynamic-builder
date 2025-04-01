@@ -17,7 +17,7 @@ import javax.inject.Provider;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.merkle.oss.magnolia.appbuilder.builder.actionbar.SimpleActionBarItem;
+import com.merkle.oss.magnolia.appbuilder.builder.browser.actionbar.SimpleActionBarItem;
 
 public abstract class AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 	protected final Provider<String> uniqueNameProvider;

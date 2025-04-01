@@ -26,7 +26,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	private final String nodeType;
 	private final String dialogId;
 	private final String icon;
-	private final Class<? extends CreateNodeActionDefinition.NodeNameProvider> nodeNameProviderClass;
+	private final Class<? extends NodeNameProvider> nodeNameProviderClass;
 	@Nullable
 	private final String label;
 
@@ -54,7 +54,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 			final String nodeType,
 			final String dialogId,
 			final String icon,
-			final Class<? extends CreateNodeActionDefinition.NodeNameProvider> nodeNameProviderClass,
+			final Class<? extends NodeNameProvider> nodeNameProviderClass,
 			@Nullable final String label
 	) {
 		this.name = name;
@@ -68,7 +68,7 @@ public class AddAppActionDefinition implements AppActionDefinition {
 	@Override
 	public OpenDialogAction.Definition action(final DropConstraintDefinition dropConstraint) {
 		final OpenDialogAction.Definition definition = new OpenDialogAction.Definition(NodeNameValidatorDefinition.Mode.ADD);
-		definition.setCustomCommitAction(new CreateNodeActionDefinition(nodeType, nodeNameProviderClass));
+		definition.setCustomCommitAction(new CreateNodeAction.Definition(nodeType, nodeNameProviderClass));
 		definition.setName(name);
 		definition.setDialogId(dialogId);
 		definition.setLabel(label);

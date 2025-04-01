@@ -5,7 +5,7 @@ import info.magnolia.ui.editor.FormView;
 
 import javax.jcr.Node;
 
-public class JcrNameNodeNameProvider implements CreateNodeActionDefinition.NodeNameProvider {
+public class JcrNameNodeNameProvider implements NodeNameProvider {
     @Override
     public String get(final FormView<Node> formView, final Node parent) throws ActionExecutionException {
         return formView.getPropertyValue("jcrName").map(String::valueOf).orElseThrow(() ->

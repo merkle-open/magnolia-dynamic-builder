@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.appbuilder.builder;
+package com.merkle.oss.magnolia.appbuilder.builder.browser;
 
 import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -26,12 +26,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
+import javax.jcr.Item;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.DoubleClickAction;
 import com.merkle.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.merkle.oss.magnolia.appbuilder.builder.action.NodeTypeToActionDelegatingActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.builder.browser.action.NodeTypeToActionDelegatingActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
@@ -40,7 +41,8 @@ import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefin
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.vaadin.shared.data.sort.SortDirection;
 
-public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
+public class BrowserAppBuilder {
+	public static final String NAME = "browser";
 	private final List<ContentAppContextMenuDefinition> contentContextMenuDefinitions = new ArrayList<>();
 	private List<AppActionGroupDefinition> rootActions = Collections.emptyList();
 	@Nullable
@@ -48,49 +50,49 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 	@Nullable
 	private DropConstraintDefinition dropConstraint;
 	@Nullable
-	private List<ColumnDefinition<T>> columnDefinitions;
+	private List<ColumnDefinition<Item>> columnDefinitions;
 	@Nullable
 	private Map<String, SortDirection> sortBy;
 	@Nullable
-	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory;
+	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory;
 	@Nullable
 	private Boolean hasSearchBar;
 
-	public BrowserAppBuilder<T, DS> contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory) {
+	public BrowserAppBuilder contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory) {
 		this.contentViewFactory = contentViewFactory;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> icon(final MagnoliaIcons icon) {
+	public BrowserAppBuilder icon(final MagnoliaIcons icon) {
 		return icon(icon.getCssClass());
 	}
-	public BrowserAppBuilder<T, DS> icon(final String icon) {
+	public BrowserAppBuilder icon(final String icon) {
 		this.icon = icon;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> rootActions(final AppActionGroupDefinition... rootActions) {
+	public BrowserAppBuilder rootActions(final AppActionGroupDefinition... rootActions) {
 		return rootActions(List.of(rootActions));
 	}
-	public BrowserAppBuilder<T, DS> rootActions(final List<AppActionGroupDefinition> rootActions) {
+	public BrowserAppBuilder rootActions(final List<AppActionGroupDefinition> rootActions) {
 		this.rootActions = rootActions;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> nodeActions(final String nodeType, final List<AppActionGroupDefinition> actionGroups) {
+	public BrowserAppBuilder nodeActions(final String nodeType, final List<AppActionGroupDefinition> actionGroups) {
 		return nodeActions(nodeType, null, actionGroups);
 	}
-	public BrowserAppBuilder<T, DS> nodeActions(final String nodeType, final AppActionGroupDefinition... actionGroups) {
+	public BrowserAppBuilder nodeActions(final String nodeType, final AppActionGroupDefinition... actionGroups) {
 		return nodeActions(nodeType, null, actionGroups);
 	}
-	public BrowserAppBuilder<T, DS> nodeActions(
+	public BrowserAppBuilder nodeActions(
 			final String nodeType,
 			@Nullable final AppActionDefinition doubleClickAction,
 			final AppActionGroupDefinition... actionGroups
 	) {
 		return nodeActions(nodeType, doubleClickAction, List.of(actionGroups));
 	}
-	public BrowserAppBuilder<T, DS> nodeActions(
+	public BrowserAppBuilder nodeActions(
 			final String nodeType,
 			@Nullable final AppActionDefinition doubleClickAction,
 			final List<AppActionGroupDefinition> actionGroups
@@ -99,38 +101,38 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> columns(final List<ColumnDefinition<T>> columnDefinitions) {
+	public BrowserAppBuilder columns(final List<ColumnDefinition<Item>> columnDefinitions) {
 		this.columnDefinitions = columnDefinitions;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> sortBy(final String propertyName, final SortDirection direction) {
+	public BrowserAppBuilder sortBy(final String propertyName, final SortDirection direction) {
 		return sortBy(Stream.concat(
 				Stream.ofNullable(sortBy).map(Map::entrySet).flatMap(Collection::stream),
 				Stream.of(Map.entry(propertyName, direction))
 		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
-	public BrowserAppBuilder<T, DS> sortBy(final Map<String, SortDirection> sortBy) {
+	public BrowserAppBuilder sortBy(final Map<String, SortDirection> sortBy) {
 		this.sortBy = sortBy;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> dropConstraint(final DropConstraintDefinition dropConstraint) {
+	public BrowserAppBuilder dropConstraint(final DropConstraintDefinition dropConstraint) {
 		this.dropConstraint = dropConstraint;
 		return this;
 	}
 
-	public BrowserAppBuilder<T, DS> hasSearchBar(final boolean hasSearchBar) {
+	public BrowserAppBuilder hasSearchBar(final boolean hasSearchBar) {
 		this.hasSearchBar = hasSearchBar;
 		return this;
 	}
 
-	public BrowserDescriptor<T, DS> build(final String workspace, final Set<String> allowedNodeTypes) {
-		final JcrDatasourceDefinition datasource = getJcrDatasource(workspace, allowedNodeTypes);
-		return build((DS) datasource);
+	public BrowserDescriptor<Item, DatasourceDefinition> build(final String workspace, final Set<String> allowedNodeTypes) {
+		final JcrDatasourceDefinition datasourceDefinition = getJcrDatasource(workspace, allowedNodeTypes);
+		return build(datasourceDefinition);
 	}
 
-	public BrowserDescriptor<T, DS> build(final DS datasourceDefinition) {
+	public BrowserDescriptor<Item, DatasourceDefinition> build(final DatasourceDefinition datasourceDefinition) {
 		final List<AppContextMenuDefinition> contextMenuDefinitions = Stream.concat(
 				Stream.of(new RootAppContextMenuDefinition(rootActions)),
 				contentContextMenuDefinitions.stream()
@@ -139,14 +141,14 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
 		}
 
-		final BrowserDescriptor<T, DS> definition = new BrowserDescriptor<>();
+		final BrowserDescriptor<Item, DatasourceDefinition> definition = new BrowserDescriptor<>();
 		definition.setSubAppClass(ContentBrowserSubApp.class);
-		definition.setName("browser");
+		definition.setName(NAME);
 		definition.setIcon(icon != null ? icon : MagnoliaIcons.PACKAGER_APP.getCssClass());
 		definition.setActions(actions(contextMenuDefinitions, dropConstraint));
 		definition.setActionbar(actionbar(contextMenuDefinitions, dropConstraint));
 		definition.setWorkbench(workbench(
-				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory<>(false),
+				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory(false),
 				columnDefinitions != null ? columnDefinitions : Collections.emptyList(),
 				dropConstraint
 		));
@@ -185,12 +187,12 @@ public class BrowserAppBuilder<T, DS extends DatasourceDefinition> {
 				.collect(Collectors.toMap(ActionDefinition::getName, action -> action, (t, t2) -> t)); //overwrite duplicate keys (==action name)
 	}
 
-	private WorkbenchDefinition<T> workbench(
-			final BiFunction<DropConstraintDefinition, List<ColumnDefinition<T>>, List<ContentViewDefinition<T>>> contentViewFactory,
-			final List<ColumnDefinition<T>> columnDefinitions,
+	private WorkbenchDefinition<Item> workbench(
+			final BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory,
+			final List<ColumnDefinition<Item>> columnDefinitions,
 			final DropConstraintDefinition dropConstraint
 	) {
-		final WorkbenchDefinition<T> definition = new WorkbenchDefinition<>();
+		final WorkbenchDefinition<Item> definition = new WorkbenchDefinition<>();
 		definition.setContentViews(contentViewFactory.apply(dropConstraint, columnDefinitions));
 		Optional.ofNullable(hasSearchBar).ifPresent(definition::setSearchEnabled);
 		return definition;

@@ -1,4 +1,4 @@
-package com.merkle.oss.magnolia.appbuilder.builder.actionbar;
+package com.merkle.oss.magnolia.appbuilder.builder.browser.actionbar;
 
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;

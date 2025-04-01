@@ -23,6 +23,14 @@
             <type>com.merkle.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</type>
             <implementation>com.merkle.oss.magnolia.appbuilder.LegacyAppDescriptorProvider$ColumnDefinitionFilter</implementation>
         </component>
+        <component>
+            <type>com.merkle.oss.magnolia.appbuilder.builder.detail.parameter.DetailAppParameterResolverFactory</type>
+            <implementation>com.merkle.oss.magnolia.appbuilder.builder.detail.parameter.DefaultDetailAppParameterResolver$Factory</implementation>
+        </component>
+        <component>
+            <type>com.merkle.oss.magnolia.appbuilder.builder.detail.DetailAppBuilder$Factory</type>
+            <implementation>com.merkle.oss.magnolia.appbuilder.builder.detail.DetailAppBuilder$Factory</implementation>
+        </component>
     </components>
 
     <dependencies>

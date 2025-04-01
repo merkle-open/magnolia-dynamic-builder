@@ -14,28 +14,27 @@ import info.magnolia.ui.dialog.FormDialogDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 import info.magnolia.ui.editor.LocaleContext;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
-import info.magnolia.ui.field.TextFieldDefinition;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.jcr.Node;
 
+import com.merkle.oss.magnolia.appbuilder.JcrNameValidationAppender;
+
 /**
  * Adds a nodeNameValidator to the field jcrName if it is present in the dialog (must be unique) and allows overriding commit/close actions.
  */
 public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialogAction<Node> {
-	private final NodeNameValidatorDefinition nodeNameValidatorDefinition;
 	private final Definition definition;
 	private final LocaleContext localeContext;
 	private final ValueContext<Node> valueContext;
 	private final JcrDatasource jcrDatasource;
 	private final I18NAuthoringSupport<Node> i18NAuthoringSupport;
+    private final JcrNameValidationAppender jcrNameValidationAppender;
 
-	@Inject
+    @Inject
 	public OpenDialogAction(
 			final Definition definition,
 			final LocaleContext localeContext,
@@ -44,7 +43,8 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 			final UIComponent parentView,
 			final I18NAuthoringSupport<Node> i18NAuthoringSupport,
 			final DialogDefinitionRegistry dialogDefinitionRegistry,
-			final I18nizer i18nizer
+			final I18nizer i18nizer,
+			final JcrNameValidationAppender jcrNameValidationAppender
 	) {
 		super(definition, localeContext, valueContext, parentView, i18NAuthoringSupport, dialogDefinitionRegistry, i18nizer);
 		this.definition = definition;
@@ -52,8 +52,7 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 		this.valueContext = valueContext;
 		this.jcrDatasource = jcrDatasource;
 		this.i18NAuthoringSupport = i18NAuthoringSupport;
-		this.nodeNameValidatorDefinition = new NodeNameValidatorDefinition();
-		this.nodeNameValidatorDefinition.setMode(definition.getMode());
+        this.jcrNameValidationAppender = jcrNameValidationAppender;
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 			throw new Registry.InvalidDefinitionException("Provided dialog id is not a form dialog!");
 		}
 		final FormDialogDefinition<Node> formDialogDefinition = (FormDialogDefinition<Node>) dialogDefinition;
-		addNodeNameValidatorToJcrNameField(formDialogDefinition);
+		jcrNameValidationAppender.addNodeNameValidatorToJcrNameField(formDialogDefinition.getForm(), definition.getMode());
 		Optional.ofNullable(definition.getCustomCommitAction()).ifPresent(commit ->
 				formDialogDefinition.getActions().put(CommitActionDefinition.COMMIT_ACTION_NAME, commit) //we can't generate a new map due to byteBuddy (I18nizer), but since it is a mutable hash map this is fine
 		);
@@ -75,20 +74,6 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 			localeContext.populateFromI18NAuthoringSupport(jcrDatasource.getRoot(), i18NAuthoringSupport);
 		}
 		return i18nizer.decorate(formDialogDefinition);
-	}
-
-	protected void addNodeNameValidatorToJcrNameField(final FormDialogDefinition<Node> dialogDefinition) {
-		dialogDefinition.getForm()
-				.getFieldDefinition("jcrName")
-				.filter(TextFieldDefinition.class::isInstance)
-				.map(definition -> (TextFieldDefinition) definition) // NodeNameValidator only validates string fields
-				.filter(field -> field.getValidators().stream().map(Object::getClass).noneMatch(NodeNameValidatorDefinition.class::equals))
-				.ifPresent(field ->
-						field.setValidators(Stream.concat(
-								field.getValidators().stream(),
-								Stream.of(nodeNameValidatorDefinition)
-						).collect(Collectors.toList()))
-				);
 	}
 
 	public static class Definition extends OpenDialogActionDefinition {
