@@ -61,7 +61,7 @@ public class AppDescriptorProvider extends AbstractDynamicDefinitionProvider<App
 	@Override
 	protected AppDescriptor getInternal() throws Registry.InvalidDefinitionException {
 		final Object factoryObject = factoryObjectProvider.get();
-		final ContentAppDescriptor<DatasourceDefinition> appDescriptor = new ContentAppDescriptor<>();
+		final ContentAppDescriptorWithId appDescriptor = new ContentAppDescriptorWithId(annotation.id());
 		appDescriptor.setAppClass(ContentApp.class);
 		appDescriptor.setName(annotation.name());
 		appDescriptor.setEnabled(annotation.isEnabled());
@@ -127,6 +127,16 @@ public class AppDescriptorProvider extends AbstractDynamicDefinitionProvider<App
 		@Override
 		protected String buildReferenceId() {
 			return getName();
+		}
+	}
+
+	public static class ContentAppDescriptorWithId extends ContentAppDescriptor<DatasourceDefinition> {
+        private final String id;
+        public ContentAppDescriptorWithId(final String id) {
+            this.id = id;
+        }
+		public String getId() {
+			return id;
 		}
 	}
 

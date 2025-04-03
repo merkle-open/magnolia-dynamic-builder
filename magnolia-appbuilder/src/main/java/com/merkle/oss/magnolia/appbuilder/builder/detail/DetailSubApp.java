@@ -1,5 +1,6 @@
 package com.merkle.oss.magnolia.appbuilder.builder.detail;
 
+import info.magnolia.config.NamedDefinition;
 import info.magnolia.ui.ValueContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
@@ -53,7 +54,7 @@ public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDeta
         return view;
     }
 
-    public static class Definition extends DetailDescriptor<Item, DatasourceDefinition> {
+    public static class Definition extends DetailDescriptor<Item, DatasourceDefinition> implements NamedDefinition {
         private final Function<Definition, FormDefinition<Item>> formDefinitionProvider;
 
         public Definition(final Function<Definition, FormDefinition<Item>> formDefinitionProvider) {
