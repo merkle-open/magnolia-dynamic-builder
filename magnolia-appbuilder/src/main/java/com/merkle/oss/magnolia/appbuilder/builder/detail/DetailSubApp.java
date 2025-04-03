@@ -13,6 +13,7 @@ import info.magnolia.ui.editor.FormDefinition;
 import info.magnolia.ui.editor.LocaleContext;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -43,15 +44,21 @@ public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDeta
 
     @Override
     public SubAppView start(final Location location) {
+        final Item item = getItem(location).orElse(null);
+        Optional.ofNullable(item).ifPresent(it -> {
+            localeContext.populateFromI18NAuthoringSupport(it, i18NAuthoringSupport);
+        });
         final SubAppView view = super.start(location);
+        Optional.ofNullable(item).ifPresent(valueContext::set);
+        return view;
+    }
+
+    private Optional<Item> getItem(final Location location) {
         final ExtendedDetailLocation detailLocation = ExtendedDetailLocation.wrap(location);
         if(Objects.equals(VIEW_TYPE_ADD, detailLocation.getViewType())) {
-            itemResolver.getItemById(detailLocation.getNodePath()).ifPresent(it -> {
-                localeContext.populateFromI18NAuthoringSupport(it, i18NAuthoringSupport);
-                valueContext.set(it);
-            });
+            return itemResolver.getItemById(detailLocation.getNodePath());
         }
-        return view;
+        return Optional.empty();
     }
 
     public static class Definition extends DetailDescriptor<Item, DatasourceDefinition> implements NamedDefinition {
