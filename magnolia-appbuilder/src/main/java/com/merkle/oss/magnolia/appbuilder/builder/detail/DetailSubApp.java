@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.jcr.Item;
 
 public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDetailSubApp<Item> {
@@ -62,9 +63,14 @@ public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDeta
     }
 
     public static class Definition extends DetailDescriptor<Item, DatasourceDefinition> implements NamedDefinition {
+        private final Provider<Boolean> isNewNodeEvaluator;
         private final Function<Definition, FormDefinition<Item>> formDefinitionProvider;
 
-        public Definition(final Function<Definition, FormDefinition<Item>> formDefinitionProvider) {
+        public Definition(
+                final Provider<Boolean> isNewNodeEvaluator,
+                final Function<Definition, FormDefinition<Item>> formDefinitionProvider
+        ) {
+            this.isNewNodeEvaluator = isNewNodeEvaluator;
             this.formDefinitionProvider = formDefinitionProvider;
             setSubAppClass(DetailSubApp.class);
         }
@@ -72,6 +78,10 @@ public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDeta
         @Override
         public FormDefinition<Item> getForm() {
             return formDefinitionProvider.apply(this);
+        }
+
+        public boolean isNewNode() {
+            return isNewNodeEvaluator.get();
         }
     }
 }

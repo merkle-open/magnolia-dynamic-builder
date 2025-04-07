@@ -59,18 +59,23 @@ public class DetailAppBuilder {
         return build(detailFactory, name, datasourceDefinition);
     }
     public DetailDescriptor<Item, DatasourceDefinition> build(final Class<?> detailFactory, final String name, final DatasourceDefinition datasourceDefinition) {
-        final DetailSubApp.Definition definition = new DetailSubApp.Definition(detailSubAppDefinition -> {
-            final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
-            final FormFactory formFactory = new FormFactory(
-                    context -> parameterResolverFactory.create(context, detailSubAppDefinition),
-                    tabComparatorFactory,
-                    new LocationBasedNodeProvider(datasourceDefinition, location, componentProvider)
-            );
-            final FormDefinition<Item> form = formFactory.create(factoryObjectProvider.apply(detailFactory));
-            final NodeNameValidatorDefinition.Mode mode = Objects.equals(location.getViewType(), ContentDetailSubApp.VIEW_TYPE_ADD) ? NodeNameValidatorDefinition.Mode.ADD : NodeNameValidatorDefinition.Mode.EDIT;
-            jcrNameValidationAppender.addNodeNameValidatorToJcrNameField(form, mode);
-            return form;
-        });
+        final DetailSubApp.Definition definition = new DetailSubApp.Definition(
+                () -> {
+                    final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
+                    return Objects.equals(location.getViewType(), ContentDetailSubApp.VIEW_TYPE_ADD);
+                },
+                detailSubAppDefinition -> {
+                    final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
+                    final FormFactory formFactory = new FormFactory(
+                            context -> parameterResolverFactory.create(context, detailSubAppDefinition),
+                            tabComparatorFactory,
+                            new LocationBasedNodeProvider(datasourceDefinition, location, componentProvider)
+                    );
+                    final FormDefinition<Item> form = formFactory.create(factoryObjectProvider.apply(detailFactory));
+                    final NodeNameValidatorDefinition.Mode mode = detailSubAppDefinition.isNewNode() ? NodeNameValidatorDefinition.Mode.ADD : NodeNameValidatorDefinition.Mode.EDIT;
+                    jcrNameValidationAppender.addNodeNameValidatorToJcrNameField(form, mode);
+                    return form;
+                });
         definition.setSubAppClass(DetailSubApp.class);
         definition.setName(name);
         definition.setDatasource(datasourceDefinition);
