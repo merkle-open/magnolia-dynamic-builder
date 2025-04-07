@@ -55,6 +55,7 @@ public class DetailAppBuilder {
     public DetailDescriptor<Item, DatasourceDefinition> build(final Class<?> detailFactory, final String name, final String workspace) {
         final JcrDatasourceDefinition datasourceDefinition = new JcrDatasourceDefinitionBuilder()
                 .workspace(workspace)
+                .describeByProperty("jcrName") //see info.magnolia.ui.contentapp.JcrItemDescriber
                 .build();
         return build(detailFactory, name, datasourceDefinition);
     }
