@@ -271,3 +271,58 @@ public class CustomAvailabilityParamResolver extends ParameterResolver {
     <implementation>com.somepackage.CustomAvailabilityParamResolver$Factory</implementation>
 </component>
 ```
+
+## Blossom migration notes
+Search and replace.
+
+### Template annotations
+```java
+import info.magnolia.module.blossom.annotation.([Template|Available]+);
+```
+```java
+import com.merkle.oss.magnolia.templatebuilder.annotation.$1;
+```
+
+### Area annotations
+```java
+import info.magnolia.module.blossom.annotation.([ComponentCategory|AutoGenerator|AvailableComponentClasses|AvailableComponents|Area|Inherits]+);
+```
+```java
+import com.merkle.oss.magnolia.templatebuilder.annotation.area.$1;
+```
+
+### Template
+
+1. structural search and replace
+    ```java
+    @Template(
+            id = $id$,
+            title = $title$,
+            dialog = $dialog$
+    )
+    ```
+    ```java
+    @Template(
+            id = $id$,
+            title = $title$,
+            dialog = $dialog$,
+            renderer = "blossom"
+    )
+    ```
+2. search and replace
+    ```java
+    @TemplateDescription\((.*)\)
+    ```
+    ```java
+    description = $1,
+    ```
+3. move description line manually into template annotation
+
+
+### Area
+```java
+@Area\(value = ([^,]+)\.NAME,
+```
+```java
+@Area\(id = $1.ID, name = $1.NAME,
+```

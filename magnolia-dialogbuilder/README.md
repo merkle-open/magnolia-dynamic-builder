@@ -151,3 +151,37 @@ public class CustomDialogParameterResolverFactory extends ParameterResolver {
     <implementation>com.sampe.CustomDialogParameterResolverFactory</implementation>
 </component>
 ```
+
+## Blossom migration notes
+Search and replace.
+
+### tab i18nKeys
+```properties
+^tab([^=]*)=
+```
+```properties
+tabs.$1.label=
+```
+### DialogFactory
+```java
+import info.magnolia.module.blossom.annotation.([DialogFactory]+);
+```
+```java
+import com.merkle.oss.magnolia.dialogbuilder.annotation.$1;
+```
+### TabFactory,TabOrder,PostCreate
+```java
+import info.magnolia.module.blossom.annotation.([TabFactory|TabOrder|PostCreate]+);
+```
+```java
+import com.merkle.oss.magnolia.formbuilder.annotation.$1;
+```
+### DialogCreationContext
+fields changed --> some manual adjustment might be necessary!
+
+```java
+import info.magnolia.module.blossom.dialog.DialogCreationContext;
+```
+```java
+import com.merkle.oss.magnolia.formbuilder.parameter.FormParameterResolverFactory.FormCreationContext;
+```
