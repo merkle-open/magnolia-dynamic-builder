@@ -5,13 +5,17 @@ import info.magnolia.config.registry.DefinitionRawView;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDynamicDefinitionProvider<T> implements DefinitionProvider<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final List<Problem> problems = new ArrayList<>();
     private final List<DefinitionDecorator<T>> decorators;
 
@@ -53,14 +57,14 @@ public abstract class AbstractDynamicDefinitionProvider<T> implements Definition
     protected abstract T getInternal() throws Registry.InvalidDefinitionException;
 
     protected void addProblem(final Exception e) {
-        problems.add(
-                Problem.severe()
-                        .withRelatedException(e)
-                        .withDetails(e.getClass().getName() + " " + ExceptionUtils.getRootCauseMessage(e))
-                        .withLocation(getMetadata().getLocation())
-                        .withType(Problem.DefaultTypes.RESOLUTION)
-                        .withTitle(getMetadata().getName())
-                        .build()
-        );
+        final Problem problem = Problem.severe()
+                .withRelatedException(e)
+                .withDetails(e.getClass().getName() + " " + ExceptionUtils.getRootCauseMessage(e))
+                .withLocation(getMetadata().getLocation())
+                .withType(Problem.DefaultTypes.RESOLUTION)
+                .withTitle(getMetadata().getName())
+                .build();
+        LOG.error("Failed to provide definition " + getMetadata().getName() + " - problem: " + problem, e);
+        problems.add(problem);
     }
 }
