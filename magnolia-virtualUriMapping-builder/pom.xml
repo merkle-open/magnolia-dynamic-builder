@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>magnolia-virtualUriMapping-builder</artifactId>
+  <name>${project.artifactId}</name>
 
   <dependencies>
     <dependency>
