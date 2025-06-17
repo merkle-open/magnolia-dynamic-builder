@@ -76,7 +76,8 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         site.setDomains(streamSites().flatMap(this::getDomains).toList());
         site.setMappings(streamSites().flatMap(this::getMappings).collect(Collectors.toMap(
                 URI2RepositoryMapping::getRepository,
-                Function.identity()
+                Function.identity(),
+                (annotationMapping, extendsAnnotationMapping) -> annotationMapping
         )));
         streamSites().map(this::getTheme).flatMap(Optional::stream).findFirst().ifPresent(site::setTheme);
         streamSites().map(this::getI18n).flatMap(Optional::stream).findFirst().ifPresent(site::setI18n);
