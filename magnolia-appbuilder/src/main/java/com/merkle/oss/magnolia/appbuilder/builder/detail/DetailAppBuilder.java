@@ -68,7 +68,7 @@ public class DetailAppBuilder {
                 detailSubAppDefinition -> {
                     final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
                     final FormFactory formFactory = new FormFactory(
-                            context -> parameterResolverFactory.create(context, detailSubAppDefinition),
+                            (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, detailSubAppDefinition),
                             tabComparatorFactory,
                             new LocationBasedNodeProvider(datasourceDefinition, location, componentProvider)
                     );

@@ -63,7 +63,7 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
         dialogDefinition.setLabel(StringUtils.trimToNull(annotation.label()));
         try {
             final FormFactory formFactory = new FormFactory(
-                    context -> parameterResolverFactory.create(context, dialogDefinition),
+                    (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, dialogDefinition),
                     tabComparatorFactory,
                     new SubAppContextBeanStoreNodeProvider()
             );

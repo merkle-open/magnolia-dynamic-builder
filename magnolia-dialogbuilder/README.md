@@ -113,9 +113,11 @@ Bind a different TabComparatorFactory to adjust the order.
 
 ### ParameterResolver
 Implement and bind different DialogParameterResolverFactory to customize injectable `@TabFactory` method arguments.
+
 ```java
 import info.magnolia.ui.dialog.ConfiguredFormDialogDefinition;
 
+import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
 import com.merkle.oss.magnolia.dialogbuilder.parameter.DefaultDialogParameterResolver;
 import com.merkle.oss.magnolia.dialogbuilder.parameter.DialogCreationContext;
 import com.merkle.oss.magnolia.dialogbuilder.parameter.DialogParameterResolverFactory;
@@ -124,9 +126,10 @@ public class CustomDialogParameterResolverFactory extends ParameterResolver {
 
     public CustomDialogParameterResolverFactory(
             final ConfiguredFormDialogDefinition<Node> dialog,
+            final ConfiguredFormDefinition<Item> form,
             final DialogCreationContext context
     ) {
-        super(new DefaultDialogParameterResolver(dialog, context));
+        super(new DefaultDialogParameterResolver(form, dialog, context));
     }
 
     @Override
@@ -139,8 +142,12 @@ public class CustomDialogParameterResolverFactory extends ParameterResolver {
 
     public static class Factory implements DialogParameterResolverFactory {
         @Override
-        public ParameterResolver create(final DialogCreationContext context, final ConfiguredFormDialogDefinition<Node> dialog) {
-            return new CustomDialogParameterResolverFactory(dialog, context);
+        public ParameterResolver create(
+                final DialogCreationContext context,
+                final ConfiguredFormDefinition<Item> form,
+                final ConfiguredFormDialogDefinition<Node> dialog
+        ) {
+            return new CustomDialogParameterResolverFactory(dialog, form, context);
         }
     }
 }

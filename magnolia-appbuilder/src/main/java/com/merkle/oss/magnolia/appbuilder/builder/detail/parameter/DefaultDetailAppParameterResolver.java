@@ -1,7 +1,8 @@
 package com.merkle.oss.magnolia.appbuilder.builder.detail.parameter;
 
-import info.magnolia.ui.contentapp.detail.DetailDescriptor;
+import info.magnolia.ui.editor.ConfiguredFormDefinition;
 
+import javax.jcr.Item;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.builder.detail.DetailSubApp;
@@ -13,7 +14,8 @@ import com.merkle.oss.magnolia.formbuilder.parameter.FormParameterResolverFactor
  * Resolves the following types:
  * <ul>
  * <li>{@link Node} - parent node for add actions
- * <li>{@link DetailDescriptor} - doesn't contain layout and form in tabFactory methods
+ * <li>{@link ConfiguredFormDefinition} - doesn't contain layout and form in tabFactory methods
+ * <li>{@link DetailSubApp.Definition} - doesn't contain layout and form in tabFactory methods
  * </ul>
  */
 public class DefaultDetailAppParameterResolver extends DefaultFormParameterResolver {
@@ -21,9 +23,10 @@ public class DefaultDetailAppParameterResolver extends DefaultFormParameterResol
 
     public DefaultDetailAppParameterResolver(
             final DetailSubApp.Definition detailSubAppDefinition,
+            final ConfiguredFormDefinition<Item> formDefinition,
             final FormParameterResolverFactory.FormCreationContext context
     ) {
-        super(context);
+        super(context, formDefinition);
         this.detailSubAppDefinition = detailSubAppDefinition;
     }
 
@@ -37,8 +40,12 @@ public class DefaultDetailAppParameterResolver extends DefaultFormParameterResol
 
     public static class Factory implements DetailAppParameterResolverFactory {
         @Override
-        public ParameterResolver create(final FormParameterResolverFactory.FormCreationContext context, final DetailSubApp.Definition detailSubAppDefinition) {
-            return new DefaultDetailAppParameterResolver(detailSubAppDefinition, context);
+        public ParameterResolver create(
+                final FormParameterResolverFactory.FormCreationContext context,
+                final ConfiguredFormDefinition<Item> formDefinition,
+                final DetailSubApp.Definition detailSubAppDefinition
+        ) {
+            return new DefaultDetailAppParameterResolver(detailSubAppDefinition, formDefinition, context);
         }
     }
 }

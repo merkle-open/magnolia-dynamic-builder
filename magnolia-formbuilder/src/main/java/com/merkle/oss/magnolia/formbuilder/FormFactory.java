@@ -50,8 +50,8 @@ public class FormFactory {
     }
 
     public ConfiguredFormDefinition<Item> create(final Object factoryObject) {
-        final ParameterResolver parameterResolver = parameterResolverFactory.create(new FormParameterResolverFactory.FormCreationContext(nodeProvider));
         final ConfiguredFormDefinition<Item> formDefinition = new ConfiguredFormDefinition<>();
+        final ParameterResolver parameterResolver = parameterResolverFactory.create(new FormParameterResolverFactory.FormCreationContext(nodeProvider), formDefinition);
 
         @Nullable
         final TabOrder tabOrder = factoryObject.getClass().getAnnotation(TabOrder.class);
