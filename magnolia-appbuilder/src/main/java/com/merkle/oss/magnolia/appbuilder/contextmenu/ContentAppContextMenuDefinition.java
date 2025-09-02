@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.DoubleClickAction;
+
+import jakarta.annotation.Nullable;
 
 public class ContentAppContextMenuDefinition extends AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 	private static final Pattern NODE_TYPE_NAME_PATTERN = Pattern.compile("^[^:]+:(.*)$");

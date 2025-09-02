@@ -10,8 +10,9 @@ import info.magnolia.ui.editor.ItemProviderStrategy;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
+
+import jakarta.inject.Inject;
 
 public class JcrNodeFromLocationItemProviderStrategy implements ItemProviderStrategy<Item, ContentDetailSubApp.DetailLocation> {
     private final Definition definition;

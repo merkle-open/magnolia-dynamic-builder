@@ -6,12 +6,12 @@ import info.magnolia.ui.contentapp.action.OpenDetailSubappActionDefinition;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import info.magnolia.ui.contentapp.detail.ContentDetailSubApp;
 
-import javax.annotation.Nullable;
-
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+
+import jakarta.annotation.Nullable;
 
 public class EditDetailAppActionDefinition implements AppActionDefinition {
     private final String name;

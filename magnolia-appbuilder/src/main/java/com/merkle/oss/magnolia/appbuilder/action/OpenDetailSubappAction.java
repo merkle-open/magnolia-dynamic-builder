@@ -8,12 +8,13 @@ import info.magnolia.ui.datasource.ItemResolver;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.action.add.NodeNameProvider;
 import com.merkle.oss.magnolia.appbuilder.builder.detail.ExtendedDetailLocation;
+
+import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
 
 public class OpenDetailSubappAction extends info.magnolia.ui.contentapp.action.OpenDetailSubappAction<Node> {
     private final Definition definition;

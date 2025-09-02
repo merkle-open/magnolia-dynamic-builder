@@ -12,10 +12,11 @@ import info.magnolia.ui.observation.DatasourceObservation;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.machinezoo.noexception.Exceptions;
+
+import jakarta.inject.Inject;
 
 public class CreateNodeAction extends CommitAction<Node> {
 	private final Definition definition;

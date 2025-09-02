@@ -7,7 +7,7 @@ import info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class HasValueContextRule implements AvailabilityRule {
     private final ValueContext<?> valueContext;

@@ -10,8 +10,9 @@ import info.magnolia.ui.framework.ioc.UiContextReference;
 
 import java.util.Optional;
 
-import javax.inject.Provider;
 import javax.jcr.Node;
+
+import jakarta.inject.Provider;
 
 public class SubAppContextBeanStoreNodeProvider implements Provider<Optional<Node>> {
 

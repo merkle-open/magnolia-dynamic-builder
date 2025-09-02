@@ -29,9 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
@@ -44,6 +41,9 @@ import com.merkle.oss.magnolia.templatebuilder.annotation.area.AvailableComponen
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.AvailableComponents;
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.ComponentCategory;
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.Inherits;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvider<TemplateDefinition> {
     private final TemplateAvailabilityResolver templateAvailabilityResolver;

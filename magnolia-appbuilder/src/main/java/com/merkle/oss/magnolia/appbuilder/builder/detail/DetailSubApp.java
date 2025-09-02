@@ -16,9 +16,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Item;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class DetailSubApp extends info.magnolia.ui.contentapp.detail.ContentDetailSubApp<Item> {
     private final ItemResolver<Item> itemResolver;

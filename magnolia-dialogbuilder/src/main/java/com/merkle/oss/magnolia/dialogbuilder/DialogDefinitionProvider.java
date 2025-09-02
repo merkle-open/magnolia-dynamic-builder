@@ -11,8 +11,6 @@ import info.magnolia.ui.dialog.DialogDefinition;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Item;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +22,9 @@ import com.merkle.oss.magnolia.dialogbuilder.parameter.DialogParameterResolverFa
 import com.merkle.oss.magnolia.dialogbuilder.parameter.SubAppContextBeanStoreNodeProvider;
 import com.merkle.oss.magnolia.formbuilder.FormFactory;
 import com.merkle.oss.magnolia.formbuilder.FormFactory.TabComparatorFactory;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 
 public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<DialogDefinition> {

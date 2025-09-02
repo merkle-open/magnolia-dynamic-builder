@@ -10,12 +10,12 @@ import info.magnolia.virtualuri.VirtualUriRegistry;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
 import com.merkle.oss.magnolia.virtualurimappingbuilder.annotation.VirtualUriMapper;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class VirtualUriMappingDefinitionProvider extends AbstractDynamicDefinitionProvider<VirtualUriMapping> {
     private final Provider<VirtualUriMapping> virtualUriMappingProvider;

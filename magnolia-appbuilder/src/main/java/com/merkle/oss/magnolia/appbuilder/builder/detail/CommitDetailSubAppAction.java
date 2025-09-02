@@ -17,11 +17,12 @@ import info.magnolia.ui.observation.DatasourceObservation;
 
 import java.util.Objects;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.action.add.CreateNodeAction;
 import com.merkle.oss.magnolia.appbuilder.builder.browser.BrowserAppBuilder;
+
+import jakarta.inject.Inject;
 
 public class CommitDetailSubAppAction extends CommitAction<Node> {
     private final Definition definition;

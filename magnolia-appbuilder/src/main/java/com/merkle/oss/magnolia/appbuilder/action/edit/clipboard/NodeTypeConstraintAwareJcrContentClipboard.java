@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -21,6 +20,8 @@ import javax.jcr.nodetype.NodeType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.inject.Inject;
 
 @SubAppScoped
 public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard implements JcrContentClipboard {

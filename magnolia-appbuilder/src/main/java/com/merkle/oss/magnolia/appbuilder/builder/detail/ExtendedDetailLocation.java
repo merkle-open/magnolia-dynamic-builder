@@ -6,12 +6,12 @@ import info.magnolia.ui.contentapp.detail.ContentDetailSubApp;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.machinezoo.noexception.Exceptions;
 import com.merkle.oss.magnolia.appbuilder.action.add.NodeNameProvider;
+
+import jakarta.annotation.Nullable;
 
 public class ExtendedDetailLocation extends ContentDetailSubApp.DetailLocation {
     @Nullable

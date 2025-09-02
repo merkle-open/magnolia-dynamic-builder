@@ -21,9 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Item;
 import javax.jcr.Node;
 
@@ -32,6 +29,10 @@ import com.merkle.oss.magnolia.formbuilder.annotation.PostCreate;
 import com.merkle.oss.magnolia.formbuilder.annotation.TabFactory;
 import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
 import com.merkle.oss.magnolia.formbuilder.parameter.FormParameterResolverFactory;
+
+import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class FormFactory {
     private final FormParameterResolverFactory parameterResolverFactory;

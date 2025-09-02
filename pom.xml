@@ -47,13 +47,12 @@
 
 	<properties>
 		<!--	mvn versions:display-property-updates	-->
-		<magnolia.version>6.3.8</magnolia.version>
+		<magnolia.version>6.4.0-beta1</magnolia.version>
 		<magnolia.advancedcache.version>3.0.1</magnolia.advancedcache.version>
-		<jsr305.nullable.version>3.0.2</jsr305.nullable.version>
 		<merkle.oss.definitionbuilder.version>1.2.19</merkle.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>5.12.2</junit.version>
-		<mockito.version>5.18.0</mockito.version>
+		<mockito.version>5.19.0</mockito.version>
 
 		<!-- Maven Plugins -->
 		<mvn.compiler.plugin.version>3.14.0</mvn.compiler.plugin.version>
@@ -101,12 +100,6 @@
 				<version>${merkle.oss.definitionbuilder.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>com.google.code.findbugs</groupId>
-				<artifactId>jsr305</artifactId>
-				<version>${jsr305.nullable.version}</version>
-			</dependency>
-
 			<!-- TESTING DEPENDENCIES -->
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
@@ -130,8 +123,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${mvn.compiler.plugin.version}</version>
 				<configuration>
-					<source>${javaVersion}</source>
-					<target>${javaVersion}</target>
+          <release>17</release>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -186,12 +178,6 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
-
-		<!-- Vaadin -->
-		<repository>
-			<id>vaadin-addons</id>
-			<url>https://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 	</repositories>
 

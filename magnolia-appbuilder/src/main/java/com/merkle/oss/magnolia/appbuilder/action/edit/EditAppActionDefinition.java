@@ -5,13 +5,13 @@ import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
-import javax.annotation.Nullable;
-
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.OpenDialogAction;
 import com.merkle.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
+
+import jakarta.annotation.Nullable;
 
 public class EditAppActionDefinition implements AppActionDefinition {
 	public static final EditAppActionDefinition FOLDER = new EditAppActionDefinition(

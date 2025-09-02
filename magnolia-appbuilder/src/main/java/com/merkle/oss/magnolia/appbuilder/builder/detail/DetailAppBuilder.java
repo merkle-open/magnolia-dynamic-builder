@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
 
 import com.merkle.oss.magnolia.appbuilder.JcrNameValidationAppender;
@@ -26,6 +25,8 @@ import com.merkle.oss.magnolia.appbuilder.builder.detail.parameter.DetailAppPara
 import com.merkle.oss.magnolia.appbuilder.builder.detail.parameter.LocationBasedNodeProvider;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.merkle.oss.magnolia.formbuilder.FormFactory;
+
+import jakarta.inject.Inject;
 
 public class DetailAppBuilder {
     private final DetailAppParameterResolverFactory parameterResolverFactory;

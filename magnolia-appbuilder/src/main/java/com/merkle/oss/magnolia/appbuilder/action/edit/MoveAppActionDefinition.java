@@ -22,8 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -31,6 +29,8 @@ import com.merkle.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinit
 import com.merkle.oss.magnolia.appbuilder.action.rule.PermissionRequiredRuleDefinition;
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.vaadin.shared.ui.grid.DropLocation;
+
+import jakarta.inject.Inject;
 
 public class MoveAppActionDefinition implements AppActionDefinition {
     private final String icon;
@@ -105,8 +105,8 @@ public class MoveAppActionDefinition implements AppActionDefinition {
         }
 
         private ActionDefinition map(final ActionDefinition actionDefinition) {
-            if(actionDefinition instanceof ConfiguredActionDefinition) {
-                ((ConfiguredActionDefinition)actionDefinition).setAvailability(
+            if(actionDefinition instanceof ConfiguredActionDefinition definition) {
+                definition.setAvailability(
                         new AvailabilityDefinitionBuilder(actionDefinition.getAvailability())
                                 .rules(actionDefinition.getAvailability().getRules().stream().map(this::map).collect(Collectors.toList()))
                                 .build()
@@ -116,8 +116,7 @@ public class MoveAppActionDefinition implements AppActionDefinition {
         }
 
         private AvailabilityRuleDefinition map(final AvailabilityRuleDefinition actionDefinition) {
-            if (actionDefinition instanceof CanMoveRuleDefinition) {
-                final CanMoveRuleDefinition canMoveRule = (CanMoveRuleDefinition) actionDefinition;
+            if (actionDefinition instanceof CanMoveRuleDefinition canMoveRule) {
                 canMoveRule.setDropConstraint(getDefinition().getDropConstraintDefinition());
                 return canMoveRule;
             }

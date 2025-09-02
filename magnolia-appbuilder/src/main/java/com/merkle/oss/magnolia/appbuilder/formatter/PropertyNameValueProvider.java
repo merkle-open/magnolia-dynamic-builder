@@ -4,8 +4,9 @@ import info.magnolia.jcr.util.PropertyUtil;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
+
+import jakarta.inject.Inject;
 
 public class PropertyNameValueProvider extends AbstractValueProvider {
 	private final PropertyNameColumnDefinition definition;

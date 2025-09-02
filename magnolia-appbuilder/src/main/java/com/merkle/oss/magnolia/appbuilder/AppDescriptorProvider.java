@@ -25,8 +25,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Provider;
-
 import com.merkle.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.merkle.oss.magnolia.appbuilder.annotations.AppPermissions;
 import com.merkle.oss.magnolia.appbuilder.annotations.CustomIcon;
@@ -34,6 +32,8 @@ import com.merkle.oss.magnolia.appbuilder.annotations.Icon;
 import com.merkle.oss.magnolia.appbuilder.annotations.SubApp;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+
+import jakarta.inject.Provider;
 
 public class AppDescriptorProvider extends AbstractDynamicDefinitionProvider<AppDescriptor> {
 	private final DefinitionMetadata metadata;

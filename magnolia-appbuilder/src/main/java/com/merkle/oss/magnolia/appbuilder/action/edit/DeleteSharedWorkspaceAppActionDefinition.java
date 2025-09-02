@@ -8,10 +8,11 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.contentapp.action.JcrCommandActionDefinition;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
+
+import jakarta.inject.Inject;
 
 /**
  * Doesn't trigger unpublication.<br>

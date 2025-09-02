@@ -9,11 +9,12 @@ import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
 import com.merkle.oss.magnolia.templatebuilder.parameter.AutoGeneratorParameterResolverFactory;
+
+import jakarta.inject.Inject;
 
 public class DynamicAutoGenerator implements Generator<DynamicAutoGenerator.Definition> {
     private final AutoGeneratorParameterResolverFactory autoGeneratorParameterResolverFactory;

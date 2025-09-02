@@ -8,13 +8,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.merkle.oss.magnolia.builder.AbstractDynamicConfigurationSource;
 import com.merkle.oss.magnolia.dialogbuilder.annotation.DialogFactories;
+
+import jakarta.inject.Inject;
 
 public class DialogConfigurationSource extends AbstractDynamicConfigurationSource<DialogDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

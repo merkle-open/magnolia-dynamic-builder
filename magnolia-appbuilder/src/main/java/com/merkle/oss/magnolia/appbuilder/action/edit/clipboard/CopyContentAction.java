@@ -4,8 +4,9 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.ValueContext;
 import info.magnolia.ui.contentapp.action.clipboard.CopyContentActionDefinition;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
+
+import jakarta.inject.Inject;
 
 public class CopyContentAction extends info.magnolia.ui.contentapp.action.clipboard.CopyContentAction<Item> {
 
