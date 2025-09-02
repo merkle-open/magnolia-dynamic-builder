@@ -14,6 +14,8 @@ import javax.jcr.Node;
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
 import com.merkle.oss.magnolia.templatebuilder.parameter.AutoGeneratorParameterResolverFactory;
 
+import jakarta.inject.Inject;
+
 public class DynamicAutoGenerator implements Generator<DynamicAutoGenerator.Definition> {
     private final AutoGeneratorParameterResolverFactory autoGeneratorParameterResolverFactory;
     private final Node node;

@@ -4,8 +4,9 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.ValueContext;
 import info.magnolia.ui.contentapp.action.clipboard.PasteContentActionDefinition;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
+
+import jakarta.inject.Inject;
 
 public class PasteContentAction extends info.magnolia.ui.contentapp.action.clipboard.PasteContentAction<Item> {
 

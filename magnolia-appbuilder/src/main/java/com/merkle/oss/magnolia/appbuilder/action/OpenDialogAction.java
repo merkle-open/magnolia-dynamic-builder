@@ -17,11 +17,12 @@ import info.magnolia.ui.editor.validator.NodeNameValidatorDefinition;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.JcrNameValidationAppender;
+
+import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
 
 /**
  * Adds a nodeNameValidator to the field jcrName if it is present in the dialog (must be unique) and allows overriding commit/close actions.

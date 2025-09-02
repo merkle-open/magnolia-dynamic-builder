@@ -181,7 +181,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

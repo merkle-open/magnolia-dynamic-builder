@@ -63,7 +63,7 @@ import info.magnolia.virtualuri.VirtualUriMapping;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 

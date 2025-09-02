@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.jcr.Node;
 
 public class HasRolePermissionPredicate implements PermissionPredicate {

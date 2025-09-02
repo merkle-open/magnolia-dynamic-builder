@@ -11,12 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
 import com.merkle.oss.magnolia.templatebuilder.annotation.Available;
 import com.merkle.oss.magnolia.templatebuilder.parameter.AvailabilityParameterResolverFactory;
+
+import jakarta.inject.Inject;
 
 public class TemplateAvailabilityResolver {
     private final AvailabilityParameterResolverFactory availabilityParameterResolverFactory;

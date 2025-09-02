@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Provider;
-
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
 import com.merkle.oss.magnolia.appbuilder.builder.browser.actionbar.SimpleActionBarItem;
+
+import jakarta.inject.Provider;
 
 public abstract class AbstractAppContextMenuDefinition implements AppContextMenuDefinition {
 	protected final Provider<String> uniqueNameProvider;

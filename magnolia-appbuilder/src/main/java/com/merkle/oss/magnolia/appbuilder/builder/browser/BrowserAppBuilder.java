@@ -25,7 +25,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
 import javax.jcr.Item;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
@@ -40,6 +39,8 @@ import com.merkle.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAware
 import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.vaadin.shared.data.sort.SortDirection;
+
+import jakarta.annotation.Nullable;
 
 public class BrowserAppBuilder {
 	public static final String NAME = "browser";
@@ -171,8 +172,7 @@ public class BrowserAppBuilder {
 				.filter(ContentAppContextMenuDefinition.class::isInstance)
 				.map(ContentAppContextMenuDefinition.class::cast)
 				.map(contextMenu -> contextMenu.doubleClickAction(dropConstraint))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
+				.flatMap(Optional::stream)
 				.collect(Collectors.toMap(DoubleClickAction::nodeType, DoubleClickAction::action));
 
 		final NodeTypeToActionDelegatingActionDefinition defaultAction = new NodeTypeToActionDelegatingActionDefinition();

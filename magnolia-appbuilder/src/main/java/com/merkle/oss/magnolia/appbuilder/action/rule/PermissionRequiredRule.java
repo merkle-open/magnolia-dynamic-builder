@@ -8,11 +8,12 @@ import info.magnolia.ui.datasource.jcr.JcrDatasource;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class PermissionRequiredRule extends AbstractJcrRule<PermissionRequiredRuleDefinition> {
 	private final JcrDatasource datasource;

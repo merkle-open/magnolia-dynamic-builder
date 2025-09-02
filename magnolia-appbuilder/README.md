@@ -241,7 +241,7 @@ import com.namics.oss.magnolia.appbuilder.formatter.AbstractValueProvider;
 import com.namics.oss.magnolia.powernode.PowerNodeService;
 
 import javax.jcr.Node;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class SampleValueProvider extends AbstractValueProvider {

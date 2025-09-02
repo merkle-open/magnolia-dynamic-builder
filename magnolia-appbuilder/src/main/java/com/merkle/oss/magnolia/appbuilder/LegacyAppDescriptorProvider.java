@@ -39,8 +39,6 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Item;
 
 import org.apache.jackrabbit.JcrConstants;
@@ -49,6 +47,9 @@ import com.google.common.collect.ImmutableList;
 import com.merkle.oss.magnolia.appbuilder.annotations.AppFactory;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.v7.ui.Table;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 /**
  * Provides legacy/UI5 appDescriptor to be able to open a legacy/UI5 chooser dialog to content from an UI6 app.

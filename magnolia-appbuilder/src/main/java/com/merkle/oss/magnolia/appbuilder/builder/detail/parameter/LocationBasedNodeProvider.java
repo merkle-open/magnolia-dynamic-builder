@@ -9,12 +9,13 @@ import info.magnolia.ui.editor.ItemProviderStrategy;
 
 import java.util.Optional;
 
-import javax.inject.Provider;
 import javax.jcr.Item;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.builder.detail.ExtendedDetailLocation;
 import com.merkle.oss.magnolia.appbuilder.builder.detail.JcrNodeFromLocationItemProviderStrategy;
+
+import jakarta.inject.Provider;
 
 public class LocationBasedNodeProvider implements Provider<Optional<Node>> {
     private final ExtendedDetailLocation location;
