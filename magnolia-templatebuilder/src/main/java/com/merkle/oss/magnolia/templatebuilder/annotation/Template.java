@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.templatebuilder.definition.PermissionPredicate;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -28,13 +28,6 @@ public @interface Template {
     String templateScript() default "undefined";
 
     /**
-     * Defines the visibility of the template. When set to false the template is never presented in the user interface.
-     * This is useful for templates that are only used for pages that are created by scheduled jobs rather than by
-     * editors.
-     */
-    TernaryBoolean visible() default TernaryBoolean.UNSPECIFIED;
-
-    /**
      * Specifies the template type, e.g. "home", "section", etc.
      *
      * @see info.magnolia.rendering.template.type.DefaultTemplateTypes
@@ -47,17 +40,42 @@ public @interface Template {
     String subtype() default "";
 
     /**
+     * fallback permission - applies to all other permissions if not explicitly specified
+     */
+    Permission permission() default @Permission(predicate = PermissionPredicate.Allowed.class);
+
+    /**
+     * Specifies whether the template is available to editors.
+     */
+    Permission visible() default @Permission();
+
+    /**
      * Specifies whether a component can be changed.
      */
-    TernaryBoolean writable() default TernaryBoolean.UNSPECIFIED;
+    Permission writable() default @Permission();
+
+    /**
+     * Specifies whether a component can be changed.
+     */
+    Permission editable() default @Permission();
 
     /**
      * Specifies whether a component can be moved.
      */
-    TernaryBoolean moveable() default TernaryBoolean.UNSPECIFIED;
+     Permission moveable() default @Permission();
 
     /**
      * Specifies whether a component can be deleted.
      */
-    TernaryBoolean deletable() default TernaryBoolean.UNSPECIFIED;
+     Permission deletable() default @Permission();
+
+     @interface Permission {
+         Param[] params() default {};
+         Class<? extends PermissionPredicate> predicate() default PermissionPredicate.Unspecified.class;
+
+         @interface Param {
+             String key();
+             String value();
+         }
+     }
 }

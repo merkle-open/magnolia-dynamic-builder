@@ -1,6 +1,7 @@
 package com.merkle.oss.magnolia.templatebuilder;
 
 import info.magnolia.rendering.template.TemplateAvailability;
+import info.magnolia.rendering.template.TemplateDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +30,7 @@ public class TemplateAvailabilityResolver {
         final List<Method> matchingMethods = streamMethods(template.getClass(), Available.class).toList();
 
         if (matchingMethods.isEmpty()) {
-            return (node, templateDefinition) -> false;
+            return new FallbackAvailabilityResolver();
         }
         if (matchingMethods.size() > 1) {
             throw new IllegalStateException("Multiple @Available annotated methods found for template [" + template.getClass() + "]");
@@ -38,19 +39,7 @@ public class TemplateAvailabilityResolver {
         if (!method.getReturnType().equals(Boolean.TYPE)) {
             throw new IllegalStateException("Method " + method.getName() + " annotated with @Available for template [" + template.getClass() + "] has wrong return type [" + method.getReturnType() + "] should be boolean.");
         }
-        return (node, templateDefinition) -> invoke(template, method, availabilityParameterResolverFactory.create(node, templateDefinition));
-    }
-
-    private boolean invoke(final Object template, final Method availableMethod, final ParameterResolver parameterResolver) {
-        final Object[] parameters = Arrays
-                .stream(availableMethod.getParameterTypes())
-                .map(parameterResolver::resolveParameter)
-                .toArray();
-        try {
-            return (boolean)availableMethod.invoke(template, parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Could not invoke " + availableMethod.getName() + ", for template " + template.getClass(), e);
-        }
+        return new AvailabilityResolver(template, method, availabilityParameterResolverFactory);
     }
 
     private Stream<Method> streamMethods(final Class<?> clazz, final Class<? extends Annotation> annotationClass) {
@@ -60,5 +49,41 @@ public class TemplateAvailabilityResolver {
                 )
                 .distinct()
                 .filter(method -> method.isAnnotationPresent(annotationClass) && !Modifier.isStatic(method.getModifiers()));
+    }
+
+    public static class AvailabilityResolver implements TemplateAvailability<Node> {
+        private final Object template;
+        private final Method method;
+        private final AvailabilityParameterResolverFactory availabilityParameterResolverFactory;
+
+        public AvailabilityResolver(final Object template, final Method method, final AvailabilityParameterResolverFactory availabilityParameterResolverFactory) {
+            this.template = template;
+            this.method = method;
+            this.availabilityParameterResolverFactory = availabilityParameterResolverFactory;
+        }
+
+        @Override
+        public boolean isAvailable(final Node node, final TemplateDefinition templateDefinition) {
+            return invoke(template, method, availabilityParameterResolverFactory.create(node, templateDefinition));
+        }
+
+        private boolean invoke(final Object template, final Method availableMethod, final ParameterResolver parameterResolver) {
+            final Object[] parameters = Arrays
+                    .stream(availableMethod.getParameterTypes())
+                    .map(parameterResolver::resolveParameter)
+                    .toArray();
+            try {
+                return (boolean)availableMethod.invoke(template, parameters);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Could not invoke " + availableMethod.getName() + ", for template " + template.getClass(), e);
+            }
+        }
+    }
+
+    public static class FallbackAvailabilityResolver implements TemplateAvailability<Node> {
+        @Override
+        public boolean isAvailable(final Node node, final TemplateDefinition templateDefinition) {
+            return false;
+        }
     }
 }

@@ -9,6 +9,7 @@ import info.magnolia.rendering.DefinitionTypes;
 import info.magnolia.rendering.model.RenderingModel;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.ComponentAvailability;
+import info.magnolia.rendering.template.TemplateAvailability;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredAreaDefinition;
 import info.magnolia.rendering.template.configured.ConfiguredAutoGeneration;
@@ -23,14 +24,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
+import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,28 +47,35 @@ import com.merkle.oss.magnolia.templatebuilder.annotation.area.AvailableComponen
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.AvailableComponents;
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.ComponentCategory;
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.Inherits;
+import com.merkle.oss.magnolia.templatebuilder.definition.DynamicComponentAvailabilityResolvingAreaDefinition;
+import com.merkle.oss.magnolia.templatebuilder.definition.DynamicPermissionTemplateDefinition;
 
 public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvider<TemplateDefinition> {
     private final TemplateAvailabilityResolver templateAvailabilityResolver;
-    private final Provider<ConfiguredAreaDefinition> areaDefinitionFactory;
+    private final BiFunction<TemplateAvailability<Node>, Template, ConfiguredTemplateDefinition> templateDefinitionFactory;
+    private final Function<TemplateAvailability<Node>, ConfiguredAreaDefinition> areaDefinitionFactory;
     private final Set<Class<?>> templateFactories;
-    private final Provider<Object> factoryObjectProvider;
+    private final Function<Class<?>, Object> factoryObjectProvider;
     private final Template annotation;
     private final DefinitionMetadata metadata;
+    private final Class<?> factoryClass;
 
     public TemplateDefinitionProvider(
             final List<DefinitionDecorator<TemplateDefinition>> decorators,
             final TemplateAvailabilityResolver templateAvailabilityResolver,
-            final Provider<ConfiguredAreaDefinition> areaDefinitionFactory,
+            final BiFunction<TemplateAvailability<Node>, Template, ConfiguredTemplateDefinition> templateDefinitionFactory,
+            final Function<TemplateAvailability<Node>, ConfiguredAreaDefinition> areaDefinitionFactory,
             final Set<Class<?>> templateFactories,
-            final Provider<Object> factoryObjectProvider,
+            final Function<Class<?>, Object> factoryObjectProvider,
             final Class<?> factoryClass
     ) {
         super(decorators);
         this.templateAvailabilityResolver = templateAvailabilityResolver;
+        this.templateDefinitionFactory = templateDefinitionFactory;
         this.areaDefinitionFactory = areaDefinitionFactory;
         this.templateFactories = templateFactories;
         this.factoryObjectProvider = factoryObjectProvider;
+        this.factoryClass = factoryClass;
         this.annotation = factoryClass.getDeclaredAnnotation(Template.class);
         this.metadata = new DynamicDefinitionMetaData.Builder(factoryClass, annotation.id())
                 .type(DefinitionTypes.TEMPLATE)
@@ -79,20 +89,16 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
 
     @Override
     public TemplateDefinition getInternal() throws Registry.InvalidDefinitionException {
-        final Object factoryObject = factoryObjectProvider.get();
-        final ConfiguredTemplateDefinition template = new ConfiguredTemplateDefinition(templateAvailabilityResolver.resolve(factoryObject));
+        final Object factoryObject = factoryObjectProvider.apply(factoryClass);
+        final ConfiguredTemplateDefinition template = templateDefinitionFactory.apply(templateAvailabilityResolver.resolve(factoryObject), annotation);
         template.setId(annotation.id());
         template.setName(metadata.getName());
         template.setTitle(StringUtils.trimToNull(annotation.title()));
         template.setDescription(StringUtils.trimToNull(annotation.description()));
         template.setDialog(StringUtils.trimToNull(annotation.dialog()));
-        template.setVisible(annotation.visible().getValue());
         template.setType(annotation.type());
         template.setSubtype(StringUtils.trimToNull(annotation.subtype()));
         template.setRenderType(annotation.renderer());
-        template.setWritable(annotation.writable().getValue());
-        template.setMoveable(annotation.moveable().getValue());
-        template.setDeletable(annotation.deletable().getValue());
         template.setAreas(getAreas(template, factoryObject.getClass()));
         Optional.of(annotation.modelClass()).filter(RenderingModel.class::isAssignableFrom).ifPresent(template::setModelClass);
         template.setTemplateScript(annotation.templateScript());
@@ -107,7 +113,8 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
     }
 
     protected AreaDefinition getAreaDefinition(final ConfiguredTemplateDefinition template, final Class<?> areaClazz, final Area annotation) {
-        final ConfiguredAreaDefinition area = areaDefinitionFactory.get();
+        final Object factoryObject = factoryObjectProvider.apply(areaClazz);
+        final ConfiguredAreaDefinition area = areaDefinitionFactory.apply(templateAvailabilityResolver.resolve(factoryObject));
         area.setId(annotation.id());
         area.setName(annotation.name());
         area.setTitle(StringUtils.trimToNull(annotation.title()));
@@ -167,10 +174,32 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
                 )
                 .map(componentId -> {
                     final ConfiguredComponentAvailability availability = new ConfiguredComponentAvailability();
+//                    resolveComponentFactory(componentId).map(cl)
                     availability.setId(componentId);
+//                    availability.setRoles(Set.of("testrole"));
+//                    ConfiguredOperationPermissionDefinition test = new ConfiguredOperationPermissionDefinition();
+//                    ConfiguredAccessDefinition configuredAccessDefinition = new ConfiguredAccessDefinition();
+//                    configuredAccessDefinition.setRoles(Set.of("testrole"));
+//                    test.setAdd(configuredAccessDefinition);
+//                    test.setWrite(configuredAccessDefinition);
+//                    test.setDelete(configuredAccessDefinition);
+//                    test.setExecute(configuredAccessDefinition);
+//                    test.setMove(configuredAccessDefinition);
+//                    test.setRead(configuredAccessDefinition);
+//                    availability.setPermissions(test);
                     return availability;
                 })
                 .collect(Collectors.toMap(ComponentAvailability::getId, Function.identity()));
+    }
+
+    private Optional<Class<?>> resolveComponentFactory(final String componentId) {
+        return templateFactories.stream()
+                .filter(componentClazz -> Optional
+                        .ofNullable(componentClazz.getDeclaredAnnotation(Template.class))
+                        .filter(template -> Objects.equals(template.id(), componentId))
+                        .isPresent()
+                )
+                .findFirst();
     }
 
     private Stream<Class<?>> resolveAvailableComponentIds(final Class<?> areaClazz, final Class<?> componentClazz) {
@@ -222,9 +251,10 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
             return new TemplateDefinitionProvider(
                     Collections.emptyList(),
                     templateAvailabilityResolver,
-                    () -> Components.newInstance(ConfiguredAreaDefinition.class),
+                    (templateAvailability, template) -> Components.newInstance(DynamicPermissionTemplateDefinition.class, templateAvailability, template),
+                    templateAvailability -> Components.newInstance(DynamicComponentAvailabilityResolvingAreaDefinition.class, templateAvailability),
                     templateFactories,
-                    () -> Components.newInstance(factoryClass),
+                    Components::newInstance,
                     factoryClass
             );
         }
