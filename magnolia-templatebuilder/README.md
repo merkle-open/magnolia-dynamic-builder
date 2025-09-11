@@ -71,7 +71,10 @@ public @interface ContentArea {}
 ### Component-template
 
 ```java
+import info.magnolia.jcr.util.NodeUtil;
+
 import com.merkle.oss.magnolia.templatebuilder.annotation.Template;
+import com.merkle.oss.magnolia.templatebuilder.definition.HasRolePermissionPredicate;
 
 @ContentArea
 @Template(
@@ -80,11 +83,22 @@ import com.merkle.oss.magnolia.templatebuilder.annotation.Template;
         dialog = SomeComponentDialog.ID,
         description = "templates.components." + SomeComponent.NAME + ".description",
         renderer = "freemarker",
-        templateScript = "/someModule/templates/components/someComponent.ftl"
+        templateScript = "/someModule/templates/components/someComponent.ftl",
+        // example - only editable by superuser
+        writable = @Template.Permission(
+                predicate = HasRolePermissionPredicate.class,
+                params = { @Template.Permission.Param(key = "roles", value = "superuser") }
+        )
 )
 public class SomeComponent extends BaseComponent {
     public static final String NAME = "SomeComponent";
     public static final String ID = "SomeApp:components/" + NAME;
+
+    @Available
+    public boolean isAvailable(final Node node) {
+        //TODO implement
+        return NodeUtil.isNodeType(node, NodeTypes.Area.NAME) && true;
+    }
 }
 ```
 ### Page-template with area
