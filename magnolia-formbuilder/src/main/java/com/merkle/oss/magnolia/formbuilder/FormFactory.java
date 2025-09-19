@@ -50,7 +50,7 @@ public class FormFactory {
     }
 
     public ConfiguredFormDefinition<Item> create(final Object factoryObject) {
-        final ConfiguredFormDefinition<Item> formDefinition = new ConfiguredFormDefinition<>();
+        final RootFormView.Definition<Item> formDefinition = new RootFormView.Definition<>();
         final ParameterResolver parameterResolver = parameterResolverFactory.create(new FormParameterResolverFactory.FormCreationContext(nodeProvider), formDefinition);
 
         @Nullable
