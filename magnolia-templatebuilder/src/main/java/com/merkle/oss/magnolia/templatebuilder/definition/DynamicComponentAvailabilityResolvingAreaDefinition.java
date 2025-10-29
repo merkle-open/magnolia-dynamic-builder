@@ -1,5 +1,7 @@
 package com.merkle.oss.magnolia.templatebuilder.definition;
 
+import info.magnolia.config.registry.DefinitionMetadata;
+import info.magnolia.config.source.ConfigurationSourceTypes;
 import info.magnolia.rendering.engine.RenderingEngine;
 import info.magnolia.rendering.template.ComponentAvailability;
 import info.magnolia.rendering.template.TemplateAvailability;
@@ -37,7 +39,11 @@ public class DynamicComponentAvailabilityResolvingAreaDefinition extends Configu
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private boolean isAvailable(final String componentId) {
+    protected boolean isAvailable(final String componentId) {
+        final DefinitionMetadata componentTemplateMetadata = templateDefinitionRegistry.getProvider(componentId).getMetadata();
+        if(componentTemplateMetadata.getConfigurationSourceType() != ConfigurationSourceTypes.code) {
+            return true;
+        }
         final TemplateDefinition componentTemplate = templateDefinitionRegistry.getProvider(componentId).get();
         final TemplateAvailability<Node> templateAvailability = componentTemplate.getTemplateAvailability();
         final Node node = renderingEngine.getRenderingContext().getCurrentContent();
