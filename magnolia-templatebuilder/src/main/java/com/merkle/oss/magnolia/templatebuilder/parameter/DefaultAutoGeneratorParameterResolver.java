@@ -5,7 +5,10 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.WebContext;
+import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.rendering.template.TemplateDefinition;
+import info.magnolia.rendering.template.configured.ConfiguredAreaDefinition;
+import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 
 import javax.jcr.Node;
 
@@ -24,15 +27,18 @@ import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
  */
 public class DefaultAutoGeneratorParameterResolver extends ParameterResolver {
     private final Node node;
-    private final TemplateDefinition templateDefinition;
+    private final ConfiguredTemplateDefinition template;
+    private final ConfiguredAreaDefinition area;
 
     public DefaultAutoGeneratorParameterResolver(
             final Node node,
-            final TemplateDefinition templateDefinition
+            final ConfiguredTemplateDefinition template,
+            final ConfiguredAreaDefinition area
     ) {
         super(null);
         this.node = node;
-        this.templateDefinition = templateDefinition;
+        this.template = template;
+        this.area = area;
     }
 
     @Override
@@ -41,7 +47,10 @@ public class DefaultAutoGeneratorParameterResolver extends ParameterResolver {
             return node;
         }
         if (parameterType.equals(TemplateDefinition.class)) {
-            return templateDefinition;
+            return template;
+        }
+        if (parameterType.equals(AreaDefinition.class)) {
+            return area;
         }
         if (parameterType.isAssignableFrom(WebContext.class)) {
             return MgnlContext.getWebContext();
@@ -58,10 +67,11 @@ public class DefaultAutoGeneratorParameterResolver extends ParameterResolver {
         return super.resolveParameter(parameterType);
     }
 
-    public static class Factory implements AvailabilityParameterResolverFactory {
+    public static class Factory implements AutoGeneratorParameterResolverFactory {
+
         @Override
-        public ParameterResolver create(final Node node, final TemplateDefinition templateDefinition) {
-            return new DefaultAutoGeneratorParameterResolver(node, templateDefinition);
+        public ParameterResolver create(final Node node, final ConfiguredTemplateDefinition template, final ConfiguredAreaDefinition area) {
+            return new DefaultAutoGeneratorParameterResolver(node, template, area);
         }
     }
 }
