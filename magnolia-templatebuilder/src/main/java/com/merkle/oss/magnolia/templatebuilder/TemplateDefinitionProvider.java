@@ -174,19 +174,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
                 )
                 .map(componentId -> {
                     final ConfiguredComponentAvailability availability = new ConfiguredComponentAvailability();
-//                    resolveComponentFactory(componentId).map(cl)
                     availability.setId(componentId);
-//                    availability.setRoles(Set.of("testrole"));
-//                    ConfiguredOperationPermissionDefinition test = new ConfiguredOperationPermissionDefinition();
-//                    ConfiguredAccessDefinition configuredAccessDefinition = new ConfiguredAccessDefinition();
-//                    configuredAccessDefinition.setRoles(Set.of("testrole"));
-//                    test.setAdd(configuredAccessDefinition);
-//                    test.setWrite(configuredAccessDefinition);
-//                    test.setDelete(configuredAccessDefinition);
-//                    test.setExecute(configuredAccessDefinition);
-//                    test.setMove(configuredAccessDefinition);
-//                    test.setRead(configuredAccessDefinition);
-//                    availability.setPermissions(test);
                     return availability;
                 })
                 .collect(Collectors.toMap(ComponentAvailability::getId, Function.identity()));
