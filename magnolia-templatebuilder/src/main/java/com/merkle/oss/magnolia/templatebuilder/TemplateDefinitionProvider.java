@@ -126,7 +126,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         area.setCreateAreaNode(annotation.createAreaNode().getValue());
         area.setTemplateScript(annotation.templateScript()); // If the templateScript is null the area is rendered simply by looping the components. (default annotation value is undefined)
         getInheritanceConfiguration(areaClazz).ifPresent(area::setInheritance);
-        getAutoGenerationConfiguration(template, area, areaClazz).ifPresent(area::setAutoGeneration);
+        getAutoGenerationConfiguration(template, area, factoryObject).ifPresent(area::setAutoGeneration);
         area.setAvailableComponents(getAvailableComponents(areaClazz));
         area.setAreas(getAreas(template, areaClazz));
         dynamicFragment(areaClazz).ifPresent(template::setFragmentDefinition);
@@ -136,16 +136,16 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
     private Optional<ConfiguredAutoGeneration> getAutoGenerationConfiguration(
             final ConfiguredTemplateDefinition template,
             final ConfiguredAreaDefinition area,
-            final Class<?> areaClazz
+            final Object factoryObject
     ) {
-        final List<Method> matchingMethods = streamMethods(areaClazz, AutoGenerator.class).toList();
+        final List<Method> matchingMethods = streamMethods(factoryObject.getClass(), AutoGenerator.class).toList();
         if (matchingMethods.isEmpty()) {
             return Optional.empty();
         }
         if (matchingMethods.size() > 1) {
-            throw new IllegalStateException("Multiple @AutoGenerator annotated methods found for area [" + areaClazz + "]");
+            throw new IllegalStateException("Multiple @AutoGenerator annotated methods found for area [" + factoryObject.getClass() + "]");
         }
-        return Optional.of(new DynamicAutoGenerator.Definition(template, area, areaClazz, matchingMethods.get(0)));
+        return Optional.of(new DynamicAutoGenerator.Definition(template, area, factoryObject, matchingMethods.get(0)));
     }
 
     private Optional<ConfiguredInheritance> getInheritanceConfiguration(final Class<?> areaClazz) {
