@@ -5,11 +5,11 @@ import info.magnolia.ui.framework.layout.ConfiguredTabDefinition;
 import java.util.Comparator;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
+
+import jakarta.annotation.Nullable;
 
 
 public class DefaultTabComparator implements Comparator<ConfiguredTabDefinition> {

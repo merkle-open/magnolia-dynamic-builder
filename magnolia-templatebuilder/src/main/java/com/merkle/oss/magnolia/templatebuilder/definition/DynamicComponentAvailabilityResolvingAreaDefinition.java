@@ -12,7 +12,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.templatebuilder.TemplateAvailabilityResolver;

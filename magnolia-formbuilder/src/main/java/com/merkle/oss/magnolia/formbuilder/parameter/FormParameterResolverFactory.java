@@ -4,11 +4,12 @@ import info.magnolia.ui.editor.ConfiguredFormDefinition;
 
 import java.util.Optional;
 
-import javax.inject.Provider;
 import javax.jcr.Item;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
+
+import jakarta.inject.Provider;
 
 public interface FormParameterResolverFactory {
     ParameterResolver create(FormCreationContext context, ConfiguredFormDefinition<Item> formDefinition);

@@ -6,10 +6,10 @@ import info.magnolia.virtualuri.VirtualUriRegistry;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.inject.Inject;
 
 public class VirtualUriMappingBuilderModule implements ModuleLifecycle {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

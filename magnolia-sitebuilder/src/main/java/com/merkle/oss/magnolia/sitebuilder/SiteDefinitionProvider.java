@@ -30,13 +30,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Extends;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Site;
+
+import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
 
 public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<info.magnolia.module.site.Site> {
     private final TemplateDefinitionRegistry templateDefinitionRegistry;

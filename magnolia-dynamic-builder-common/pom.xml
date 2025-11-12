@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.merkle.oss.magnolia</groupId>
     <artifactId>magnolia-dynamic-builder</artifactId>
-    <version>1.6.12-SNAPSHOT</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>magnolia-dynamic-builder-common</artifactId>
@@ -30,9 +30,5 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-    </dependency>
   </dependencies>
 </project>

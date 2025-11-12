@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.merkle.oss.magnolia</groupId>
     <artifactId>magnolia-dynamic-builder</artifactId>
-    <version>1.6.12-SNAPSHOT</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>magnolia-appbuilder</artifactId>
@@ -48,13 +48,6 @@
       <artifactId>magnolia-definition-builders</artifactId>
     </dependency>
 
-    <!-- Vaadin Compatibility -->
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-compatibility-server</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- TESTING DEPENDENCIES -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -73,8 +66,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

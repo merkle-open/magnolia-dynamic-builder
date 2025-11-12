@@ -6,7 +6,7 @@ import info.magnolia.ui.editor.FormDefinition;
 import info.magnolia.ui.editor.FormView;
 import info.magnolia.ui.editor.LocaleContext;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class RootFormView<T> extends FormView<T> {
     @Inject
@@ -20,7 +20,7 @@ public class RootFormView<T> extends FormView<T> {
         }
     }
 
-    public static class Provider<T> implements javax.inject.Provider<RootFormView<T>> {
+    public static class Provider<T> implements jakarta.inject.Provider<RootFormView<T>> {
         private final RootFormView<T> view;
 
         @Inject

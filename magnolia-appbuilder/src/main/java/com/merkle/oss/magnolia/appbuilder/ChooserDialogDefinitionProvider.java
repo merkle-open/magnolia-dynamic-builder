@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Provider;
-
 import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+
+import jakarta.inject.Provider;
 
 public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitionProvider<DialogDefinition> {
     private final DefinitionMetadata metadata;

@@ -1,7 +1,7 @@
 package com.merkle.oss.magnolia.builder.parameter;
 
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * Resolves parameters when invoking methods with reflection.

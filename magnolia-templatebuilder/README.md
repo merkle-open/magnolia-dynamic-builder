@@ -195,7 +195,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -245,7 +245,7 @@ Implement and bind different AvailabilityParameterResolverFactory to customize i
 ```java
 import info.magnolia.rendering.template.TemplateDefinition;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
