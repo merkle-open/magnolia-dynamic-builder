@@ -8,6 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
 import com.merkle.oss.magnolia.sitebuilder.DomainMapper;
 import com.merkle.oss.magnolia.sitebuilder.DomainPredicate;
 
@@ -22,6 +23,7 @@ public @interface Site {
     I18n i18n() default @I18n();
     String theme() default UNDEFINED;
     Mapping[] mappings() default {};
+    Cors[] cors() default {};
 
     @interface Templates {
         boolean enabled() default true;
@@ -56,6 +58,15 @@ public @interface Site {
         String workspace();
         String uriPrefix() default UNDEFINED;
         String handlePrefix();
+    }
+
+    @interface Cors {
+        String[] uris() default {};
+        String[] allowedOrigins() default {};
+        String[] allowedMethods() default { "*" };
+        String[] allowedHeaders() default { "*" };
+        TernaryBoolean supportsCredentials() default TernaryBoolean.UNSPECIFIED;
+        int maxAge() default -1;
     }
 
     String UNDEFINED = "<sitebuilder-undefined>";

@@ -6,9 +6,12 @@ import info.magnolia.cms.beans.config.URI2RepositoryMapping;
 import info.magnolia.cms.i18n.AbstractI18nContentSupport;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.i18n.LocaleDefinition;
+import info.magnolia.cms.util.SimpleUrlPattern;
 import info.magnolia.config.registry.DefinitionMetadata;
 import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
+import info.magnolia.cors.CorsConfiguration;
+import info.magnolia.cors.DefaultCorsConfiguration;
 import info.magnolia.module.site.ConfiguredSite;
 import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.registry.DefinitionTypes;
@@ -32,6 +35,7 @@ import java.util.stream.Stream;
 
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Extends;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Site;
 
@@ -74,6 +78,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         site.setEnabled(annotation.enabled());
         streamSites().map(this::getTemplates).flatMap(Optional::stream).findFirst().ifPresent(site::setTemplates);
         site.setDomains(streamSites().flatMap(this::getDomains).toList());
+        site.setCors(streamSites().flatMap(this::getCors).toList());
         site.setMappings(streamSites().flatMap(this::getMappings).collect(Collectors.toMap(
                 URI2RepositoryMapping::getRepository,
                 Function.identity(),
@@ -146,6 +151,27 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
                 mapping.workspace(),
                 mapping.handlePrefix()
         );
+    }
+
+    private Stream<CorsConfiguration> getCors(final Site annotation) {
+        return Arrays
+                .stream(annotation.cors())
+                .map(this::create);
+    }
+    private CorsConfiguration create(final Site.Cors cors) {
+        final DefaultCorsConfiguration config = new DefaultCorsConfiguration();
+        config.setUris(Arrays.stream(cors.uris()).map(SimpleUrlPattern::new).toList());
+        config.setAllowedHeaders(Arrays.stream(cors.allowedHeaders()).toList());
+        config.setAllowedMethods(Arrays.stream(cors.allowedMethods()).toList());
+        config.setAllowedOrigins(Arrays.stream(cors.allowedOrigins()).toList());
+        Optional.of(cors.maxAge())
+                .filter(maxAge -> -1 != maxAge)
+                .ifPresent(config::setMaxAge);
+        Optional.of(cors.supportsCredentials())
+                .filter(not(TernaryBoolean.UNSPECIFIED::equals))
+                .map(TernaryBoolean::getValue)
+                .ifPresent(config::setSupportsCredentials);
+        return config;
     }
 
     private Stream<Domain> getDomains(final Site annotation) {

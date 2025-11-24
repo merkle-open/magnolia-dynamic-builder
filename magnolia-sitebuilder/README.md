@@ -105,6 +105,9 @@ import com.merkle.powerboost.web.core.sites.FallbackSite;
         mappings = {
                 @Site.Mapping(workspace = RepositoryConstants.WEBSITE, handlePrefix = SomeSite.HANDLE_PREFIX)
         },
+        cors = { 
+                @Site.Cors(uris = "/api/*", allowedOrigins = { "https://www.somedomain.com" })
+        },
         domains = {
                 @Site.Domain(name = "somesite.localdev.me", protocol = "http", port = 8080),
                 @Site.Domain(name = "env1.somesite.domain.com", protocol = "https", port = 443, context = "/magnolia"),
