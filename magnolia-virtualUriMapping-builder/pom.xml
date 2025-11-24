@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.merkle.oss.magnolia</groupId>
     <artifactId>magnolia-dynamic-builder</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.7.1</version>
   </parent>
 
   <artifactId>magnolia-virtualUriMapping-builder</artifactId>
