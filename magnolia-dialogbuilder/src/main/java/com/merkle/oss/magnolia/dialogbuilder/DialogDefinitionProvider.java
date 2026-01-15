@@ -33,13 +33,15 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
     private final Provider<Object> factoryObjectProvider;
     private final DialogFactory annotation;
     private final DefinitionMetadata metadata;
+    private final FormFactory.Factory formFactoryFactory;
 
     public DialogDefinitionProvider(
             final List<DefinitionDecorator<DialogDefinition>> decorators,
             final DialogParameterResolverFactory parameterResolverFactory,
             final TabComparatorFactory tabComparatorFactory,
             final Provider<Object> factoryObjectProvider,
-            final Class<?> factoryClass
+            final Class<?> factoryClass,
+            final FormFactory.Factory formFactoryFactory
     ) {
         super(decorators);
         this.parameterResolverFactory = parameterResolverFactory;
@@ -49,6 +51,7 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
         this.metadata = new DynamicDefinitionMetaData.Builder(factoryClass, annotation.value())
                 .type(DefinitionTypes.DIALOG)
                 .build();
+        this.formFactoryFactory = formFactoryFactory;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
         dialogDefinition.setId(annotation.value());
         dialogDefinition.setLabel(StringUtils.trimToNull(annotation.label()));
         try {
-            final FormFactory formFactory = new FormFactory(
+            final FormFactory formFactory = formFactoryFactory.create(
                     (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, dialogDefinition),
                     tabComparatorFactory,
                     new SubAppContextBeanStoreNodeProvider()
@@ -78,14 +81,17 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
     public static class Factory {
         private final DialogParameterResolverFactory parameterResolverFactory;
         private final TabComparatorFactory tabComparatorFactory;
+        private final FormFactory.Factory formFactoryFactory;
 
         @Inject
         public Factory(
                 final DialogParameterResolverFactory parameterResolverFactory,
-                final TabComparatorFactory tabComparatorFactory
+                final TabComparatorFactory tabComparatorFactory,
+                final FormFactory.Factory formFactoryFactory
         ) {
             this.parameterResolverFactory = parameterResolverFactory;
             this.tabComparatorFactory = tabComparatorFactory;
+            this.formFactoryFactory = formFactoryFactory;
         }
 
         public DialogDefinitionProvider create(final Class<?> factoryClass) {
@@ -94,7 +100,8 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
                     parameterResolverFactory,
                     tabComparatorFactory,
                     () -> Components.newInstance(factoryClass),
-                    factoryClass
+                    factoryClass,
+                    formFactoryFactory
             );
         }
     }

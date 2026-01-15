@@ -33,6 +33,7 @@ public class DetailAppBuilder {
     private final FormFactory.TabComparatorFactory tabComparatorFactory;
     private final JcrNameValidationAppender jcrNameValidationAppender;
     private final ComponentProvider componentProvider;
+    private final FormFactory.Factory formFactoryFactory;
 
     private Function<Class<?>, Object> factoryObjectProvider = Components::newInstance;
 
@@ -40,12 +41,14 @@ public class DetailAppBuilder {
             final DetailAppParameterResolverFactory parameterResolverFactory,
             final FormFactory.TabComparatorFactory tabComparatorFactory,
             final JcrNameValidationAppender jcrNameValidationAppender,
-            final ComponentProvider componentProvider
+            final ComponentProvider componentProvider,
+            final FormFactory.Factory formFactoryFactory
     ) {
         this.parameterResolverFactory = parameterResolverFactory;
         this.tabComparatorFactory = tabComparatorFactory;
         this.jcrNameValidationAppender = jcrNameValidationAppender;
         this.componentProvider = componentProvider;
+        this.formFactoryFactory = formFactoryFactory;
     }
 
     public DetailAppBuilder factoryObjectProvider(final Function<Class<?>, Object> factoryObjectProvider) {
@@ -68,7 +71,7 @@ public class DetailAppBuilder {
                 },
                 detailSubAppDefinition -> {
                     final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
-                    final FormFactory formFactory = new FormFactory(
+                    final FormFactory formFactory = formFactoryFactory.create(
                             (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, detailSubAppDefinition),
                             tabComparatorFactory,
                             new LocationBasedNodeProvider(datasourceDefinition, location, componentProvider)
@@ -94,18 +97,21 @@ public class DetailAppBuilder {
         private final FormFactory.TabComparatorFactory tabComparatorFactory;
         private final JcrNameValidationAppender jcrNameValidationAppender;
         private final ComponentProvider componentProvider;
+        private final FormFactory.Factory formFactoryFactory;
 
         @Inject
         public Factory(
                 final DetailAppParameterResolverFactory parameterResolverFactory,
                 final FormFactory.TabComparatorFactory tabComparatorFactory,
                 final JcrNameValidationAppender jcrNameValidationAppender,
-                final ComponentProvider componentProvider
+                final ComponentProvider componentProvider,
+                final FormFactory.Factory formFactoryFactory
         ) {
             this.parameterResolverFactory = parameterResolverFactory;
             this.tabComparatorFactory = tabComparatorFactory;
             this.jcrNameValidationAppender = jcrNameValidationAppender;
             this.componentProvider = componentProvider;
+            this.formFactoryFactory = formFactoryFactory;
         }
 
         public DetailAppBuilder create() {
@@ -113,7 +119,8 @@ public class DetailAppBuilder {
                     parameterResolverFactory,
                     tabComparatorFactory,
                     jcrNameValidationAppender,
-                    componentProvider
+                    componentProvider,
+                    formFactoryFactory
             );
         }
     }

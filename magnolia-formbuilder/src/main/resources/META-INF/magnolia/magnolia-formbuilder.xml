@@ -16,6 +16,10 @@
             <type>com.merkle.oss.magnolia.formbuilder.FormFactory$TabComparatorFactory</type>
             <implementation>com.merkle.oss.magnolia.formbuilder.DefaultTabComparator$Factory</implementation>
         </component>
+        <component>
+            <type>com.merkle.oss.magnolia.formbuilder.FormFactory$Factory</type>
+            <implementation>com.merkle.oss.magnolia.formbuilder.FormFactory$Factory$DefaultFactory</implementation>
+        </component>
     </components>
 
     <dependencies>

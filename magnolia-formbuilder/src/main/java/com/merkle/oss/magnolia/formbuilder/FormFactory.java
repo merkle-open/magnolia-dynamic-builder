@@ -31,7 +31,6 @@ import com.merkle.oss.magnolia.formbuilder.annotation.TabOrder;
 import com.merkle.oss.magnolia.formbuilder.parameter.FormParameterResolverFactory;
 
 import jakarta.annotation.Nullable;
-import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
 public class FormFactory {
@@ -39,7 +38,6 @@ public class FormFactory {
     private final TabComparatorFactory tabComparatorFactory;
     private final Provider<Optional<Node>> nodeProvider;
 
-    @Inject
     public FormFactory(
             final FormParameterResolverFactory parameterResolverFactory,
             final TabComparatorFactory tabComparatorFactory,
@@ -124,5 +122,16 @@ public class FormFactory {
 
     public interface TabComparatorFactory {
         Comparator<ConfiguredTabDefinition> create(@Nullable TabOrder tabOrder);
+    }
+
+    public interface Factory {
+        FormFactory create(FormParameterResolverFactory parameterResolverFactory, TabComparatorFactory tabComparatorFactory, Provider<Optional<Node>> nodeProvider);
+
+        class DefaultFactory implements Factory {
+            @Override
+            public FormFactory create(final FormParameterResolverFactory parameterResolverFactory, final TabComparatorFactory tabComparatorFactory, final Provider<Optional<Node>> nodeProvider) {
+                return new FormFactory(parameterResolverFactory, tabComparatorFactory, nodeProvider);
+            }
+        }
     }
 }
