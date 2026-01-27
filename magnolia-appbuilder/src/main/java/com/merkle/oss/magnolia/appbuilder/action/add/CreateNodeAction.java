@@ -4,6 +4,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.CloseHandler;
 import info.magnolia.ui.ValueContext;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.Datasource;
 import info.magnolia.ui.contentapp.action.CommitAction;
 import info.magnolia.ui.contentapp.action.CommitActionDefinition;
@@ -38,16 +39,20 @@ public class CreateNodeAction extends CommitAction<Node> {
 	}
 
 	@Override
-	public void execute() {
-		if (validateForm()) {
-			Exceptions.wrap().run(() -> {
-				final Node parent = getValueContext().getSingle().orElseGet(getDatasource()::getRoot);
-				final String nodeName = nodeNameProvider.get(getForm(), parent);
-				final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
-				getValueContext().set(node);
-				super.execute();
-			});
-		}
+	protected void write() {
+		Exceptions.wrap().run(() -> {
+			final Node parent = getValueContext().getSingle().orElseGet(getDatasource()::getRoot);
+			final String nodeName = nodeNameProvider.get(getForm(), parent);
+			final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
+			getForm().write(node);
+			getDatasource().save(node);
+			getValueContext().set(node);
+			if (ActionDefinition.RefreshBehavior.ITEMS.equals(getDefinition().getDatasourceRefreshBehavior())) {
+				getDatasourceObservation().trigger(node);
+			} else {
+				getDatasourceObservation().trigger();
+			}
+		});
 	}
 
 	@Override
