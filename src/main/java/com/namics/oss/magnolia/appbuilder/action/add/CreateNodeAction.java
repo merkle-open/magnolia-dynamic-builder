@@ -37,16 +37,16 @@ public class CreateNodeAction extends CommitAction<Node> {
 	}
 
 	@Override
-	public void execute() {
-		if (validateForm()) {
-			Exceptions.wrap().run(() -> {
-				final Node parent = getValueContext().getSingle().orElseGet(jcrDatasource::getRoot);
-				final String nodeName = nodeNameProvider.get(getForm(), parent);
-				final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
-				getValueContext().set(node);
-				super.execute();
-			});
-		}
+	protected void write() {
+		Exceptions.wrap().run(() -> {
+			final Node parent = getValueContext().getSingle().orElseGet(jcrDatasource::getRoot);
+			final String nodeName = nodeNameProvider.get(getForm(), parent);
+			final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
+			getForm().write(node);
+			getDatasource().commit(node);
+			getValueContext().set(node);
+			getDatasourceObservation().trigger();
+		});
 	}
 
 	@Override
