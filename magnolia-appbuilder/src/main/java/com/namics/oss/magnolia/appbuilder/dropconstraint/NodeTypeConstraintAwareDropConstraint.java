@@ -1,20 +1,23 @@
 package com.namics.oss.magnolia.appbuilder.dropconstraint;
 
-import com.vaadin.shared.ui.grid.DropLocation;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.shared.ui.grid.DropLocation;
 
 public class NodeTypeConstraintAwareDropConstraint implements DropConstraint<Item> {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

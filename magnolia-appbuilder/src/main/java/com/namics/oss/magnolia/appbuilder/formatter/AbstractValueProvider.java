@@ -1,11 +1,13 @@
 package com.namics.oss.magnolia.appbuilder.formatter;
 
-import com.vaadin.data.ValueProvider;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Optional;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
-import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.vaadin.data.ValueProvider;
 
 public abstract class AbstractValueProvider implements ValueProvider<Item, String> {
 

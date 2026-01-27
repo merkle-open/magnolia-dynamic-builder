@@ -1,20 +1,23 @@
 package com.namics.oss.magnolia.appbuilder.builder.action;
 
-import com.vaadin.v7.data.Item;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.v7.data.Item;
 
 public class NodeTypeToActionDelegatingAction<D extends NodeTypeToActionDelegatingActionDefinition> extends AbstractAction<D> {
 

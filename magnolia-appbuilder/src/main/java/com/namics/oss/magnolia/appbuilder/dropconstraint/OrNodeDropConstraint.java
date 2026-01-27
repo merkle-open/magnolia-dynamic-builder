@@ -1,9 +1,10 @@
 package com.namics.oss.magnolia.appbuilder.dropconstraint;
 
-import com.vaadin.shared.ui.grid.DropLocation;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraint;
 
 import java.util.Set;
+
+import com.vaadin.shared.ui.grid.DropLocation;
 
 /**
  * Returns true if any of the constraints returns true

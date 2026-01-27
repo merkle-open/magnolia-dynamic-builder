@@ -1,8 +1,9 @@
 package com.namics.oss.magnolia.appbuilder.formatter;
 
+import java.util.Optional;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.Optional;
 
 public class NodeNameValueProvider extends AbstractValueProvider {
 	@Override

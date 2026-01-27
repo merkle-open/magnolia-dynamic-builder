@@ -6,12 +6,13 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.availability.rule.AbstractJcrRule;
 import info.magnolia.ui.datasource.jcr.JcrDatasource;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.Collection;
 
 public class PermissionRequiredRule extends AbstractJcrRule<PermissionRequiredRuleDefinition> {
 	private final JcrDatasource datasource;

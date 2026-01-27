@@ -1,5 +1,10 @@
 package com.namics.oss.magnolia.appbuilder.action;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateDeletionAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.ActivateRecursiveAppActionDefinition;
@@ -8,15 +13,16 @@ import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowAct
 import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateDeletionAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateRecursiveAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.activation.workflow.WorkflowDeactivateAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.*;
+import com.namics.oss.magnolia.appbuilder.action.edit.ConfirmDeleteAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.CopyAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.DeleteAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.MarkAsDeletedAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.MoveAppActionDefinition;
+import com.namics.oss.magnolia.appbuilder.action.edit.PasteAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ExportAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.importexport.ImportAppActionDefinition;
 import com.namics.oss.magnolia.appbuilder.action.version.RestorePreviousVersionAppActionDefinition;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class AppActionDefinitions {
 

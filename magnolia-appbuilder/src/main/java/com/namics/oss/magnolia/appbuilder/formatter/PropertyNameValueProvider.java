@@ -2,9 +2,10 @@ package com.namics.oss.magnolia.appbuilder.formatter;
 
 import info.magnolia.jcr.util.PropertyUtil;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.jcr.Node;
-import java.util.Optional;
 
 public class PropertyNameValueProvider extends AbstractValueProvider {
 	private final PropertyNameColumnDefinition definition;

@@ -5,8 +5,11 @@ import info.magnolia.ui.api.ioc.SubAppScoped;
 import info.magnolia.ui.contentapp.action.clipboard.JcrClipboard;
 import info.magnolia.ui.contentapp.browser.ItemInteractionAvailability;
 import info.magnolia.ui.datasource.jcr.JcrDatasource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -15,10 +18,9 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SubAppScoped
 public class NodeTypeConstraintAwareJcrContentClipboard extends JcrClipboard implements JcrContentClipboard {
