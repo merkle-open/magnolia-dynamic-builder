@@ -1,5 +1,6 @@
 package com.merkle.oss.magnolia.appbuilder.configuration;
 
+import com.merkle.oss.magnolia.appbuilder.annotations.SearchResultSuppliers;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 import com.google.inject.TypeLiteral;
@@ -13,5 +14,6 @@ public class AppBuilderGuiceComponentConfigurer extends AbstractGuiceComponentCo
 		super.configure();
 		Multibinder.newSetBinder(binder(), new TypeLiteral<Class<?>>(){}, AppFactories.class);
 		Multibinder.newSetBinder(binder(), new TypeLiteral<Class<?>>(){}, ChooserDialogFactories.class);
+		Multibinder.newSetBinder(binder(), new TypeLiteral<Class<?>>(){}, SearchResultSuppliers.class);
 	}
 }
