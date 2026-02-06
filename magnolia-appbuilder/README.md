@@ -39,10 +39,12 @@ import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.reflections.Reflections;
 
 import com.google.inject.multibindings.Multibinder;
-import com.namics.oss.magnolia.appbuilder.annotations.AppFactories;
-import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
-import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactories;
-import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
+import com.merkle.oss.magnolia.appbuilder.annotations.AppFactories;
+import com.merkle.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactories;
+import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
+import com.merkle.oss.magnolia.appbuilder.annotations.SearchResultSuppliers;
+import com.merkle.oss.magnolia.appbuilder.annotations.SearchResultSupplier;
 
 public class GuiceComponentConfigurer extends AbstractGuiceComponentConfigurer {
     @Override
@@ -53,6 +55,9 @@ public class GuiceComponentConfigurer extends AbstractGuiceComponentConfigurer {
 
         final Multibinder<Class<?>> chooserDialogFactoryMultibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<>() {}, ChooserDialogFactories.class);
         new Reflections(getClass()).getTypesAnnotatedWith(ChooserDialogFactory.class).forEach(clazz -> chooserDialogFactoryMultibinder.addBinding().toInstance(clazz));
+
+        final Multibinder<Class<?>> searchResultProviderMultibinder = Multibinder.newSetBinder(binder, new TypeLiteral<>() {}, SearchResultSuppliers.class);
+        new Reflections(getClass()).getTypesAnnotatedWith(SearchResultSupplier.class).forEach(clazz -> searchResultProviderMultibinder.addBinding().toInstance(clazz));
     }
 }
 ```
@@ -61,12 +66,15 @@ public class GuiceComponentConfigurer extends AbstractGuiceComponentConfigurer {
 
 ### AppFactory
 To create a new app, add a class with the `@AppFactory` annotation and at least one 
-method annotated with `@SubApp` returning a `info.magnolia.ui.api.app.SubAppDescriptor`. Make sure the the class
-in in a package which is scanned for `@AppFactory`s.
+method annotated with `@SubApp` returning a `info.magnolia.ui.api.app.SubAppDescriptor`. Make sure the class
+ in a package which is scanned for `@AppFactory`s.
 
 ### ChooserDialog
 By default Magnolia generates chooser dialogs with the workbench of the default supapp (See [AppAwareWorkbenchChooserDefinition](info.magnolia.ui.chooser.definition.AppAwareWorkbenchChooserDefinition)).
 
+### SearchResultSupplier
+Generates `info.magnolia.periscope.search.jcr.JcrSearchResultSupplierDefinition` (See [JcrSearchResultSupplierDefinition](https://docs.magnolia-cms.com/product-docs/modules/list-of-modules/periscope-module/#_search_result_suppliers)) used in [Global Search](https://docs.magnolia-cms.com/product-docs/authoring/search/global-search/).
+Has fallbacks to app related properties set in `@AppFactory` (e.g. icon, appName and label).
 
 ## Examples
 The following class is a demo app, made with the AppBuilder:
@@ -78,14 +86,14 @@ import com.merkle.oss.magnolia.appbuilder.builder.detail.DetailAppBuilder;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.action.AppActionDefinitions;
-import com.namics.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.namics.oss.magnolia.appbuilder.action.add.AddAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
-import com.namics.oss.magnolia.appbuilder.annotations.AppFactory;
-import com.namics.oss.magnolia.appbuilder.annotations.Icon;
-import com.namics.oss.magnolia.appbuilder.annotations.SubApp;
-import com.namics.oss.magnolia.appbuilder.builder.BrowserAppBuilder;
+import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinitions;
+import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
+import com.merkle.oss.magnolia.appbuilder.action.add.AddAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.annotations.AppFactory;
+import com.merkle.oss.magnolia.appbuilder.annotations.Icon;
+import com.merkle.oss.magnolia.appbuilder.annotations.SearchResultSupplier;
+import com.merkle.oss.magnolia.appbuilder.builder.browser.BrowserAppBuilder;
 
 import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.jcr.util.NodeTypes;
@@ -105,6 +113,7 @@ import javax.jcr.Item;
         label = SampleApp.NAME
 )
 @Icon(MagnoliaIcons.TAG_2_APP)
+@SearchResultSupplier(workspace = "<WORKSPACE>")
 public class SampleApp {
     public static final String NAME = "SampleApp";
     public static final String ID = "module:apps/" + NAME;
@@ -191,7 +200,7 @@ public class SomeDetailApp {
 
 ```java
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.ColumnDefinitionBuilder;
-import com.namics.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
+import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 
 import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
 import info.magnolia.ui.contentapp.configuration.ListViewDefinition;
@@ -237,8 +246,8 @@ definition.setChooserId(SampleChooserDialog.ID);
 
 ### ValueProvider sample:
 ```java
-import com.namics.oss.magnolia.appbuilder.formatter.AbstractValueProvider;
-import com.namics.oss.magnolia.powernode.PowerNodeService;
+import com.merkle.oss.magnolia.appbuilder.formatter.AbstractValueProvider;
+import com.merkle.oss.magnolia.powernode.PowerNodeService;
 
 import javax.jcr.Node;
 import jakarta.inject.Inject;
