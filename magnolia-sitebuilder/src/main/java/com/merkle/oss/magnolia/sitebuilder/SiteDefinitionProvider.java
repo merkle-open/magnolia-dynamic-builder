@@ -44,7 +44,10 @@ import jakarta.inject.Inject;
 
 public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<info.magnolia.module.site.Site> {
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
-    private final ComponentProvider componentProvider;
+    private final ComponentFactory<AbstractI18nContentSupport> i18nContentSupportFactory;
+    private final ComponentFactory<TemplateAvailability> templateAvailabilityFactory;
+    private final ComponentFactory<DomainMapper> domainMapperFactory;
+    private final ComponentFactory<DomainPredicate> domainPredicateFactory;
     private final Site annotation;
     @Nullable
     private final Extends extendsAnnotation;
@@ -53,12 +56,18 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
     public SiteDefinitionProvider(
             final List<DefinitionDecorator<info.magnolia.module.site.Site>> decorators,
             final TemplateDefinitionRegistry templateDefinitionRegistry,
-            final ComponentProvider componentProvider,
+            final ComponentFactory<AbstractI18nContentSupport> i18nContentSupportFactory,
+            final ComponentFactory<TemplateAvailability> templateAvailabilityFactory,
+            final ComponentFactory<DomainMapper> domainMapperFactory,
+            final ComponentFactory<DomainPredicate> domainPredicateFactory,
             final Class<?> factoryClass
     ) {
         super(decorators);
         this.templateDefinitionRegistry = templateDefinitionRegistry;
-        this.componentProvider = componentProvider;
+        this.i18nContentSupportFactory = i18nContentSupportFactory;
+        this.templateAvailabilityFactory = templateAvailabilityFactory;
+        this.domainMapperFactory = domainMapperFactory;
+        this.domainPredicateFactory = domainPredicateFactory;
         this.annotation = factoryClass.getDeclaredAnnotation(Site.class);
         this.extendsAnnotation = factoryClass.getDeclaredAnnotation(Extends.class);
         this.metadata = new SiteDefinitionMetaDataBuilder(factoryClass, annotation.id())
@@ -110,7 +119,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
                 .map(this::create);
     }
     private AbstractI18nContentSupport create(final Site.I18n i18n) {
-        final AbstractI18nContentSupport i18nContentSupport = componentProvider.newInstance(i18n.clazz());
+        final AbstractI18nContentSupport i18nContentSupport = i18nContentSupportFactory.create(i18n.clazz());
         i18nContentSupport.setEnabled(i18n.enabled());
         create(i18n.fallbackLocale()).filter(LocaleDefinition::isEnabled).map(LocaleDefinition::getLocale).ifPresent(i18nContentSupport::setFallbackLocale);
         create(i18n.defaultLocale()).filter(LocaleDefinition::isEnabled).map(LocaleDefinition::getLocale).ifPresent(i18nContentSupport::setDefaultLocale);
@@ -188,11 +197,11 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
 
         final DomainMapper mapper = Optional.of(annotation.mapper())
                 .filter(not(DomainMapper.class::equals))
-                .map(domainMapperClass -> (DomainMapper)componentProvider.newInstance(domainMapperClass))
+                .map(domainMapperFactory::create)
                 .orElseGet(() -> (input) -> input);
         final DomainPredicate domainPredicate = Optional.of(annotation.predicate())
                 .filter(not(DomainPredicate.class::equals))
-                .map(predicateClass -> (DomainPredicate)componentProvider.newInstance(predicateClass))
+                .map(domainPredicateFactory::create)
                 .orElseGet(() -> ignored -> true);
         return Optional.of(mapper.apply(domain)).filter(domainPredicate);
     }
@@ -215,10 +224,10 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
                 })
                 .orElseGet(ConfiguredTemplateSettings::new);
     }
-    private <T> TemplateAvailability<T> createTemplateAvailability(final Site.Templates annotation) {
+    private TemplateAvailability createTemplateAvailability(final Site.Templates annotation) {
         return Optional
                 .of(annotation.availability()).filter(not(TemplateAvailability.class::equals))
-                .map(clazz -> (TemplateAvailability<T>) componentProvider.newInstance(clazz))
+                .map(templateAvailabilityFactory::create)
                 .orElseGet(() -> (node, templateDefinition) -> false);
     }
 
@@ -232,6 +241,10 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         }
     }
 
+    public interface ComponentFactory<T> {
+        T create(Class<? extends T> clazz);
+    }
+
     public static class Factory {
         private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
@@ -241,10 +254,14 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         }
 
         public SiteDefinitionProvider create(final Class<?> factoryClass) {
+            final ComponentProvider componentProvider = Components.getComponentProvider();
             return new SiteDefinitionProvider(
                     Collections.emptyList(),
                     templateDefinitionRegistry,
-                    Components.getComponentProvider(),
+                    i18nContentSupportClass -> componentProvider.newInstance(i18nContentSupportClass),
+                    templateAvailabilityClass -> componentProvider.newInstance(templateAvailabilityClass),
+                    domainMapperClass -> componentProvider.newInstance(domainMapperClass),
+                    predicateClass -> componentProvider.newInstance(predicateClass),
                     factoryClass
             );
         }
