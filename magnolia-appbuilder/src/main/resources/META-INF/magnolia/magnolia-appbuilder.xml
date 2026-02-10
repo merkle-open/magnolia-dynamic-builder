@@ -47,5 +47,9 @@
             <name>ui-contentapp</name>
             <version>*</version>
         </dependency>
+        <dependency>
+            <name>periscope-core</name>
+            <version>*</version>
+        </dependency>
     </dependencies>
 </module>
