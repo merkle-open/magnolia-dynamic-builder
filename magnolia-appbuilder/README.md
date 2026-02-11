@@ -76,6 +76,12 @@ By default Magnolia generates chooser dialogs with the workbench of the default 
 Generates `info.magnolia.periscope.search.jcr.JcrSearchResultSupplierDefinition` (See [JcrSearchResultSupplierDefinition](https://docs.magnolia-cms.com/product-docs/modules/list-of-modules/periscope-module/#_search_result_suppliers)) used in [Global Search](https://docs.magnolia-cms.com/product-docs/authoring/search/global-search/).
 Has fallbacks to app related properties set in `@AppFactory` (e.g. icon, appName and label).
 
+### PagesDetail sub apps
+In order for pagesDetail sub apps to work, the site config needs to have a mapping matching the workspace used by your app. E.g.: 
+```java
+@Site.Mapping(workspace = "<WORKSPACE>", uriPrefix = "/<WORKSPACE>/<HANDLE_PREFIX>", handlePrefix = "<HANDLE_PREFIX>")
+```
+
 ## Examples
 The following class is a demo app, made with the AppBuilder:
 ### AppFactory
@@ -83,6 +89,9 @@ The following class is a demo app, made with the AppBuilder:
 ```java
 import com.merkle.oss.magnolia.appbuilder.annotations.SubApp;
 import com.merkle.oss.magnolia.appbuilder.builder.detail.DetailAppBuilder;
+import com.merkle.oss.magnolia.appbuilder.builder.page.browser.action.AddPageAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.builder.page.browser.action.PageBrowserAppActionDefinitions;
+import com.merkle.oss.magnolia.appbuilder.builder.page.detail.action.PageAppActionDefinitions;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrStatusColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.JcrTitleColumnDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.custom.contentapp.column.modificationdate.ModificationDateColumnDefinitionBuilder;
@@ -148,16 +157,23 @@ public class SampleApp {
                 .nodeActions(
                         NodeTypes.Folder.NAME,
                         EditAppActionDefinition.FOLDER,
+                        new AppActionGroupDefinition("addActions", new AddPageAppActionDefinition()),
                         new AppActionGroupDefinition("editActions", AppActionDefinitions.editActions(EditAppActionDefinition.FOLDER)),
                         new AppActionGroupDefinition("activationActions", AppActionDefinitions.ACTIVATION),
                         new AppActionGroupDefinition("importExportActions", AppActionDefinitions.IMPORT_EXPORT)
                 )
+                .nodeActions(PageBrowserAppActionDefinitions.page(NAME, "pagesDetail"))
                 .build("<WORKSPACE>", Set.of(NodeTypes.Folder.NAME));
     }
 
     @SubApp
     public SubAppDescriptor getDetail() {
         return detailAppBuilderFactory.get().create().build(SomeDetailApp.class, SomeDetailApp.NAME, "<WORKSPACE>");
+    }
+
+    @SubApp
+    public SubAppDescriptor getPagesDetail() {
+        return new PageDetailAppBuilder().nodeActions(PageAppActionDefinitions.DEFAULT_CONTEXT_MENUS).build("<WORKSPACE>", "pagesDetail");
     }
 }
 ```
