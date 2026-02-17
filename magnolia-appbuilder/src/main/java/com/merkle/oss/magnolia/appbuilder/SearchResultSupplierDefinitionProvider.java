@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.merkle.oss.magnolia.appbuilder.annotations.AppFactory;
@@ -77,12 +76,12 @@ public class SearchResultSupplierDefinitionProvider extends AbstractDynamicDefin
         if(annotation.propertySearch() != TernaryBoolean.UNSPECIFIED) {
             definition.setPropertySearch(annotation.propertySearch() == TernaryBoolean.TRUE);
         }
-        getValue(annotation.rootPath()).ifPresent(definition::setRootPath);
-        getValue(annotation.resultLimit()).ifPresent(definition::setResultLimit);
-        getValue(annotation.timeoutSeconds()).ifPresent(definition::setTimeoutSeconds);
-        getValue(annotation.subAppName()).ifPresent(definition::setSubAppName);
-        getValue(annotation.detailSuppAppName()).ifPresent(definition::setDetailSubAppName);
-        getValue(annotation.nodeNameProperty()).ifPresent(definition::setNodeNameProperty);
+        Unspecified.getValue(annotation.rootPath()).ifPresent(definition::setRootPath);
+        Unspecified.getValue(annotation.resultLimit()).ifPresent(definition::setResultLimit);
+        Unspecified.getValue(annotation.timeoutSeconds()).ifPresent(definition::setTimeoutSeconds);
+        Unspecified.getValue(annotation.subAppName()).ifPresent(definition::setSubAppName);
+        Unspecified.getValue(annotation.detailSuppAppName()).ifPresent(definition::setDetailSubAppName);
+        Unspecified.getValue(annotation.nodeNameProperty()).ifPresent(definition::setNodeNameProperty);
         definition.setNodeTypes(Arrays.stream(annotation.nodeTypes()).collect(Collectors.toSet()));
         final String appName = getAppName().orElseThrow(() ->
                 new NullPointerException("App name not present!")
@@ -97,7 +96,7 @@ public class SearchResultSupplierDefinitionProvider extends AbstractDynamicDefin
     }
 
     private Optional<String> getIcon(final Object factoryObject) {
-        return getValue(annotation.icon())
+        return Unspecified.getValue(annotation.icon())
                 .or(() ->
                         Optional.ofNullable(factoryObject.getClass().getAnnotation(Icon.class)).map(Icon::value).map(MagnoliaIcons::getCssClass)
                 )
@@ -118,7 +117,7 @@ public class SearchResultSupplierDefinitionProvider extends AbstractDynamicDefin
 
     private Optional<JcrSearchResultSupplierOrder> getOrder(final SearchResultSupplier.Order orderAnnotation) {
         final JcrSearchResultSupplierOrder jcrSearchResultSupplierOrder = new JcrSearchResultSupplierOrder();
-        getValue(orderAnnotation.property()).ifPresent(jcrSearchResultSupplierOrder::setProperty);
+        Unspecified.getValue(orderAnnotation.property()).ifPresent(jcrSearchResultSupplierOrder::setProperty);
         Optional.of(orderAnnotation.direction()).flatMap(this::map).ifPresent(jcrSearchResultSupplierOrder::setDirection);
         return Optional.of(jcrSearchResultSupplierOrder).filter(order ->
                 order.getDirection() != null || order.getProperty() != null
@@ -132,14 +131,8 @@ public class SearchResultSupplierDefinitionProvider extends AbstractDynamicDefin
         };
     }
 
-    private Optional<Integer> getValue(final int value) {
-        return Optional.of(value).filter(v -> Unspecified.INT != v);
-    }
-    private Optional<String> getValue(final String value) {
-        return Optional.of(value).filter(Predicate.not(Unspecified.STRING::equals));
-    }
     private Optional<String> getValue(final String value, final Function<AppFactory, String> fallback) {
-        return getValue(value).or(() ->
+        return Unspecified.getValue(value).or(() ->
                 Optional.ofNullable(factoryClass.getAnnotation(AppFactory.class)).map(fallback)
         );
     }

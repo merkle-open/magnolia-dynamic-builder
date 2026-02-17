@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +31,7 @@ import com.merkle.oss.magnolia.appbuilder.annotations.Icon;
 import com.merkle.oss.magnolia.appbuilder.annotations.SubApp;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 
 import jakarta.inject.Provider;
 
@@ -65,9 +65,10 @@ public class AppDescriptorProvider extends AbstractDynamicDefinitionProvider<App
 		appDescriptor.setAppClass(ContentApp.class);
 		appDescriptor.setName(annotation.name());
 		appDescriptor.setEnabled(annotation.isEnabled());
-		appDescriptor.setTheme(annotation.theme());
 		appDescriptor.setLabel(annotation.label());
-		appDescriptor.setI18nBasename(annotation.i18nBasename());
+		Unspecified.getValue(annotation.theme()).ifPresent(appDescriptor::setTheme);
+		Unspecified.getValue(annotation.i18nBasename()).ifPresent(appDescriptor::setI18nBasename);
+
 		try {
 			getIcon(factoryObject).ifPresent(appDescriptor::setIcon);
 			appDescriptor.setSubApps(getSubApps(factoryObject));
@@ -87,7 +88,7 @@ public class AppDescriptorProvider extends AbstractDynamicDefinitionProvider<App
 				.or(() ->
 						Optional.ofNullable(factoryObject.getClass().getAnnotation(CustomIcon.class)).map(CustomIcon::value)
 				)
-				.or(() -> Optional.ofNullable(annotation.icon()).filter(Predicate.not(String::isBlank)));
+				.or(() -> Unspecified.getValue(annotation.icon()));
 	}
 
 	private Map<String, SubAppDescriptor> getSubApps(final Object factoryObject) {

@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 import com.merkle.oss.magnolia.templatebuilder.definition.PermissionPredicate;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -19,13 +20,13 @@ public @interface Template {
 
     Class<?> modelClass() default Class.class;
 
-    String title() default "";
+    String title() default Unspecified.STRING;
 
-    String description() default "";
+    String description() default Unspecified.STRING;
 
-    String dialog() default "";
+    String dialog() default Unspecified.STRING;
 
-    String templateScript() default "undefined";
+    String templateScript() default Unspecified.STRING;
 
     /**
      * Specifies the template type, e.g. "home", "section", etc.
@@ -37,7 +38,7 @@ public @interface Template {
     /**
      * Specifies the template subtype, such as specific features, e.g. "news", etc.
      */
-    String subtype() default "";
+    String subtype() default Unspecified.STRING;
 
     /**
      * fallback permission - applies to all other permissions if not explicitly specified

@@ -15,9 +15,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface AppPermissions {
-
-	String value() default "";
-
-	String label() default "";
-
 }

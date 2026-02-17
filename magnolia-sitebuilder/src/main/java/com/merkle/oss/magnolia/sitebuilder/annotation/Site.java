@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 import com.merkle.oss.magnolia.sitebuilder.ContentSecurityPolicyProvider;
 import com.merkle.oss.magnolia.sitebuilder.DomainMapper;
 import com.merkle.oss.magnolia.sitebuilder.DomainPredicate;
@@ -22,14 +23,14 @@ public @interface Site {
     Templates templates() default @Templates(enabled = false);
     Domain[] domains() default {};
     I18n i18n() default @I18n();
-    String theme() default UNDEFINED;
+    String theme() default Unspecified.STRING;
     Mapping[] mappings() default {};
     Cors[] cors() default {};
     Class<? extends ContentSecurityPolicyProvider> csp() default ContentSecurityPolicyProvider.class;
 
     @interface Templates {
         boolean enabled() default true;
-        String prototypeId() default UNDEFINED;
+        String prototypeId() default Unspecified.STRING;
         Class<? extends TemplateAvailability> availability() default TemplateAvailability.class;
     }
 
@@ -37,9 +38,9 @@ public @interface Site {
         String name();
         Class<? extends DomainMapper> mapper() default DomainMapper.class;
         Class<? extends DomainPredicate> predicate() default DomainPredicate.class;
-        String protocol() default UNDEFINED;
+        String protocol() default Unspecified.STRING;
         int port() default -1;
-        String context() default UNDEFINED;
+        String context() default Unspecified.STRING;
     }
 
     @interface I18n {
@@ -51,14 +52,14 @@ public @interface Site {
 
         @interface Locale {
             boolean enabled() default true;
-            String country() default UNDEFINED;
-            String language() default UNDEFINED;
+            String country() default Unspecified.STRING;
+            String language() default Unspecified.STRING;
         }
     }
 
     @interface Mapping {
         String workspace();
-        String uriPrefix() default UNDEFINED;
+        String uriPrefix() default Unspecified.STRING;
         String handlePrefix();
     }
 
@@ -70,6 +71,4 @@ public @interface Site {
         TernaryBoolean supportsCredentials() default TernaryBoolean.UNSPECIFIED;
         int maxAge() default -1;
     }
-
-    String UNDEFINED = "<sitebuilder-undefined>";
 }

@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Extends;
 import com.merkle.oss.magnolia.sitebuilder.annotation.Site;
 
@@ -133,25 +134,21 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
     }
 
     private Optional<LocaleDefinition> create(final Site.I18n.Locale locale) {
-        return Optional.of(locale.language())
-                .filter(not(Site.UNDEFINED::equals))
-                .map(language ->
-                        LocaleDefinition.make(
-                                language,
-                                Optional.of(locale.country()).filter(not(Site.UNDEFINED::equals)).orElse(null),
-                                locale.enabled()
-                        )
-                );
+        return Unspecified.getValue(locale.language()).map(language ->
+                LocaleDefinition.make(
+                        language,
+                        Unspecified.getValue(locale.country()).orElse(null),
+                        locale.enabled()
+                )
+        );
     }
 
     private Optional<ThemeReference> getTheme(final Site annotation) {
-        return Optional.of(annotation.theme())
-                .filter(not(Site.UNDEFINED::equals))
-                .map(theme -> {
-                    final ThemeReference themeReference = new ThemeReference();
-                    themeReference.setName(theme);
-                    return themeReference;
-                });
+        return Unspecified.getValue(annotation.theme()).map(theme -> {
+            final ThemeReference themeReference = new ThemeReference();
+            themeReference.setName(theme);
+            return themeReference;
+        });
     }
 
     private Stream<URI2RepositoryMapping> getMappings(final Site annotation) {
@@ -161,7 +158,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
     }
     private URI2RepositoryMapping create(final Site.Mapping mapping) {
         return new URI2RepositoryMapping(
-                Optional.of(mapping.uriPrefix()).filter(not(Site.UNDEFINED::equals)).orElse(""),
+                Unspecified.getValue(mapping.uriPrefix()).orElse(""),
                 mapping.workspace(),
                 mapping.handlePrefix()
         );
@@ -204,9 +201,9 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
     }
     private Optional<Domain> create(final Site.Domain annotation) {
         final Domain domain = new Domain(annotation.name());
-        Optional.of(annotation.context()).filter(not(Site.UNDEFINED::equals)).ifPresent(domain::setContext);
-        Optional.of(annotation.protocol()).filter(not(Site.UNDEFINED::equals)).ifPresent(domain::setProtocol);
-        Optional.of(annotation.port()).filter(port -> port != -1).ifPresent(domain::setPort);
+        Unspecified.getValue(annotation.context()).ifPresent(domain::setContext);
+        Unspecified.getValue(annotation.protocol()).ifPresent(domain::setProtocol);
+        Unspecified.getValue(annotation.port()).ifPresent(domain::setPort);
 
         final DomainMapper mapper = Optional.of(annotation.mapper())
                 .filter(not(DomainMapper.class::equals))
@@ -228,8 +225,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         return Optional.empty();
     }
     private ConfiguredTemplateSettings create(final Site.Templates annotation) {
-        return Optional.of(annotation.prototypeId())
-                .filter(not(Site.UNDEFINED::equals))
+        return Unspecified.getValue(annotation.prototypeId())
                 .map(id -> {
                     final ReferencingPrototypeTemplateSettings refTemplateSettings = new ReferencingPrototypeTemplateSettings(templateDefinitionRegistry);
                     refTemplateSettings.setPrototypeId(id);

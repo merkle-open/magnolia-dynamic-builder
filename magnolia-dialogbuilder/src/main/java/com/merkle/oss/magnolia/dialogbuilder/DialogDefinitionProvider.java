@@ -13,10 +13,9 @@ import java.util.List;
 
 import javax.jcr.Item;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 import com.merkle.oss.magnolia.dialogbuilder.annotation.DialogFactory;
 import com.merkle.oss.magnolia.dialogbuilder.parameter.DialogParameterResolverFactory;
 import com.merkle.oss.magnolia.dialogbuilder.parameter.SubAppContextBeanStoreNodeProvider;
@@ -64,7 +63,7 @@ public class DialogDefinitionProvider extends AbstractDynamicDefinitionProvider<
         final Object factoryObject = factoryObjectProvider.get();
         final ConfiguredFormDialogDefinition<Item> dialogDefinition = new ConfiguredFormDialogDefinition<>();
         dialogDefinition.setId(annotation.value());
-        dialogDefinition.setLabel(StringUtils.trimToNull(annotation.label()));
+        Unspecified.getValue(annotation.label()).ifPresent(dialogDefinition::setLabel);
         try {
             final FormFactory formFactory = formFactoryFactory.create(
                     (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, dialogDefinition),

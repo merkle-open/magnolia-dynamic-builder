@@ -34,10 +34,9 @@ import java.util.stream.Stream;
 
 import javax.jcr.Node;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 import com.merkle.oss.magnolia.templatebuilder.annotation.DynamicFragment;
 import com.merkle.oss.magnolia.templatebuilder.annotation.Template;
 import com.merkle.oss.magnolia.templatebuilder.annotation.area.Area;
@@ -50,7 +49,6 @@ import com.merkle.oss.magnolia.templatebuilder.definition.DynamicComponentAvaila
 import com.merkle.oss.magnolia.templatebuilder.definition.DynamicPermissionTemplateDefinition;
 
 import jakarta.inject.Inject;
-import jakarta.inject.Provider;
 
 public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvider<TemplateDefinition> {
     private final TemplateAvailabilityResolver templateAvailabilityResolver;
@@ -95,15 +93,15 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         final ConfiguredTemplateDefinition template = templateDefinitionFactory.apply(templateAvailabilityResolver.resolve(factoryObject), annotation);
         template.setId(annotation.id());
         template.setName(metadata.getName());
-        template.setTitle(StringUtils.trimToNull(annotation.title()));
-        template.setDescription(StringUtils.trimToNull(annotation.description()));
-        template.setDialog(StringUtils.trimToNull(annotation.dialog()));
+        Unspecified.getValue(annotation.title()).ifPresent(template::setTitle);
+        Unspecified.getValue(annotation.description()).ifPresent(template::setDescription);
+        Unspecified.getValue(annotation.dialog()).ifPresent(template::setDialog);
         template.setType(annotation.type());
-        template.setSubtype(StringUtils.trimToNull(annotation.subtype()));
+        Unspecified.getValue(annotation.subtype()).ifPresent(template::setSubtype);
+        Unspecified.getValue(annotation.templateScript()).ifPresent(template::setTemplateScript);
         template.setRenderType(annotation.renderer());
         template.setAreas(getAreas(template, factoryObject.getClass()));
         Optional.of(annotation.modelClass()).filter(RenderingModel.class::isAssignableFrom).ifPresent(template::setModelClass);
-        template.setTemplateScript(annotation.templateScript());
         dynamicFragment(factoryObject.getClass()).ifPresent(template::setFragmentDefinition);
         return template;
     }
@@ -119,14 +117,14 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         final ConfiguredAreaDefinition area = areaDefinitionFactory.apply(templateAvailabilityResolver.resolve(factoryObject));
         area.setId(annotation.id());
         area.setName(annotation.name());
-        area.setTitle(StringUtils.trimToNull(annotation.title()));
-        area.setRenderType(Optional.ofNullable(StringUtils.trimToNull(annotation.renderer())).orElseGet(this.annotation::renderer));
-        area.setDialog(StringUtils.trimToNull(annotation.dialog()));
+        area.setRenderType(Unspecified.getValue(annotation.renderer()).orElseGet(this.annotation::renderer));
+        Unspecified.getValue(annotation.title()).ifPresent(area::setTitle);
+        Unspecified.getValue(annotation.dialog()).ifPresent(area::setDialog);
+        Unspecified.getValue(annotation.templateScript()).ifPresent(area::setTemplateScript); // If the templateScript is null the area is rendered simply by looping the components. (default annotation value is undefined)
+        Unspecified.getValue(annotation.maxComponents()).ifPresent(area::setMaxComponents);
         area.setType(annotation.type().getDefinitionFormat());
-        Optional.of(annotation.maxComponents()).filter(max -> Integer.MAX_VALUE != max).ifPresent(area::setMaxComponents);
         area.setOptional(annotation.optional().getValue());
         area.setCreateAreaNode(annotation.createAreaNode().getValue());
-        area.setTemplateScript(annotation.templateScript()); // If the templateScript is null the area is rendered simply by looping the components. (default annotation value is undefined)
         getInheritanceConfiguration(areaClazz).ifPresent(area::setInheritance);
         getAutoGenerationConfiguration(template, area, factoryObject).ifPresent(area::setAutoGeneration);
         area.setAvailableComponents(getAvailableComponents(areaClazz));

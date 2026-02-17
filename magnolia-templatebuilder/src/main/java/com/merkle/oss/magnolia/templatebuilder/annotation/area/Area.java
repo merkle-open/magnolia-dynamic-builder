@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.builder.annotation.Unspecified;
 
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,19 +22,19 @@ public @interface Area {
     /**
      * Template renderer will be set if not specified
      */
-    String renderer() default "";
+    String renderer() default Unspecified.STRING;
 
-    String templateScript() default "undefined";
+    String templateScript() default Unspecified.STRING;
 
-    String title() default "";
+    String title() default Unspecified.STRING;
 
-    String dialog() default "";
+    String dialog() default Unspecified.STRING;
 
     AreaType type() default AreaType.LIST;
 
     TernaryBoolean optional() default TernaryBoolean.UNSPECIFIED;
 
-    int maxComponents() default Integer.MAX_VALUE;
+    int maxComponents() default Unspecified.INT;
 
     TernaryBoolean createAreaNode() default TernaryBoolean.UNSPECIFIED;
 }
