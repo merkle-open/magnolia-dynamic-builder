@@ -1,10 +1,6 @@
 package com.merkle.oss.magnolia.appbuilder.builder.browser;
 
 import info.magnolia.icons.MagnoliaIcons;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.contentapp.ContentBrowserSubApp;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import info.magnolia.ui.contentapp.configuration.BrowserDescriptor;
@@ -29,14 +25,12 @@ import javax.jcr.Item;
 
 import com.merkle.oss.magnolia.appbuilder.action.AppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.AppActionGroupDefinition;
-import com.merkle.oss.magnolia.appbuilder.action.DoubleClickAction;
-import com.merkle.oss.magnolia.appbuilder.action.rule.JcrIsNotDeletedRuleDefinition;
-import com.merkle.oss.magnolia.appbuilder.builder.browser.action.NodeTypeToActionDelegatingActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.builder.ActionFactory;
+import com.merkle.oss.magnolia.appbuilder.builder.ActionbarFactory;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
-import com.merkle.oss.magnolia.definition.builder.availability.AvailabilityDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.vaadin.shared.data.sort.SortDirection;
 
@@ -44,7 +38,7 @@ import jakarta.annotation.Nullable;
 
 public class BrowserAppBuilder {
 	public static final String NAME = "browser";
-	private final List<ContentAppContextMenuDefinition> contentContextMenuDefinitions = new ArrayList<>();
+	private final List<AppContextMenuDefinition> contextMenuDefinitions = new ArrayList<>();
 	private List<AppActionGroupDefinition> rootActions = Collections.emptyList();
 	@Nullable
 	private String icon;
@@ -58,6 +52,17 @@ public class BrowserAppBuilder {
 	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory;
 	@Nullable
 	private Boolean hasSearchBar;
+
+    private final ActionbarFactory actionbarFactory;
+    private final ActionFactory actionFactory;
+
+    public BrowserAppBuilder() {
+		this(new ActionbarFactory(), new ActionFactory());
+	}
+	public BrowserAppBuilder(final ActionbarFactory actionbarFactory, final ActionFactory actionFactory) {
+        this.actionbarFactory = actionbarFactory;
+        this.actionFactory = actionFactory;
+    }
 
 	public BrowserAppBuilder contentViews(final BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory) {
 		this.contentViewFactory = contentViewFactory;
@@ -98,7 +103,14 @@ public class BrowserAppBuilder {
 			@Nullable final AppActionDefinition doubleClickAction,
 			final List<AppActionGroupDefinition> actionGroups
 	) {
-		contentContextMenuDefinitions.add(new ContentAppContextMenuDefinition(nodeType, doubleClickAction, actionGroups));
+		return nodeActions(new ContentAppContextMenuDefinition(nodeType, doubleClickAction, actionGroups));
+	}
+	public BrowserAppBuilder nodeActions(final List<AppContextMenuDefinition> contextMenus) {
+		contextMenus.forEach(this::nodeActions);
+		return this;
+	}
+	public BrowserAppBuilder nodeActions(final AppContextMenuDefinition contextMenu) {
+		contextMenuDefinitions.add(contextMenu);
 		return this;
 	}
 
@@ -136,7 +148,7 @@ public class BrowserAppBuilder {
 	public BrowserDescriptor<Item, DatasourceDefinition> build(final DatasourceDefinition datasourceDefinition) {
 		final List<AppContextMenuDefinition> contextMenuDefinitions = Stream.concat(
 				Stream.of(new RootAppContextMenuDefinition(rootActions)),
-				contentContextMenuDefinitions.stream()
+				this.contextMenuDefinitions.stream()
 		).collect(Collectors.toList());
 		if (dropConstraint == null) {
 			dropConstraint = new NodeTypeConstraintAwareDropConstraintDefinition();
@@ -146,45 +158,15 @@ public class BrowserAppBuilder {
 		definition.setSubAppClass(ContentBrowserSubApp.class);
 		definition.setName(NAME);
 		definition.setIcon(icon != null ? icon : MagnoliaIcons.PACKAGER_APP.getCssClass());
-		definition.setActions(actions(contextMenuDefinitions, dropConstraint));
-		definition.setActionbar(actionbar(contextMenuDefinitions, dropConstraint));
+		definition.setActions(actionFactory.create(contextMenuDefinitions, dropConstraint));
+		definition.setActionbar(actionbarFactory.create(contextMenuDefinitions, dropConstraint));
 		definition.setWorkbench(workbench(
-				contentViewFactory != null ? contentViewFactory : new DefaultContentViewFactory(false),
-				columnDefinitions != null ? columnDefinitions : Collections.emptyList(),
+				Optional.ofNullable(contentViewFactory).orElseGet(() -> new DefaultContentViewFactory(false)),
+				Optional.ofNullable(columnDefinitions).orElseGet(Collections::emptyList),
 				dropConstraint
 		));
 		definition.setDatasource(datasourceDefinition);
 		return definition;
-	}
-
-	private ActionbarDefinition actionbar(final List<AppContextMenuDefinition> contextMenuDefinitions, final DropConstraintDefinition dropConstraint) {
-		final List<ActionbarSectionDefinition> sections = contextMenuDefinitions.stream()
-				.flatMap(contextMenu -> contextMenu.sections(dropConstraint))
-				.collect(Collectors.toList());
-		final ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
-		definition.setDefaultAction("defaultAction");
-		definition.setSections(sections);
-		return definition;
-	}
-
-	private Map<String, ActionDefinition> actions(final List<AppContextMenuDefinition> contextMenuDefinitions, final DropConstraintDefinition dropConstraint) {
-		final Map<String, String> doubleClickNodeTypeActions = contextMenuDefinitions.stream()
-				.filter(ContentAppContextMenuDefinition.class::isInstance)
-				.map(ContentAppContextMenuDefinition.class::cast)
-				.map(contextMenu -> contextMenu.doubleClickAction(dropConstraint))
-				.flatMap(Optional::stream)
-				.collect(Collectors.toMap(DoubleClickAction::nodeType, DoubleClickAction::action));
-
-		final NodeTypeToActionDelegatingActionDefinition defaultAction = new NodeTypeToActionDelegatingActionDefinition();
-		defaultAction.setName("defaultAction");
-		defaultAction.setNodeTypeActionMapping(doubleClickNodeTypeActions);
-		defaultAction.setAvailability(new AvailabilityDefinitionBuilder().rule(new JcrIsNotDeletedRuleDefinition()).build());
-		return Stream
-				.concat(
-						Stream.of(defaultAction),
-						contextMenuDefinitions.stream().flatMap(contextMenu -> contextMenu.actions(dropConstraint))
-				)
-				.collect(Collectors.toMap(ActionDefinition::getName, action -> action, (t, t2) -> t)); //overwrite duplicate keys (==action name)
 	}
 
 	private WorkbenchDefinition<Item> workbench(
