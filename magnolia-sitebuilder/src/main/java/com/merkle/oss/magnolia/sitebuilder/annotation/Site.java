@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.sitebuilder.ContentSecurityPolicyProvider;
 import com.merkle.oss.magnolia.sitebuilder.DomainMapper;
 import com.merkle.oss.magnolia.sitebuilder.DomainPredicate;
 
@@ -24,6 +25,7 @@ public @interface Site {
     String theme() default UNDEFINED;
     Mapping[] mappings() default {};
     Cors[] cors() default {};
+    Class<? extends ContentSecurityPolicyProvider> csp() default ContentSecurityPolicyProvider.class;
 
     @interface Templates {
         boolean enabled() default true;

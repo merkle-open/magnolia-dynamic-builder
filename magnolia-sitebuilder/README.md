@@ -113,7 +113,8 @@ import com.merkle.powerboost.web.core.sites.FallbackSite;
                 @Site.Domain(name = "env1.somesite.domain.com", protocol = "https", port = 443, context = "/magnolia"),
                 @Site.Domain(name = "env2.somesite.domain.com", protocol = "https", port = 443, context = "/magnolia", predicate = SomePredicate.class),
                 @Site.Domain(name = "env3.somesite.domain.com", protocol = "https", port = 443, context = "/magnolia", mapper = SomeMapper.class),
-        }
+        },
+        csp = SomeSite.SomeCspProvider.class
 )
 public class SomeSite {
     public static final String NAME = "powerboost";
@@ -132,6 +133,14 @@ public class SomeSite {
         public Domain apply(final Domain input) {
             //TODO map
             return input;
+        }
+    }
+
+    public static class SomeCspProvider implements ContentSecurityPolicyProvider {
+        @Override
+        public String apply(final Site site) {
+            //TODO implement
+            return "default-src blitzdings.com";
         }
     }
 }

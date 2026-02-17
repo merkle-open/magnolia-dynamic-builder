@@ -12,6 +12,7 @@ import info.magnolia.config.registry.Registry;
 import info.magnolia.config.registry.decoration.DefinitionDecorator;
 import info.magnolia.cors.CorsConfiguration;
 import info.magnolia.cors.DefaultCorsConfiguration;
+import info.magnolia.csp.CspConfiguration;
 import info.magnolia.module.site.ConfiguredSite;
 import info.magnolia.module.site.Domain;
 import info.magnolia.module.site.registry.DefinitionTypes;
@@ -48,6 +49,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
     private final ComponentFactory<TemplateAvailability> templateAvailabilityFactory;
     private final ComponentFactory<DomainMapper> domainMapperFactory;
     private final ComponentFactory<DomainPredicate> domainPredicateFactory;
+    private final ComponentFactory<ContentSecurityPolicyProvider> cspProviderFactory;
     private final Site annotation;
     @Nullable
     private final Extends extendsAnnotation;
@@ -60,6 +62,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
             final ComponentFactory<TemplateAvailability> templateAvailabilityFactory,
             final ComponentFactory<DomainMapper> domainMapperFactory,
             final ComponentFactory<DomainPredicate> domainPredicateFactory,
+            final ComponentFactory<ContentSecurityPolicyProvider> cspProviderFactory,
             final Class<?> factoryClass
     ) {
         super(decorators);
@@ -68,6 +71,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         this.templateAvailabilityFactory = templateAvailabilityFactory;
         this.domainMapperFactory = domainMapperFactory;
         this.domainPredicateFactory = domainPredicateFactory;
+        this.cspProviderFactory = cspProviderFactory;
         this.annotation = factoryClass.getDeclaredAnnotation(Site.class);
         this.extendsAnnotation = factoryClass.getDeclaredAnnotation(Extends.class);
         this.metadata = new SiteDefinitionMetaDataBuilder(factoryClass, annotation.id())
@@ -93,6 +97,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
                 Function.identity(),
                 (annotationMapping, extendsAnnotationMapping) -> annotationMapping
         )));
+        getCsp(annotation).ifPresent(site::setCsp);
         streamSites().map(this::getTheme).flatMap(Optional::stream).findFirst().ifPresent(site::setTheme);
         streamSites().map(this::getI18n).flatMap(Optional::stream).findFirst().ifPresent(site::setI18n);
         return site;
@@ -183,6 +188,14 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
         return config;
     }
 
+    private Optional<CspConfiguration> getCsp(final Site annotation) {
+        return Optional.of(annotation.csp())
+                .filter(not(ContentSecurityPolicyProvider.class::equals))
+                .map(cspProviderFactory::create)
+                .map(cspProvider -> cspProvider.apply(annotation))
+                .map(csp -> () -> csp);
+    }
+
     private Stream<Domain> getDomains(final Site annotation) {
         return Arrays
                 .stream(annotation.domains())
@@ -262,6 +275,7 @@ public class SiteDefinitionProvider extends AbstractDynamicDefinitionProvider<in
                     templateAvailabilityClass -> componentProvider.newInstance(templateAvailabilityClass),
                     domainMapperClass -> componentProvider.newInstance(domainMapperClass),
                     predicateClass -> componentProvider.newInstance(predicateClass),
+                    cspProviderClass -> componentProvider.newInstance(cspProviderClass),
                     factoryClass
             );
         }
