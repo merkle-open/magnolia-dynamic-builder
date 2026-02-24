@@ -9,6 +9,8 @@ import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
 import info.magnolia.ui.contentapp.configuration.column.ColumnDefinition;
 import info.magnolia.ui.datasource.DatasourceDefinition;
 import info.magnolia.ui.datasource.jcr.JcrDatasourceDefinition;
+import info.magnolia.ui.filteringapp.filter.FilterView;
+import info.magnolia.ui.filteringapp.filter.FilterViewDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import com.merkle.oss.magnolia.appbuilder.contextmenu.AppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.ContentAppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.contextmenu.RootAppContextMenuDefinition;
 import com.merkle.oss.magnolia.appbuilder.dropconstraint.NodeTypeConstraintAwareDropConstraintDefinition;
+import com.merkle.oss.magnolia.definition.builder.contentapp.contentview.WorkbenchDefinitionBuilder;
 import com.merkle.oss.magnolia.definition.builder.datasource.JcrDatasourceDefinitionBuilder;
 import com.vaadin.shared.data.sort.SortDirection;
 
@@ -39,7 +42,9 @@ import jakarta.annotation.Nullable;
 public class BrowserAppBuilder {
 	public static final String NAME = "browser";
 	private final List<AppContextMenuDefinition> contextMenuDefinitions = new ArrayList<>();
+	private final WorkbenchDefinitionBuilder<Item> workbenchBuilder = new WorkbenchDefinitionBuilder<>();
 	private List<AppActionGroupDefinition> rootActions = Collections.emptyList();
+
 	@Nullable
 	private String icon;
 	@Nullable
@@ -50,8 +55,6 @@ public class BrowserAppBuilder {
 	private Map<String, SortDirection> sortBy;
 	@Nullable
 	private BiFunction<DropConstraintDefinition, List<ColumnDefinition<Item>>, List<ContentViewDefinition<Item>>> contentViewFactory;
-	@Nullable
-	private Boolean hasSearchBar;
 
     private final ActionbarFactory actionbarFactory;
     private final ActionFactory actionFactory;
@@ -119,6 +122,15 @@ public class BrowserAppBuilder {
 		return this;
 	}
 
+	public BrowserAppBuilder filter(final FilterViewDefinition<? extends FilterView> filter) {
+		workbenchBuilder.filter(filter);
+		return this;
+	}
+	public BrowserAppBuilder filters(final List<FilterViewDefinition<? extends FilterView>> filters) {
+		workbenchBuilder.filters(filters);
+		return this;
+	}
+
 	public BrowserAppBuilder sortBy(final String propertyName, final SortDirection direction) {
 		return sortBy(Stream.concat(
 				Stream.ofNullable(sortBy).map(Map::entrySet).flatMap(Collection::stream),
@@ -136,7 +148,7 @@ public class BrowserAppBuilder {
 	}
 
 	public BrowserAppBuilder hasSearchBar(final boolean hasSearchBar) {
-		this.hasSearchBar = hasSearchBar;
+		workbenchBuilder.searchEnabled(hasSearchBar);
 		return this;
 	}
 
@@ -174,10 +186,9 @@ public class BrowserAppBuilder {
 			final List<ColumnDefinition<Item>> columnDefinitions,
 			final DropConstraintDefinition dropConstraint
 	) {
-		final WorkbenchDefinition<Item> definition = new WorkbenchDefinition<>();
-		definition.setContentViews(contentViewFactory.apply(dropConstraint, columnDefinitions));
-		Optional.ofNullable(hasSearchBar).ifPresent(definition::setSearchEnabled);
-		return definition;
+		return workbenchBuilder
+				.contentViews(contentViewFactory.apply(dropConstraint, columnDefinitions))
+				.build();
 	}
 
 	private JcrDatasourceDefinition getJcrDatasource(
