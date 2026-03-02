@@ -10,6 +10,8 @@ import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
 import info.magnolia.ui.contentapp.configuration.WorkbenchDefinition;
 import info.magnolia.ui.dialog.DefinitionTypes;
 import info.magnolia.ui.dialog.DialogDefinition;
+import info.magnolia.ui.filteringapp.filter.FilterView;
+import info.magnolia.ui.filteringapp.filter.FilterViewDefinition;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -18,11 +20,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 import com.merkle.oss.magnolia.builder.AbstractDynamicDefinitionProvider;
 import com.merkle.oss.magnolia.builder.DynamicDefinitionMetaData;
 import com.merkle.oss.magnolia.builder.annotation.TernaryBoolean;
+import com.merkle.oss.magnolia.definition.builder.contentapp.contentview.WorkbenchDefinitionBuilder;
 
 import jakarta.inject.Provider;
 
@@ -66,17 +70,31 @@ public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitio
     }
 
     private WorkbenchDefinition<T> getWorkbench(final Object factoryObject, final ChooserDialogFactory annotation) {
-        final WorkbenchDefinition<T> workbench = new WorkbenchDefinition<>();
-        workbench.setContentViews(getContentViews(factoryObject));
+        final WorkbenchDefinitionBuilder<T> workbenchBuilder = new WorkbenchDefinitionBuilder<T>()
+                .contentViews(getContentViews(factoryObject))
+                .filters(getFilters(factoryObject));
+
         if(annotation.hasSearchBar() != TernaryBoolean.UNSPECIFIED) {
-            workbench.setSearchEnabled(annotation.hasSearchBar() == TernaryBoolean.TRUE);
+            workbenchBuilder.searchEnabled(annotation.hasSearchBar() == TernaryBoolean.TRUE);
         }
-        return workbench;
+        return workbenchBuilder.build();
     }
 
     private List<ContentViewDefinition<T>> getContentViews(final Object factoryObject) {
+        return streamFromMethods(factoryObject, ContentViewDefinition.class)
+                .map(contentViewDefinition -> (ContentViewDefinition<T>)contentViewDefinition)
+                .collect(Collectors.toList());
+    }
+
+    private List<FilterViewDefinition<? extends FilterView>> getFilters(final Object factoryObject) {
+        return streamFromMethods(factoryObject, FilterViewDefinition.class)
+                .map(filterViewDefinition -> (FilterViewDefinition<? extends FilterView>) filterViewDefinition)
+                .collect(Collectors.toList());
+    }
+
+    private <V> Stream<V> streamFromMethods(final Object factoryObject, final Class<V> type) {
         return Arrays.stream(factoryObject.getClass().getMethods())
-                .filter(method -> method.getReturnType().isAssignableFrom(ContentViewDefinition.class))
+                .filter(method -> method.getReturnType().isAssignableFrom(type))
                 .sorted(Comparator.comparingInt(method ->
                         Optional
                                 .ofNullable(method.getAnnotation(ChooserDialogFactory.Order.class))
@@ -86,12 +104,11 @@ public class ChooserDialogDefinitionProvider<T> extends AbstractDynamicDefinitio
                 .map(method -> {
                     try {
                         //noinspection unchecked
-                        return (ContentViewDefinition<T>) method.invoke(factoryObject);
+                        return (V) method.invoke(factoryObject);
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Could not build column, for chooser dialog  " + annotation.id() + " " + method.getName(), e);
+                        throw new RuntimeException("Could not build " + type + ", for chooser dialog  " + annotation.id() + " " + method.getName(), e);
                     }
-                })
-                .collect(Collectors.toList());
+                });
     }
 
     public static class Factory {

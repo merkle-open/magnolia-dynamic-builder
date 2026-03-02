@@ -216,6 +216,7 @@ public class SomeDetailApp {
 
 ```java
 import com.merkle.oss.magnolia.definition.builder.contentapp.column.ColumnDefinitionBuilder;
+import com.merkle.oss.magnolia.definition.custom.contentapp.filter.propertysearch.PropertySearchFilterViewDefinition;
 import com.merkle.oss.magnolia.appbuilder.annotations.ChooserDialogFactory;
 
 import info.magnolia.ui.contentapp.configuration.ContentViewDefinition;
@@ -229,7 +230,8 @@ import java.util.List;
 
 @ChooserDialogFactory(
         id = SampleChooserDialog.ID,
-        label = SampleChooserDialog.NAME + ".title. label"
+        label = SampleChooserDialog.NAME + ".title. label",
+        hasSearchBar = TernaryBoolean.TRUE
 )
 public class SampleChooserDialog {
     public static final String NAME = "SampleChooserDialog";
@@ -239,6 +241,7 @@ public class SampleChooserDialog {
             new ColumnDefinitionBuilder<Item>().build("someField")
     );
 
+    @ChooserDialogFactory.Order(1)
     public ContentViewDefinition<Item> tree() {
         final TreeViewDefinition<Item> tree = new TreeViewDefinition<>();
         tree.setName("tree");
@@ -246,14 +249,21 @@ public class SampleChooserDialog {
         return tree;
     }
 
+    @ChooserDialogFactory.Order(2)
     public ContentViewDefinition<Item> list() {
         final ListViewDefinition<Item> list = new ListViewDefinition<>();
         list.setName("list");
         list.setColumns(columns);
         return list;
     }
+
+    @ChooserDialogFactory.Order(1)
+    public FilterViewDefinition<? extends FilterView> firstFilter() {
+        return new PropertySearchFilterViewDefinition.Builder().build("someField");
+    }
 }
 ```
+
 ```java
 final LinkFieldDefinition<Node> definition = new LinkFieldDefinition<>();
 definition.setChooserId(SampleChooserDialog.ID);
