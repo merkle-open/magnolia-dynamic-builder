@@ -47,13 +47,13 @@
 
 	<properties>
 		<!--	mvn versions:display-property-updates	-->
-		<magnolia.version>6.4.2</magnolia.version>
+		<magnolia.version>6.4.3</magnolia.version>
 		<magnolia.advancedcache.version>4.0.0</magnolia.advancedcache.version>
 		<magnolia.page-editor-apps.version>3.0.1</magnolia.page-editor-apps.version>
-		<merkle.oss.definitionbuilder.version>1.3.3</merkle.oss.definitionbuilder.version>
+		<merkle.oss.definitionbuilder.version>1.3.7</merkle.oss.definitionbuilder.version>
 		<!--Test dependency versions-->
 		<junit.version>6.0.3</junit.version>
-		<mockito.version>5.21.0</mockito.version>
+		<mockito.version>5.22.0</mockito.version>
 
 		<!-- Maven Plugins -->
 		<mvn.compiler.plugin.version>3.15.0</mvn.compiler.plugin.version>
