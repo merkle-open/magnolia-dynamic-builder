@@ -120,7 +120,6 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         area.setRenderType(Unspecified.getValue(annotation.renderer()).orElseGet(this.annotation::renderer));
         Unspecified.getValue(annotation.title()).ifPresent(area::setTitle);
         Unspecified.getValue(annotation.dialog()).ifPresent(area::setDialog);
-        Unspecified.getValue(annotation.templateScript()).ifPresent(area::setTemplateScript); // If the templateScript is null the area is rendered simply by looping the components. (default annotation value is undefined)
         Unspecified.getValue(annotation.maxComponents()).ifPresent(area::setMaxComponents);
         area.setType(annotation.type().getDefinitionFormat());
         area.setOptional(annotation.optional().getValue());
@@ -130,6 +129,11 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         area.setAvailableComponents(getAvailableComponents(areaClazz));
         area.setAreas(getAreas(template, areaClazz));
         dynamicFragment(areaClazz).ifPresent(template::setFragmentDefinition);
+        /*
+         * Ugly hack, but necessary because if the templateScript is null magnolia will overwrite the rendererType with NoScriptRenderer.NO_SCRIPT_RENDERER
+         * see info.magnolia.templating.elements.AreaElement.end()
+         */
+        area.setTemplateScript(Unspecified.getValue(annotation.templateScript()).orElse("undefined"));
         return area;
     }
 
