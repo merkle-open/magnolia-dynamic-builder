@@ -2,7 +2,6 @@ package com.merkle.oss.magnolia.appbuilder.action.activation.workflow;
 
 import info.magnolia.icons.MagnoliaIcons;
 import info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition;
-import info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition;
 import info.magnolia.ui.contentapp.browser.drop.DropConstraintDefinition;
 import info.magnolia.ui.dialog.actions.OpenDialogActionDefinition;
 
@@ -22,7 +21,6 @@ public class WorkflowActivateDeletionAppActionDefinition implements AppActionDef
                 .access("editor", "publisher")
                 .writePermissionRequired(true)
                 .rule(new JcrIsDeletedRuleDefinition())
-                .rule(new JcrPublishableRuleDefinition())
                 .build());
         return definition;
     }
