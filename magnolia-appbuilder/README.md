@@ -271,30 +271,23 @@ definition.setChooserId(SampleChooserDialog.ID);
 ```
 
 ### ValueProvider sample:
+
 ```java
 import com.merkle.oss.magnolia.appbuilder.formatter.AbstractValueProvider;
-import com.merkle.oss.magnolia.powernode.PowerNodeService;
 
+import info.magnolia.jcr.util.PropertyUtil;
 import javax.jcr.Node;
 import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class SampleValueProvider extends AbstractValueProvider {
 
-	@Inject
-	public SampleValueProvider(
-			final PowerNodeService powerNodeService
-    ) {
-		super(powerNodeService, definition);
-	}
-
-	@Override
-	protected Optional<String> getValue(final Node item) {
-		final PowerNode powerNode = powerNodeService.convertToPowerNode(item);
-		if (powerNode.isNodeType("<SOME_NODE_TYPE>")) {
-			return powerNode.getPropertyValue("<SOME_FIELD>", String.class);
-		}
-		return Optional.empty();
-	}
+ @Override
+ protected Optional<String> getValue(final Node item) {
+  if (item.isNodeType("<SOME_NODE_TYPE>")) {
+   return Optional.ofNullable(PropertyUtil.getString("<SOME_FIELD>", null));
+  }
+  return Optional.empty();
+ }
 }
 ```

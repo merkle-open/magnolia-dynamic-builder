@@ -249,7 +249,6 @@ import jakarta.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.builder.parameter.ParameterResolver;
-import com.merkle.oss.magnolia.powernode.PowerNodeService;
 import com.merkle.oss.magnolia.templatebuilder.parameter.AvailabilityParameterResolverFactory;
 import com.merkle.oss.magnolia.templatebuilder.parameter.DefaultAvailabilityParameterResolver;
 
