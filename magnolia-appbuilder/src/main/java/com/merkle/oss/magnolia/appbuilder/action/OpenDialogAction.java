@@ -20,6 +20,7 @@ import java.util.Optional;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.appbuilder.JcrNameValidationAppender;
+import com.merkle.oss.magnolia.formbuilder.RootFormView;
 
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
@@ -74,19 +75,28 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 		if (valueContext.getSingle().isEmpty() && (!localeContext.isPopulated() || formDialogDefinition.getForm().hasI18NProperties())) {
 			localeContext.populateFromI18NAuthoringSupport(jcrDatasource.getRoot(), i18NAuthoringSupport);
 		}
-		return i18nizer.decorate(formDialogDefinition);
+		if(formDialogDefinition.getForm() instanceof RootFormView.Definition<Node> rootFormView) {
+			rootFormView.setViewType(definition.getViewType());
+		}
+		return i18nizer.decorate(apply(formDialogDefinition));
+	}
+
+	protected FormDialogDefinition<Node> apply(final FormDialogDefinition<Node> formDialog) {
+		return formDialog;
 	}
 
 	public static class Definition extends OpenDialogActionDefinition {
 		private final NodeNameValidatorDefinition.Mode mode;
-		@Nullable
+        private RootFormView.ViewType viewType;
+        @Nullable
 		private CommitActionDefinition customCommitAction;
 		@Nullable
 		private CloseActionDefinition customCloseAction;
 
 		public Definition(final NodeNameValidatorDefinition.Mode mode) {
 			this.mode = mode;
-			setPopulate(mode == NodeNameValidatorDefinition.Mode.EDIT);
+            this.viewType = RootFormView.ViewType.EDIT;
+            setPopulate(mode == NodeNameValidatorDefinition.Mode.EDIT);
             setImplementationClass(OpenDialogAction.class);
 		}
 
@@ -98,7 +108,6 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 		public CommitActionDefinition getCustomCommitAction() {
 			return customCommitAction;
 		}
-
 		public void setCustomCommitAction(final CommitActionDefinition customCommitAction) {
 			this.customCommitAction = customCommitAction;
 		}
@@ -107,9 +116,15 @@ public class OpenDialogAction extends info.magnolia.ui.dialog.actions.OpenDialog
 		public CloseActionDefinition getCustomCloseAction() {
 			return customCloseAction;
 		}
-
 		public void setCustomCloseAction(final CloseActionDefinition customCloseAction) {
 			this.customCloseAction = customCloseAction;
+		}
+
+		public RootFormView.ViewType getViewType() {
+			return viewType;
+		}
+		public void setViewType(final RootFormView.ViewType viewType) {
+			this.viewType = viewType;
 		}
 	}
 }

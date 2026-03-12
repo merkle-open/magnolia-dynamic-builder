@@ -96,7 +96,7 @@ public class EditDetailAppActionDefinition implements AppActionDefinition {
         }
 
         private String resolveViewType(final String viewType, @Nullable final T item) {
-            if(ContentDetailSubApp.VIEW_TYPE_EDIT.equals(getDefinition().getViewType()) && !hasEditPermissions(item)) {
+            if(ContentDetailSubApp.VIEW_TYPE_EDIT.equals(viewType) && !hasEditPermissions(item)) {
                 return ContentDetailSubApp.VIEW_TYPE_VIEW;
             }
             return viewType;
