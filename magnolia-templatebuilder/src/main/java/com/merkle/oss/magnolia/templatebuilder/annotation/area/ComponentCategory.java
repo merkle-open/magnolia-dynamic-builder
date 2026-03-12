@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
  * A component category annotation is used to annotate components as being part of a certain category. The annotation
  * is then specified in the `@AvailableComponentClasses` annotation on areas. All components in the category will
  * then be available in the area.
- * <p/>
  * <pre>
  * &#64;Retention(RetentionPolicy.RUNTIME)
  * &#64;Target(ElementType.TYPE)

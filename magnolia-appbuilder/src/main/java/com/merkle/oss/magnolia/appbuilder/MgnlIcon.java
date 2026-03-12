@@ -4,19 +4,6 @@ package com.merkle.oss.magnolia.appbuilder;
 /**
  * Icon list from https://documentation.magnolia-cms.com/display/DOCS57/Icons.
  * updated: 2019-01-15
- * <p>
- * How to generate this class:
- * - Copy icon names from Magnolia website into IntelliJ scratch file
- * - One icon name per line
- * - Run search replace with regex two times:
- * <p>
- * First run:
- * Search for: (icon-(.*))
- * Replace with: public static final String \U$2\E = "$1";
- * <p>
- * Second run (with 'Match Case'):
- * Search for: (?<![a-z])-(?![a-z])
- * Replace with: _
  *
  * @deprecated use info.magnolia.icons.MagnoliaIcons
  */
