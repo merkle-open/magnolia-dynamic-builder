@@ -3,7 +3,6 @@ package com.merkle.oss.magnolia.appbuilder.action;
 import info.magnolia.ui.ValueContext;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.action.OpenDetailSubappActionDefinition;
-import info.magnolia.ui.contentapp.detail.ContentDetailSubApp;
 import info.magnolia.ui.datasource.ItemResolver;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class OpenDetailSubappAction extends info.magnolia.ui.contentapp.action.O
     }
 
     @Override
-    protected ContentDetailSubApp.DetailLocation getLocation(final Optional<Node> item, final ItemResolver<Node> itemResolver) {
+    protected ExtendedDetailLocation getLocation(final Optional<Node> item, final ItemResolver<Node> itemResolver) {
         return new ExtendedDetailLocation(
                 super.getLocation(item, itemResolver),
                 definition.getNodeType(),
