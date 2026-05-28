@@ -39,7 +39,7 @@ public @interface Site {
         Class<? extends DomainMapper> mapper() default DomainMapper.class;
         Class<? extends DomainPredicate> predicate() default DomainPredicate.class;
         String protocol() default Unspecified.STRING;
-        int port() default -1;
+        int port() default Unspecified.INT;
         String context() default Unspecified.STRING;
     }
 
