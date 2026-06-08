@@ -14,6 +14,7 @@ import info.magnolia.ui.observation.DatasourceObservation;
 import java.io.Serializable;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import com.machinezoo.noexception.Exceptions;
 
@@ -43,7 +44,7 @@ public class CreateNodeAction extends CommitAction<Node> {
 		Exceptions.wrap().run(() -> {
 			final Node parent = getValueContext().getSingle().orElseGet(getDatasource()::getRoot);
 			final String nodeName = nodeNameProvider.get(getForm(), parent);
-			final Node node = NodeUtil.createPath(parent, nodeName, definition.getNodeType());
+			final Node node = createNode(parent, nodeName, definition.getNodeType());
 			getForm().write(node);
 			getDatasource().save(node);
 			getValueContext().set(node);
@@ -53,6 +54,10 @@ public class CreateNodeAction extends CommitAction<Node> {
 				getDatasourceObservation().trigger();
 			}
 		});
+	}
+
+	protected Node createNode(final Node parent, final String nodeName, final String nodeType) throws RepositoryException {
+		return NodeUtil.createPath(parent, nodeName, nodeType);
 	}
 
 	@Override
