@@ -45,7 +45,7 @@ public class CreateNodeAction extends CommitAction<Node> {
 			final Node parent = getValueContext().getSingle().orElseGet(getDatasource()::getRoot);
 			final String nodeName = nodeNameProvider.get(getForm(), parent);
 			final Node node = createNode(parent, nodeName, definition.getNodeType());
-			getForm().write(node);
+			writeFormData(node);
 			getDatasource().save(node);
 			getValueContext().set(node);
 			if (ActionDefinition.RefreshBehavior.ITEMS.equals(getDefinition().getDatasourceRefreshBehavior())) {
@@ -58,6 +58,10 @@ public class CreateNodeAction extends CommitAction<Node> {
 
 	protected Node createNode(final Node parent, final String nodeName, final String nodeType) throws RepositoryException {
 		return NodeUtil.createPath(parent, nodeName, nodeType);
+	}
+
+	protected void writeFormData(final Node node) {
+		getForm().write(node);
 	}
 
 	@Override
