@@ -70,13 +70,15 @@ public @interface Template {
      */
      Permission deletable() default @Permission();
 
+    Param[] parameters() default {};
+
      @interface Permission {
          Param[] params() default {};
          Class<? extends PermissionPredicate> predicate() default PermissionPredicate.Unspecified.class;
-
-         @interface Param {
-             String key();
-             String value();
-         }
      }
+
+    @interface Param {
+        String key();
+        String value();
+    }
 }

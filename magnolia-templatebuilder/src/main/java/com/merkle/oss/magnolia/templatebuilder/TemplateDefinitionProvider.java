@@ -103,6 +103,10 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
         template.setAreas(getAreas(template, factoryObject.getClass()));
         Optional.of(annotation.modelClass()).filter(RenderingModel.class::isAssignableFrom).ifPresent(template::setModelClass);
         dynamicFragment(factoryObject.getClass()).ifPresent(template::setFragmentDefinition);
+        template.setParameters(Arrays.stream(annotation.parameters()).collect(Collectors.toMap(
+                Template.Param::key,
+                Template.Param::value
+        )));
         return template;
     }
 

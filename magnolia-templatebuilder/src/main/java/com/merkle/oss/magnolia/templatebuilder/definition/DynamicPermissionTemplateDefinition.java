@@ -10,10 +10,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import jakarta.inject.Inject;
 import javax.jcr.Node;
 
 import com.merkle.oss.magnolia.templatebuilder.annotation.Template;
+
+import jakarta.inject.Inject;
 
 public class DynamicPermissionTemplateDefinition extends ConfiguredTemplateDefinition {
     private final RenderingEngine renderingEngine;
@@ -67,8 +68,8 @@ public class DynamicPermissionTemplateDefinition extends ConfiguredTemplateDefin
         final Map<String, String> params = Arrays
                 .stream(permission.params())
                 .collect(Collectors.toMap(
-                        Template.Permission.Param::key,
-                        Template.Permission.Param::value
+                        Template.Param::key,
+                        Template.Param::value
                 ));
         return componentProvider.newInstance(permission.predicate(), params).test(node, this);
     }
