@@ -51,6 +51,7 @@ import com.merkle.oss.magnolia.templatebuilder.definition.DynamicPermissionTempl
 import jakarta.inject.Inject;
 
 public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvider<TemplateDefinition> {
+    public static final String FACTORY_CLASS_PARAMETER_KEY = TemplateDefinitionProvider.class.getPackage().getName() + "-FactoryClass";
     private final TemplateAvailabilityResolver templateAvailabilityResolver;
     private final BiFunction<TemplateAvailability<Node>, Template, ConfiguredTemplateDefinition> templateDefinitionFactory;
     private final Function<TemplateAvailability<Node>, ConfiguredAreaDefinition> areaDefinitionFactory;
@@ -107,6 +108,7 @@ public class TemplateDefinitionProvider extends AbstractDynamicDefinitionProvide
                 Template.Param::key,
                 Template.Param::value
         )));
+        template.addParameter(FACTORY_CLASS_PARAMETER_KEY, factoryClass);
         return template;
     }
 
