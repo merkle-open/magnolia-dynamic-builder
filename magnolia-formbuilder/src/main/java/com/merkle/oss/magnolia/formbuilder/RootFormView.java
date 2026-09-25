@@ -7,7 +7,6 @@ import info.magnolia.ui.editor.LocaleContext;
 import info.magnolia.ui.field.FieldDefinition;
 
 import java.util.Map;
-import java.util.Optional;
 
 import com.vaadin.ui.Component;
 
@@ -20,7 +19,6 @@ public class RootFormView<T> extends FormView<T> {
     public RootFormView(final RootFormView.Definition<T> formDefinition, final LocaleContext localeContext) {
         super(formDefinition, localeContext);
         this.formDefinition = formDefinition;
-        Optional.ofNullable(asVaadinComponent()).ifPresent(this::updateViewType);
     }
 
     @Override
