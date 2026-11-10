@@ -48,6 +48,14 @@
       <artifactId>magnolia-page-editor-apps</artifactId>
     </dependency>
     <dependency>
+      <groupId>info.magnolia.dependencies</groupId>
+      <artifactId>magnolia-content-dependencies-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.dependencies</groupId>
+      <artifactId>magnolia-content-dependencies-ui</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.merkle.oss.magnolia</groupId>
       <artifactId>magnolia-definition-builders</artifactId>
     </dependency>
