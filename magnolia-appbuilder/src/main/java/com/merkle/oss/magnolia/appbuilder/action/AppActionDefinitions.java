@@ -13,7 +13,8 @@ import com.merkle.oss.magnolia.appbuilder.action.activation.workflow.WorkflowAct
 import com.merkle.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateDeletionAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.activation.workflow.WorkflowActivateRecursiveAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.activation.workflow.WorkflowDeactivateAppActionDefinition;
-import com.merkle.oss.magnolia.appbuilder.action.edit.ConfirmDeleteAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.action.dependencies.delete.DependencyAwareConfirmDeleteAppActionDefinition;
+import com.merkle.oss.magnolia.appbuilder.action.dependencies.show.ShowDependenciesDialogAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.CopyAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.DeleteAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.edit.EditAppActionDefinition;
@@ -64,7 +65,8 @@ public class AppActionDefinitions {
 
 	public static final List<AppActionDefinition> EDIT_ACTIONS = List.of(
 			new MoveAppActionDefinition(),
-			new ConfirmDeleteAppActionDefinition(),
+			new DependencyAwareConfirmDeleteAppActionDefinition(),
+			new ShowDependenciesDialogAppActionDefinition(),
 			new DeleteAppActionDefinition(),
 			new CopyAppActionDefinition(),
 			new PasteAppActionDefinition()
@@ -72,7 +74,8 @@ public class AppActionDefinitions {
 
 	public static final List<AppActionDefinition> EDIT_ACTIONS_MARK_AS_DELETE = List.of(
 			new MoveAppActionDefinition(),
-			new ConfirmDeleteAppActionDefinition(),
+			new DependencyAwareConfirmDeleteAppActionDefinition(),
+			new ShowDependenciesDialogAppActionDefinition(),
 			new MarkAsDeletedAppActionDefinition(),
 			new CopyAppActionDefinition(),
 			new PasteAppActionDefinition()
