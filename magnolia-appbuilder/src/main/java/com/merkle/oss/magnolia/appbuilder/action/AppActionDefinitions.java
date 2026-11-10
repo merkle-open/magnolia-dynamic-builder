@@ -3,7 +3,7 @@ package com.merkle.oss.magnolia.appbuilder.action;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import com.merkle.oss.magnolia.appbuilder.action.activation.ActivateAppActionDefinition;
 import com.merkle.oss.magnolia.appbuilder.action.activation.ActivateDeletionAppActionDefinition;
@@ -78,28 +78,28 @@ public class AppActionDefinitions {
 			new PasteAppActionDefinition()
 	);
 
-	public static final List<AppActionDefinition> editActions(final EditAppActionDefinition editAppActionDefinition) {
+	public static List<AppActionDefinition> editActions(final EditAppActionDefinition editAppActionDefinition) {
 		return add(
 				EDIT_ACTIONS,
 				editAppActionDefinition
 		);
 	}
 
-	public static final List<AppActionDefinition> editActions(final EditDetailAppActionDefinition editAppActionDefinition) {
+	public static List<AppActionDefinition> editActions(final EditDetailAppActionDefinition editAppActionDefinition) {
 		return add(
 				EDIT_ACTIONS,
 				editAppActionDefinition
 		);
 	}
 
-	public static final List<AppActionDefinition> editActionsWithMarkAsDeleted(final EditAppActionDefinition editAppActionDefinition) {
+	public static List<AppActionDefinition> editActionsWithMarkAsDeleted(final EditAppActionDefinition editAppActionDefinition) {
 		return add(
 				EDIT_ACTIONS_MARK_AS_DELETE,
 				editAppActionDefinition
 		);
 	}
 
-	public static <T> List<T> add(final List<T> list, T... values) {
+	public static <T> List<T> add(final List<T> list, final T... values) {
 		return merge(list, List.of(values));
 	}
 
@@ -107,6 +107,15 @@ public class AppActionDefinitions {
 		return Arrays
 				.stream(lists)
 				.flatMap(Collection::stream)
-				.collect(Collectors.toUnmodifiableList());
+				.toList();
+	}
+
+	public static List<AppActionDefinition> replace(final List<AppActionDefinition> list, final Class<? extends AppActionDefinition> toReplace, final AppActionDefinition replacement) {
+		return list.stream().map(actionDefinition -> {
+			if (Objects.equals(toReplace, actionDefinition.getClass())) {
+				return replacement;
+			}
+			return actionDefinition;
+		}).toList();
 	}
 }
