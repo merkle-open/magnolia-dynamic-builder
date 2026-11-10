@@ -5,6 +5,7 @@ import static info.magnolia.ui.contentapp.action.CommitActionDefinition.COMMIT_A
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.objectfactory.NoSuchComponentException;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.action.CloseActionDefinition;
 import info.magnolia.ui.contentapp.detail.ContentDetailSubApp;
@@ -66,15 +67,18 @@ public class DetailAppBuilder {
     public DetailDescriptor<Item, DatasourceDefinition> build(final Class<?> detailFactory, final String name, final DatasourceDefinition datasourceDefinition) {
         final DetailSubApp.Definition definition = new DetailSubApp.Definition(
                 () -> {
-                    final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
-                    return Objects.equals(location.getViewType(), ContentDetailSubApp.VIEW_TYPE_ADD);
+                    try {
+                        final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
+                        return Objects.equals(location.getViewType(), ContentDetailSubApp.VIEW_TYPE_ADD);
+                    } catch (NoSuchComponentException e) {
+                        return false;
+                    }
                 },
                 detailSubAppDefinition -> {
-                    final ExtendedDetailLocation location = ExtendedDetailLocation.wrap(Components.getComponent(LocationController.class).getWhere());
                     final FormFactory formFactory = formFactoryFactory.create(
                             (context, formDefinition) -> parameterResolverFactory.create(context, formDefinition, detailSubAppDefinition),
                             tabComparatorFactory,
-                            new LocationBasedNodeProvider(datasourceDefinition, location, componentProvider)
+                            new LocationBasedNodeProvider(datasourceDefinition, componentProvider)
                     );
                     final FormDefinition<Item> form = formFactory.create(factoryObjectProvider.apply(detailFactory));
                     final NodeNameValidatorDefinition.Mode mode = detailSubAppDefinition.isNewNode() ? NodeNameValidatorDefinition.Mode.ADD : NodeNameValidatorDefinition.Mode.EDIT;
