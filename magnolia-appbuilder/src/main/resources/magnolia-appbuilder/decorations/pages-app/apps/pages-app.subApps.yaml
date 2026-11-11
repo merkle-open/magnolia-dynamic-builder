@@ -1,0 +1,8 @@
+browser:
+  actions:
+    viewLinks:
+      class: com.merkle.oss.magnolia.appbuilder.action.dependencies.show.GenericViewLinksActionDefinition
+    confirmMarkDeletion:
+      class: com.merkle.oss.magnolia.appbuilder.action.dependencies.delete.GenericDependencyAwareConfirmActionDefinition
+    confirmVariantsDeletion:
+      class: com.merkle.oss.magnolia.appbuilder.action.dependencies.delete.GenericDependencyAwareConfirmActionDefinition
